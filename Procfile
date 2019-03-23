@@ -1,0 +1,1 @@
+web: gunicorn graduation_project.wsgi --log-file –
