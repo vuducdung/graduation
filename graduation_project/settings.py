@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 
     'social_django',
     'admin',
+    'graduation_project.core'
 ]
 
 AUTH_USER_MODEL = 'app.Accounts'
