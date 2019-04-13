@@ -1,0 +1,28 @@
+
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <div id="content-container" class="container p-none">
+        <div class="lgn-container col-lg-8">
+            <form id="reset-form" method="get"
+                  action="">
+                <table class="table">
+                    <tr>
+                        <td><label for="email">Địa chỉ email</label></td>
+                        <td><input id="email" name="email"
+                                   type="email" class="form-control"></td>
+                    </tr>
+                </table>
+
+                <input type="submit" value="Lấy lại mật khẩu"
+                       class="btn btn-primary pull-right" />
+                <input type="hidden" name="next" value="{{ next }}" />
+
+            </form>
+        </div>
+    </div>
+{% endblock content %}

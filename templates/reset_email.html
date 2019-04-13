@@ -1,0 +1,5 @@
+{% autoescape off %}
+Hi {{ user.username }},
+Please click on the link to reset your account,
+http://{{ domain }}{% url 'reset' id=id token=token %}
+{% endautoescape %}

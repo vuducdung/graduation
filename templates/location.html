@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+{% include 'head.html' %}
+<body>
+<div class="container-fluid background-image">
+    {% include 'header.html' %}
+</div>
+<div style="height: 80px;background-color: #e8eff6;">
+    {% include 'search_bar.html' %}
+</div>
+<div style="margin-top:20px; " class="container">
+    <div class="row">
+        <div class="thumbnail-list col-lg-7 col-xs-7 col-sm-7 col-md-7">
+            <img style="border-radius: 10px;" src="{{ location.avatar }}" alt="">
+        </div>
+        <div class="col-lg-5 col-md-5">
+            <div>
+                <span class="float-left" style="color: #03ae03;margin-right:5px;" class="main-info-title-contracted">
+                    <span class="fa fa-check-circle"></span>
+                </span>
+                <h4>{{ location.name }}</h4>
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-2 col-md-2" style="padding-top: 40px;padding-left: 0px;">
+                        <b class="big-circle">{{ location.avgRating }}</b>
+                    </div>
+                    <div class="col-lg-10 col-md-10 ">
+                        <table class="table table-borderless">
+                            <thead>
+                            <tr style="color:#03ae03;">
+                                {% for ava in location.evaluation %}
+                                    <th>{{ ava }}</th>
+                                {% endfor %}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>Vị trí</td>
+                                <td>Giá cả</td>
+                                <td>Chất lượng</td>
+                                <td>Phục vụ</td>
+                                <td>Không gian</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+            <div>
+                <i class="fa fa-location-arrow "
+                   style="margin-right:6px;">
+                    {{ location.address }}
+                    {{ location.district.name }}
+                </i>
+            </div>
+            <div>
+                <span class="fa fa-tag minmaxpriceicon"></span>
+                {% if location.priceMin and location.priceMax %}
+                    {{ location.priceMin }} - {{ location.priceMax }}
+                {% else %}
+                    Giá: Đang cập nhật
+                {% endif %}
+            </div>
+            <div>
+                <span class="fa fa-clock-o houricon"></span>
+                {% if location.workTime24h %}
+                    {{ location.workTime24h }}
+                {% else %}
+                    Time:Đang cập nhật
+                {% endif %}
+            </div>
+            <p>{{ location.keyWords }}</p>
+
+            <p>
+                {{ location.description }}
+            </p>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 10px;">
+        <div class="col-lg-2 col-md-2">
+            <div class="list-group" style="width: 75%;">
+                <a href="/ha-noi/{{ location.url }}/?menu=True"
+                   class="list-group-item list-group-item-action list-group-item-success">Thực đơn</a>
+                <a href="/ha-noi/{{ location.url }}/?map=True"
+                   class="list-group-item list-group-item-action list-group-item-success">Bản đồ</a>
+                <a href="/ha-noi/{{ location.url }}/?parking=True"
+                   class="list-group-item list-group-item-action list-group-item-success">Bãi đỗ xe</a>
+                <a href="/ha-noi/{{ location.url }}/?comment=True"
+                   class="list-group-item list-group-item-action list-group-item-success">Bình luận</a>
+            </div>
+        </div>
+        <div class="col-lg-10 col-md-10">
+            {#            <div class="btn-group " role="group">#}
+            <button type="button" class="btn btn-primary">Thêm vào bộ sưu tập</button>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+                Bình luận
+            </button>
+            {% if user.is_authenticated %}
+                <div class="modal" id="myModal">
+                    <div class="modal-dialog" style="max-width: 900px;">
+                        <div class="modal-content">
+                            <form action="" id="comment-form" data-toggle="validator">
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Bình luận</h4>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                </div>
+
+                                <!-- Modal body -->
+
+                                <div class="modal-body">
+                                    <div>Đánh giá</div>
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-lg-2 col-md-2">
+                                                Vị trí
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 ">
+                                                <div class="slidecontainer">
+                                                    <input style="background:orange;" type="range" min="0" max="10"
+                                                           value="0" class="slider"
+                                                           id="myRange1" name="locate" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 col-md-2">
+                                                <p>Value: <span id="demo1"></span></p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2 col-md-2">
+                                                Giá cả
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 ">
+                                                <div class="slidecontainer">
+                                                    <input style="background:orange;" type="range" min="0" max="10"
+                                                           value="0" class="slider"
+                                                           id="myRange2" name="price" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 col-md-2">
+                                                <p>Value: <span id="demo2"></span></p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2 col-md-2">
+                                                Chất lượng
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 ">
+                                                <div class="slidecontainer">
+                                                    <input style="background:orange;" type="range" min="0" max="10"
+                                                           value="0" class="slider"
+                                                           id="myRange3" name="quality" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 col-md-2">
+                                                <p>Value: <span id="demo3"></span></p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2 col-md-2">
+                                                Phục vụ
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 ">
+                                                <div class="slidecontainer">
+                                                    <input style="background:orange;" type="range" min="0" max="10"
+                                                           value="0" class="slider"
+                                                           id="myRange4" name="serve" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 col-md-2">
+                                                <p>Value: <span id="demo4"></span></p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2 col-md-2">
+                                                Không gian
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 ">
+                                                <div class="slidecontainer">
+                                                    <input style="background:orange;" type="range" min="0" max="10"
+                                                           value="0" class="slider"
+                                                           id="myRange5" name="capacity" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 col-md-2">
+                                                <p>Value: <span id="demo5"></span></p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div id="validate-comment"></div>
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="Tiêu đề"
+                                           name="title" maxlength="255" required>
+
+                                    <textarea class="form-control" rows="5" id="comment" name="content"
+                                              required></textarea>
+                                    <input type="hidden" name="userId" value="{{ user.id }}"/>
+                                    <button type="submit" class="btn btn-primary" id="submit-comment">Hoàn tất
+                                    </button>
+
+                                </div>
+                            </form>
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <!-- The Modal -->
+                <div class="modal" id="myModal">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                Hãy đăng nhập để thực hiện chức năng này
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal" id="contentModal">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                Hãy đăng nhập để thực hiện chức năng này
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            <!-- The Modal -->
+            <button type="button" id="create-like" value="{{ user.id }}|{{ location.id }}" data-toggle="modal"
+                    data-target="#contentModal"
+                    class="btn btn-primary"><i id="like" {% if like_loc %}class="fa fa-check" {% else %}
+                                               class="fa fa-thumbs-up"{% endif %}>Like<span id="like-count"
+                                                                                        class="badge badge-light">{{ location.totalFavourite }}</span></i>
+            </button>
+
+            <button type="button" class="btn btn-primary" readonly>
+                Views <span class="badge badge-light">{{ location.totalView }}</span>
+            </button>
+
+            <div class="container">
+                {% if menus %}
+                    <div class="row item-res">
+                        {% if menus.items %}
+                            {% for menu in menus.items %}
+                                <div class="col-lg-12 col-md-12" style="margin-top:20px;">
+                                    <h6>{{ menu.name }}</h6>
+                                    <div class="container">
+                                        {% for dish in menu.dishes %}
+                                            <div class="row" style="margin-top:2px;">
+                                                <div class="col-lg-4 col-md-4"><img style="width:60px;height:60px;"
+                                                                                    src="{{ dish.ImageUrl }}"
+                                                                                    alt="">
+                                                </div>
+                                                <div class="col-lg-4 col-md-4">{{ dish.Name }}</div>
+                                                <div class="col-lg-4 col-md-4">{{ dish.Price }}</div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            Menu đang cập nhật
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                {% if parkings %}
+                    <div class="row item-res">
+                        {% if parkings.items %}
+                            {% for parking in parkings.items %}
+                                <div class="col-lg-12 col-md-12" style="margin-top:20px">
+                                    <div class="row" style="margin-top:2px;">
+                                        <div class="col-lg-4 col-md-4"><img style="width:240px;height:240px;"
+                                                                            src="{{ parking.map }}" alt="">
+                                        </div>
+
+                                        <div class="col-lg-8 col-md-8">
+                                            <div>{{ parking.name }}</div>
+                                            <div>{{ parking.address }}</div>
+
+                                            <div>Giờ mở cửa: {{ parking.startTime24h }} - {{ parking.endTime24h }}</div>
+                                            <div>Sức chứa: {{ parking.capacity }} <i class="fa fa-motorcycle"></i>
+                                                - {{ parking.capacityCar }} <i class="fa fa-car"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            Bãi đỗ xe đang cập nhật
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                {% if map %}
+                    <div class="row item-res">
+                        <div class="col-lg-12 col-md-12" style="margin-top:20px">
+                            <img style="width:833px;height:521px;" src="{{ location.map }}" alt="">
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if comments %}
+                    <div class="row item-res">
+                        {% if comments.items %}
+                            {% for comment in comments.items %}
+                                <div class="col-lg-9 col-md-9" style="margin-top:20px">
+                                    <div class="row" style="margin-top:2px; background:#fff">
+                                        <div class="col-lg-8 col-md-8">
+                                            <img class="float-left rounded-circle"
+                                                 style="width:40px;height:40px;margin:5px;"
+                                                 src="{{ comment.user.avatar }}" alt="">
+                                            <h5>{{ comment.user.name }}</h5>
+                                            <small>{{ comment.created_at }}</small>
+                                        </div>
+                                        <div class="col-lg-4 col-md-4">
+                                            <div class="row justify-content-end">
+                                                <div class="circle">{{ comment.score }}
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                <div class="row" style="margin-top:2px; background:#fff">
+                                    <div class="col-lg-12 col-md-12">
+                                        <b style="margin:10px 0px 10px 0px">{{ comment.title }}</b>
+                                    </div>
+                                </div>
+                                <div class="row"style="margin-top:2px; background:#fff">
+                                    <div class="col-lg-12 col-md-12">
+                                        <p style="word-wrap: break-word;">{{ comment.content }}</p>
+                                    </div>
+                                </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            Chưa có bình luận
+                        {% endif %}
+                    </div>
+                {% endif %}
+                <div class="paging-result">
+                    <div class="row justify-content-end">
+                        <div class="col-lg-10 col-md-10">
+                            {% if comments.items.has_other_pages %}
+                                <ul class="pagination">
+                                    {% if comments.items.has_previous %}
+                                        <li class="page-item"><a class="page-link" value="1">First</a>
+                                        </li>
+                                        <li class="page-item"><a class="page-link"
+                                                                 value="{{ comments.items.previous_page_number }}">Previous</a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled"><a class="page-link" href="">Previous</a>
+                                        </li>
+                                    {% endif %}
+
+                                    {% if comments.items.number|add:'-4' > 1 %}
+                                        <li class="page-item"><a class="page-link"
+                                                                 value="{{ comments.items.number|add:'-5' }}">&hellip;</a>
+                                        </li>
+                                    {% endif %}
+                                    {% for i in comments.items.paginator.page_range %}
+                                        {% if comments.items.number == i %}
+                                            <li class="page-item active"><a class="page-link" href="">{{ i }}</a></li>
+                                        {% elif i > comments.items.number|add:'-5' and i < comments.items.number|add:'5' %}
+                                            <li class="page-item"><a class="page-link" value="{{ i }}">{{ i }}</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {% if comments.items.paginator.num_pages > comments.items.number|add:'4' %}
+                                        <li class="page-item"><a class="page-link"
+                                                                 value="{{ comments.items.number|add:'5' }}">&hellip;</a>
+                                        </li>
+                                    {% endif %}
+                                    {% if comments.items.has_next %}
+                                        <li class="page-item"><a class="page-link"
+                                                                 value="{{ comments.items.next_page_number }}">Next</a>
+                                        </li>
+                                        <li class="page-item"><a class="page-link"
+                                                                 value="{{ comments.items.paginator.num_pages }}">Last</a>
+                                            {% else %}
+                                        <li class="page-item disabled"><a class="page-link" href="">Next</a></li>
+                                    {% endif %}
+                                    <li class="page-item disabled">
+                                        <a class="page-link">Page {{ comments.items.number }}
+                                            of {{ comments.items.paginator.num_pages }}</a>
+                                    </li>
+                                </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{{ location.id }}
+
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-xs-6 col-sm-3 col-lg-3">
+
+                <div class="caption text-center">
+                    <h8>SẢN PHẨM</h8>
+                    <p>Địa điểm</p>
+                    <p>Tỉnh thành</p>
+
+                </div>
+
+            </div>
+            <div class="col-md-3 col-xs-6 col-sm-3 col-lg-3">
+
+                <div class="caption text-center">
+                    <h8>TỔ CHỨC</h8>
+                    <p>Giới thiệu</p>
+                    <p>Tin mới</p>
+                    <p>Liên hệ</p>
+
+                </div>
+
+            </div>
+            <div class="col-md-3 col-xs-6 col-sm-3 col-lg-3">
+
+                <div class="caption text-center">
+                    <h8>LEARN MORE</h8>
+                    <p>Hỗ trợ</p>
+                    <p></p>
+                </div>
+
+            </div>
+            <div class="col-md-3 col-xs-6 col-sm-3 col-lg-3">
+
+                <div class="caption text-center">
+                    <h8>CONNECT WITH US</h8>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</footer>
+
+
+<script src="{% static "js/location.js" %}"></script>
+<script>window.jQuery || document.write('<script src="{% static "js/jquery-slim.min.js" %}"><\/script>')</script>
+<script src="{% static "js/bootstrap.bundle.min.js" %}"></script>
+</body>
+</html>
+

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+{% load static %}
+{% include 'head.html' %}
+{#{{ sql }}#}
+<body>
+{% include 'header.html' %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 col-md-12">
+            <div style="height: 80px;background-color: #e8eff6;">
+                {% include 'search_bar.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+
+    </div>
+</div>
+<div class="container">
+    <div class="row justify-content-between" style="margin-left: 20px;">
+        <div class="d-flex justify-content-center  mb-3">
+            <div class="btn-group btn-group-justified">
+                <div id="distance" class="btn p-2 bg-light">Gần nhất</div>
+                <div id="view" class="btn p-2 bg-light">Xem nhiều nhất</div>
+                <div id="evaluate" class="btn p-2 bg-light">Đánh giá tốt nhất</div>
+                {#    <a href="#" class="btn btn-primary"></a>#}
+                <div id="price" class="btn p-2 bg-light">Giá rẻ nhất</div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="result-page" style="margin-top:20px">
+    <div class="container">
+        {% if locations %}
+            <div style="margin-top:0px;margin-bottom:20px;" class="row">
+                <div class="thumbnail-list col-lg-3 col-md-4">{{ count }} kết quả tìm kiếm</div>
+            </div>
+            {% for loc in locations %}
+                <div class="item-res">
+                    <div class="row" style="">
+                        <div class="thumbnail-list col-lg-3 col-md-4">
+                            <a class="view-location" value="{{ loc.id }}|{{ user.id }}"
+                               href="/ha-noi/{{ loc.url }}/"><img src="{{ loc.avatar }}"
+                                                                  class="rounded"
+                                                                  alt="Cinque Terre" width="256.5"
+                                                                  height="180"></a>
+                        </div>
+                        <div class="col-lg-9 col-md-8">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-lg-9 col-md-8">
+                                        <h4><a class="view-location" value="{{ loc.id }}|{{ user.id }}"
+                                               href="/ha-noi/{{ loc.url }}/"
+                                        >{{ loc.name }}</a></h4>
+                                        <i style="color:#ffa800;" class="fa fa-star"></i> <i style="color:#ffa800;"
+                                                                                            class="fa fa-star"></i> <i
+                                            style="color:#ffa800;" class="fa fa-star"></i> <i style="color:#ffa800;"
+                                                                                             class="fa fa-star"></i> <i
+                                            style="color:#ffa800;"
+                                            class="fa fa-star"></i> {{ loc.avgRating }}
+
+                                        <div>{{ loc.description }}</div>
+                                        <div><i style="color:green;" class="fa fa-money"></i> {{ loc.priceMin }} - {{ loc.priceMax }}</div>
+                                        <div><i style="color:green;" class="fa fa-eye"></i> {{ loc.totalView }}</div>
+                                        <div><i style="color:green;" class="fa fa-road"></i> {{ loc.distance }} cách từ thành phố hà nội</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+        <div class="paging-result">
+            <div class="row justify-content-end">
+                <div class="col-lg-10 col-md-10">
+                    {% if locations.has_other_pages %}
+                        <ul class="pagination">
+                            {% if locations.has_previous %}
+                                <li class="page-item"><a class="page-link" value="1">First</a>
+                                </li>
+                                <li class="page-item"><a class="page-link"
+                                                         value="{{ locations.previous_page_number }}">Previous</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled"><a class="page-link" href="">Previous</a>
+                                </li>
+                            {% endif %}
+
+                            {% if locations.number|add:'-4' > 1 %}
+                                <li class="page-item"><a class="page-link"
+                                                         value="{{ locations.number|add:'-5' }}">&hellip;</a>
+                                </li>
+                            {% endif %}
+                            {% for i in locations.paginator.page_range %}
+                                {% if locations.number == i %}
+                                    <li class="page-item active"><a class="page-link" href="">{{ i }}</a></li>
+                                {% elif i > locations.number|add:'-5' and i < locations.number|add:'5' %}
+                                    <li class="page-item"><a class="page-link" value="{{ i }}">{{ i }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if locations.paginator.num_pages > locations.number|add:'4' %}
+                                <li class="page-item"><a class="page-link" value="{{ locations.number|add:'5' }}">&hellip;</a>
+                                </li>
+                            {% endif %}
+                            {% if locations.has_next %}
+                                <li class="page-item"><a class="page-link"
+                                                         value="{{ locations.next_page_number }}">Next</a>
+                                </li>
+                                <li class="page-item"><a class="page-link"
+                                                         value="{{ locations.paginator.num_pages }}">Last</a>
+                                    {% else %}
+                                <li class="page-item disabled"><a class="page-link" href="">Next</a></li>
+                            {% endif %}
+                            <li class="page-item disabled">
+                                <a class="page-link">Page {{ locations.number }}
+                                    of {{ locations.paginator.num_pages }}</a>
+                            </li>
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<script src="{% static "js/search.js" %}"></script>
+</body>
+</html>
