@@ -41,11 +41,27 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'app.apps.AccountsConfig',
     'django.contrib.postgres',
-
-    'social_django',
-    'admin',
-    'graduation_project.core'
+    #
+    # 'django.contrib.sites',  # new
+    #
+    # 'allauth',  # new
+    # 'allauth.account',  # new
+    # 'allauth.socialaccount',  # new
+    # 'allauth.socialaccount.providers.google',  # new
+    # # 'social_django',
+    # 'admin',
 ]
+
+# demo_project/settings.py
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+
+SITE_ID = 1
+
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
 
 AUTH_USER_MODEL = 'app.Accounts'
 
@@ -83,9 +99,6 @@ LOGIN_REDIRECT_URL = '../'
 LOGOUT_REDIRECT_URL = '../'
 
 WSGI_APPLICATION = 'graduation_project.wsgi.application'
-
-# Database
-# https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 
 DATABASES = {
