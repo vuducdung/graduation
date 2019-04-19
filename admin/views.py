@@ -202,7 +202,7 @@ def parking(request, id):
     # return HttpResponse({type(userId)})
     if deleteId:
         parking = Parkings.objects.get(id=deleteId)
-        comment.delete()
+        parking.delete()
 
     parkings = location.parking.all()
     paginator = Paginator(parkings, 10)

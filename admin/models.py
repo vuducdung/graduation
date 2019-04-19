@@ -106,8 +106,8 @@ class Locations(models.Model):
     # timeEnd24h = models.CharField(max_length=20, default='00:00:00')
     # menu = models.TextField(null=True)
     url = models.CharField(max_length=255, default='')
-    keyWords = models.CharField(max_length=255, default='', null=True)
-    description = models.CharField(max_length=255, default='', null=True)
+    keyWords = models.TextField(default='', null=True)
+    description = models.TextField(default='', null=True)
     district = models.ForeignKey(Districts, on_delete=models.CASCADE, default=20)
     evaluation = models.CharField(max_length=255, default='[0,0,0,0,0,0]')
 
@@ -125,7 +125,7 @@ class Locations(models.Model):
 
 class CommentLikeShare(models.Model):
     # id = models.BigIntegerField(primary_key=True)
-    title = models.CharField(max_length=255, null=True)
+    title = models.TextField(null=True)
     user = models.ForeignKey(Accounts, on_delete=models.CASCADE)
     location = models.ForeignKey(Locations, on_delete=models.CASCADE)
     type = models.ForeignKey(InteractiveTypes, on_delete=models.CASCADE)

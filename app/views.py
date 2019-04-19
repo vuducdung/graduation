@@ -157,13 +157,17 @@ def get_location_menu(loc):
         dishes = dishes.replace("'", '"')
         dishes = dishes.replace("False", "false")
         dishes = dishes.replace("None", "null")
-        menu["dishes"] = json.loads(dishes)
-        for dish in menu["dishes"]:
-            if 'default' in str(dish['ImageUrl']):
-                dish['ImageUrl'] = 'https://www.foody.vn/style/images/deli-dish-no-image.png'
-            price = str(dish['Price']).replace('000.0', '.000')
-            dish['Price'] = price
-        menus.append(menu)
+        try:
+            menu["dishes"] = json.loads(dishes)
+            for dish in menu["dishes"]:
+                if 'default' in str(dish['ImageUrl']):
+                    dish['ImageUrl'] = 'https://www.foody.vn/style/images/deli-dish-no-image.png'
+                price = str(dish['Price']).replace('000.0', '.000')
+                dish['Price'] = price
+            menus.append(menu)
+        except:
+            return []
+
     return menus
 
 
@@ -535,4 +539,4 @@ def delete_location_in_collection(request):
     collection = Collections.objects.get(id=collectionId)
     location = Locations.objects.get(id=locationId)
     CollectionLocation.objects.filter(location=location).filter(collection=collection)[0].delete()
-    return HttpResponse('None'  )
+    return HttpResponse('None')
