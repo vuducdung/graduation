@@ -12,11 +12,9 @@ import json
 import re
 
 from django.core.mail import EmailMessage
-from admin.models import Locations, CommentLikeShare, Districts, Cuisines, Categories, InteractiveTypes, Provinces
+from admin.models import Locations, CommentLikeShare, Districts, Cuisines, Categories, InteractiveTypes, Provinces, \
+    Collections, CollectionLocation
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
-from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector, TrigramSimilarity
-from django.db import connection
 
 
 def signup(request):
@@ -59,7 +57,6 @@ def activate(request, id, token):
         user.is_active = True
         user.save()
         login(request, user)
-        # return redirect('home')
         return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
     else:
         return HttpResponse('Activation link is invalid!')
@@ -71,9 +68,7 @@ def resetRequire(request):
         if email:
             User = get_user_model()
             user = User.objects.get(email=email)
-
             current_site = get_current_site(request)
-            # return HttpResponse(user.id)
             mail_subject = 'Reset your account.'
             message = render_to_string('reset_email.html', {
                 'user': user,
@@ -231,7 +226,7 @@ def location(request, locationUrl):
 
     comment = request.GET.get('comment', None)
     if comment:
-        comments = get_location_comment(loc)
+        comments = get_location_comment(loc).order_by('-created_at')
 
         if len(comments) <= 0:
             comments = None
@@ -261,7 +256,8 @@ def location(request, locationUrl):
     map = request.GET.get('map', None)
     if map:
         return render(request, 'location.html',
-                      {'location': loc, 'map': map, 'like_loc': like_this_loc})
+                      {'location': loc, 'map': map, 'like_loc': like_this_loc, 'districts': districts,
+                       'cuisines': cuisines, 'categories': categories, })
 
     return render(request, 'location.html', {'location': loc, 'districts': districts,
                                              'cuisines': cuisines, 'categories': categories, 'like_loc': like_this_loc})
@@ -409,3 +405,134 @@ def view_create(request):
             view.location = location
             view.save()
         return HttpResponse('None')
+
+
+def share_create(request):
+    locationId = request.GET.get('locationId', None)
+    userId = request.GET.get('userId', None)
+    if locationId and userId:
+        location = Locations.objects.get(id=locationId)
+        user = Accounts.objects.get(id=userId)
+        type = InteractiveTypes.objects.get(id=4)
+        share = CommentLikeShare()
+        share.type = type
+        share.user = user
+        share.location = location
+        share.save()
+    return HttpResponse('None')
+
+
+def member(request, userId):
+    acc = Accounts.objects.get(id=userId)
+    comment_type = InteractiveTypes.objects.get(id=1)
+    comments = CommentLikeShare.objects.filter(type=comment_type).filter(user=acc)
+    collections = Collections.objects.filter(user=acc).order_by('created_at')
+    if len(comments) <= 0:
+        comments = None
+    username = request.POST.get('name', None)
+    if username:
+        acc.name = username
+        acc.save()
+    return render(request, 'member.html', {'acc': acc, 'comments': comments, 'collections': collections})
+
+
+def collection_create(request):
+    name = request.GET.get('name', None)
+    description = request.GET.get('description', None)
+    userId = request.GET.get('userId', None)
+    user = Accounts.objects.get(id=userId)
+    collectios = []
+    old_coll = Collections.objects.filter(user=user).filter(name=name)
+    if len(old_coll) > 0:
+        return HttpResponse('None')
+
+    new_collection = Collections()
+    new_collection.name = name
+    new_collection.description = description
+    new_collection.user = user
+    new_collection.save()
+    collectios = Collections.objects.filter(user=user).order_by('created_at')
+    collectios = [dict(id=m.id, name=m.name) for m in collectios]
+    return HttpResponse(
+        json.dumps(collectios),
+        content_type='application/json', )
+
+
+def collection_delete(request):
+    collection_id = request.GET.get('collectionId', None)
+    if id:
+        Collections.objects.get(id=collection_id).delete()
+
+
+def get_collection(request):
+    userId = None
+    if request.user.is_authenticated:
+        userId = request.user.id
+    user = Accounts.objects.get(id=userId)
+    collections = Collections.objects.filter(user=user).order_by('created_at')
+    collections = [dict(id=m.id, name=m.name) for m in collections]
+    return HttpResponse(json.dumps(collections), content_type='application/json', )
+
+
+def location_suggest(request):
+    location_name = request.GET.get('location_name', None)
+
+    str1 = """¹²³ÀÁẢẠÂẤẦẨẬẪÃÄÅÆàáảạâấầẩẫậãäåæĀāĂẮẰẲẴẶăắằẳẵặĄąÇçĆćĈĉĊċČčĎďĐđÈÉẸÊẾỀỄỆËèéẹêềếễệëĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨÌÍỈỊÎÏìíỉịîïĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłÑñŃńŅņŇňŉŊŋÒÓỎỌÔỐỒỔỖỘỐỒỔỖỘƠỚỜỞỠỢÕÖòóỏọôốồổỗộơớờỡợởõöŌōŎŏŐőŒœØøŔŕŖŗŘřßŚśŜŝŞşŠšŢţŤťŦŧÙÚỦỤƯỪỨỬỮỰÛÜùúủụûưứừửữựüŨũŪūŬŭŮůŰűŲųŴŵÝýÿŶŷŸŹźŻżŽžёЁ"""
+    str2 = """123AAAAAAAAAAAAAAaaaaaaaaaaaaaaAaAAAAAAaaaaaaAaCcCcCcCcCcDdDdEEEEEEEEEeeeeeeeeeEeEeEeEeEeGgGgGgGgHhHhIIIIIIIiiiiiiiIiIiIiIiIiJjKkkLlLlLlLlLlNnNnNnNnnNnOOOOOOOOOOOOOOOOOOOOOOOooooooooooooooooooOoOoOoEeOoRrRrRrSSsSsSsSsTtTtTtUUUUUUUUUUUUuuuuuuuuuuuuUuUuUuUuUuUuWwYyyYyYZzZzZzеЕ"""
+
+    sql1 = '''
+       select admin_locations.* from admin_locations
+      '''
+    sql2 = ' where True'
+
+    if location_name and location_name != '':
+        query = tran_word_search(location_name, str1, str2)
+        # query = query.replace(" ", ":*&")
+        query_list = []
+        for q in query.split(' '):
+            q = q + ':*'
+            query_list.append(q)
+        query = "&".join(query_list)
+
+        sql2 += " and news_tsv @@ to_tsquery('simple','" + query + "')"
+
+        sql = sql1 + sql2
+        locations_list = Locations.objects.raw(sql)[:10]
+        locations = [dict(id=m.id, name=m.name, avatar=m.avatar) for m in locations_list]
+        locations = json.dumps(locations)
+        return HttpResponse(locations, content_type='application/json', )
+
+
+def location_to_collection(request):
+    locationId = request.GET.get('locationId', None)
+    collectionId = request.GET.get('collectionId', None)
+    location = Locations.objects.get(id=locationId)
+    collection = Collections.objects.get(id=collectionId)
+
+    ex_loc = collection.location.filter(id=locationId)
+    if len(ex_loc) > 0:
+        return HttpResponse('None')
+
+    loc_collec = CollectionLocation()
+    loc_collec.location = location
+    loc_collec.collection = collection
+    loc_collec.save()
+    return HttpResponse('')
+
+
+def locations_in_collection(request):
+    collectionId = request.GET.get('collectionId', None)
+    collection = Collections.objects.get(id=collectionId)
+    locations_list = collection.location.all()
+    locations = [dict(id=m.id, name=m.name, avatar=m.avatar, url=m.url) for m in locations_list]
+    locations = json.dumps(locations)
+    return HttpResponse(locations, content_type='application/json', )
+
+
+def delete_location_in_collection(request):
+    collectionId = request.GET.get('collectionId', None)
+    locationId = request.GET.get('locationId', None)
+    collection = Collections.objects.get(id=collectionId)
+    location = Locations.objects.get(id=locationId)
+    CollectionLocation.objects.filter(location=location).filter(collection=collection)[0].delete()
+    return HttpResponse('None'  )

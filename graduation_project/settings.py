@@ -27,7 +27,7 @@ SECRET_KEY = 'yhsfmn7myt!tygnzp@zg!v=0o&j*34==yypr=_0j5&oj#w7p*m'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['graduation-vuducdung.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['graduation-vuducdung.herokuapp.com', '127.0.0.1','localhost']
 
 # Application definition
 # LOGIN_REDIRECT_URL = '/'
@@ -41,27 +41,27 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'app.apps.AccountsConfig',
     'django.contrib.postgres',
-    #
+
     # 'django.contrib.sites',  # new
     #
     # 'allauth',  # new
     # 'allauth.account',  # new
     # 'allauth.socialaccount',  # new
     # 'allauth.socialaccount.providers.google',  # new
-    # # 'social_django',
-    # 'admin',
+    # 'social_django',
+    'admin',
 ]
 
 # demo_project/settings.py
-AUTHENTICATION_BACKENDS = (
-    "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
-)
-
-SITE_ID = 1
-
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
+# AUTHENTICATION_BACKENDS = (
+#     "django.contrib.auth.backends.ModelBackend",
+#     "allauth.account.auth_backends.AuthenticationBackend",
+# )
+#
+# SITE_ID = 1
+#
+# ACCOUNT_EMAIL_REQUIRED = True
+# ACCOUNT_USERNAME_REQUIRED = False
 
 AUTH_USER_MODEL = 'app.Accounts'
 

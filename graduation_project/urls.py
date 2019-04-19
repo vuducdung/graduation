@@ -25,9 +25,9 @@ from django.conf.urls.static import static
 urlpatterns = [
                   path('login/', auth_views.LoginView.as_view(redirect_authenticated_user=True), name='login'),
                   # path('admin/', admin.site.urls),
-                  path('app/', include('app.urls')),
+                  path('', include('app.urls')),
                   path('', include('django.contrib.auth.urls')),
                   path('admin/', include('admin.urls')),
-                  path('accounts/', include('allauth.urls')),  # new
+                  # path('accounts/', include('allauth.urls')),  # new
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

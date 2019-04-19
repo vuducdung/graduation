@@ -1,0 +1,22 @@
+<div class="sticky" onclick="getLocation()"><i class="fa fa-utensils"></i>Gợi ý nào</div>
+<script>
+    var x = document.getElementById("demo");
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+            getSuggestLocation();
+        } else {
+            x.innerHTML = "Geolocation is not supported by this browser.";
+        }
+    }
+
+    function showPosition(position) {
+        window.open("https://maps.google.com/?q=" + position.coords.latitude + "," + position.coords.longitude)
+    }
+    function getSuggestLocation(){
+        var pageUrl = window.location.href.split('/')[0]+'/search/?suggest=True';
+        window.location.href = pageUrl
+    }
+
+</script>

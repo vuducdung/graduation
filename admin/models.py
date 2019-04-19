@@ -84,16 +84,6 @@ class InteractiveTypes(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-class Collections(models.Model):
-    id = models.IntegerField(primary_key=True)
-    name = models.CharField(max_length=255, null=False)
-    user = models.ForeignKey(Accounts, on_delete=models.CASCADE)
-    description = models.CharField(max_length=255, null=True)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-
 class Locations(models.Model):
     id = models.BigIntegerField(primary_key=True)
     name = models.CharField(max_length=255, null=False)
@@ -141,15 +131,7 @@ class CommentLikeShare(models.Model):
     type = models.ForeignKey(InteractiveTypes, on_delete=models.CASCADE)
     content = models.TextField(max_length=255, null=True)
     score = models.FloatField(null=True)
-    evaluation = models.CharField(max_length=255, default='[0,0,0,0,0,0]')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-
-class CollectionLocation(models.Model):
-    collection = models.ForeignKey(Collections, on_delete=models.CASCADE)
-    location = models.ForeignKey(Locations, on_delete=models.CASCADE)
-
+    evaluation = models.CharField(max_length=255, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -196,3 +178,22 @@ class CuisineLocation(models.Model):
 
 class uploadImage(models.Model):
     image = models.ImageField(upload_to='location/')
+
+
+class Collections(models.Model):
+    # id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=255, null=False)
+    user = models.ForeignKey(Accounts, on_delete=models.CASCADE)
+    description = models.TextField(max_length=255, null=True)
+    location = models.ManyToManyField(Locations, through='CollectionLocation')
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class CollectionLocation(models.Model):
+    collection = models.ForeignKey(Collections, on_delete=models.CASCADE)
+    location = models.ForeignKey(Locations, on_delete=models.CASCADE)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

@@ -1,3 +1,22 @@
+
+document.getElementById('shareBtn').onclick = function () {
+    // alert(window.location.href)
+    FB.ui({
+        display: 'popup',
+        method: 'share',
+        href: 'https://www.foody.vn/ha-noi/food/sang-trong',
+    }, function (response) {
+        let locationId = $('#shareBtn').attr('value').split('|')[0]
+        let userId = $('#shareBtn').attr('value').split('|')[1]
+        // alert($('#shareBtn').attr('value'))
+        // alert(locationId != 'None' && userId != 'None')
+        if (locationId != 'None' && userId != 'None') {
+            $.get('/share_create/', {locationId: locationId, userId: userId}, function (data) {
+                // $('#like-count').html(data);
+            });
+        }
+    });
+}
 $("#create-like").click(function () {
     $("#like").toggleClass('fa fa-thumbs-up');
     $("#like").toggleClass('fa fa-check');
