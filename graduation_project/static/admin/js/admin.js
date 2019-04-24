@@ -1,31 +1,50 @@
+function get_required_message() {
+    $.get('/admin/get_required_message/', function (data) {
+        let messages = `<li>
+                            <div class="notification_header">
+                                <h3 class="count-message">You have ${data[0].count} new messages</h3>
+                            </div>
+                        </li>`
+        $.each(data, function () {
+            $(".badge").html(this.count)
+            $(".notification_desc").html(` ${this.require_name} `)
+            messages += `<li>
+                            <a href="/admin/location/?id=${this.loc_id}">
+                                <div class="user_img"><img id="user-avatar" src="${this.user_avatar}" alt=""></div>
+                                <div class="notification_desc">
+                                    <p>${this.require_name}</p>
+                                    <!--<p><span>1 hour ago</span></p>-->
+                                </div>
+                                <div class="clearfix"></div>
+                            </a>
+                        </li>`
+
+        });
+        $("#messages").html(messages)
+    });
+}
+
+get_required_message();
+
 var ready = $(document).ready(function () {
 
-    // let pageURL = window.location.href;
-    // let word = getQueryStringValue("word")
-    // alert(word)
     $(".form-control").keydown(function (e) {
         if (e.keyCode == 13) {
             return false;
         }
     });
-
-    $("#update-button").click(function(){
+    $("#update-button").click(function () {
         $("#show-button-update").show();
     });
-
-    // go.addEventListener("click", submitSearch);
 
     $(".page-link").click(function () {
         pageURL = window.location.href;
         if ($(this).attr("value")) {
             if (pageURL.includes("?")) {
-
                 pageURL = pageURL.split("?")[0];
-                // alert(pageURL)
             }
             pageURL += '?page=' + $(this).attr("value");
             window.location.replace(pageURL);
-            // alert(pageURL)
         }
     });
 
@@ -34,14 +53,11 @@ var ready = $(document).ready(function () {
         if (e.keyCode == 13) {
             if ($("#user-name").val()) {
                 if (pageURL.includes("?")) {
-
                     pageURL = pageURL.split("?")[0];
-                    // alert(pageURL)
                 }
                 pageURL += '?username=' + $("#user-name").val();
                 window.location.replace(pageURL);
             }
-            // alert($("#user-name").val())
         }
     });
 
@@ -59,7 +75,6 @@ var ready = $(document).ready(function () {
         $("#select-cui").val(cui).change();
         $("#page-link[value=${page_link}]").toggleClass('page-link active');
         ;
-        // // alert(word+loc+ cat+ cui);
 
     }
 
@@ -98,11 +113,8 @@ var ready = $(document).ready(function () {
 
     function submitSearch() {
         let pageURL = window.location.href;
-
         if (pageURL.includes("search")) {
-
             pageURL = pageURL.split("search/")[0];
-            // alert(pageURL)
         }
         pageURL += 'search/?';
         let word = $("#word").val();
@@ -122,71 +134,12 @@ var ready = $(document).ready(function () {
             pageURL += 'cui=' + cui;
         }
         window.location.replace(pageURL);
-        // document.getElementById("word").innerHTML = word;
-        // document.getElementById("select-loc").innerHTML = loc;
-        // document.getElementById("select-cat").innerHTML = cat;
-        // document.getElementById("select-cui").innerHTML = cui;
     }
-
 
     function getQueryStringValue(key) {
         return decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
     }
 
-    function sortTable(n) {
-        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-        table = document.getElementById("myTable");
-        switching = true;
-        //Set the sorting direction to ascending:
-        dir = "asc";
-        /*Make a loop that will continue until
-        no switching has been done:*/
-        while (switching) {
-            //start by saying: no switching is done:
-            switching = false;
-            rows = table.rows;
-            /*Loop through all table rows (except the
-            first, which contains table headers):*/
-            for (i = 1; i < (rows.length - 1); i++) {
-                //start by saying there should be no switching:
-                shouldSwitch = false;
-                /*Get the two elements you want to compare,
-                one from current row and one from the next:*/
-                x = rows[i].getElementsByTagName("TD")[n];
-                y = rows[i + 1].getElementsByTagName("TD")[n];
-                /*check if the two rows should switch place,
-                based on the direction, asc or desc:*/
-                if (dir == "asc") {
-                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                        //if so, mark as a switch and break the loop:
-                        shouldSwitch = true;
-                        break;
-                    }
-                } else if (dir == "desc") {
-                    if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-                        //if so, mark as a switch and break the loop:
-                        shouldSwitch = true;
-                        break;
-                    }
-                }
-            }
-            if (shouldSwitch) {
-                /*If a switch has been marked, make the switch
-                and mark that a switch has been done:*/
-                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                switching = true;
-                //Each time a switch is done, increase this count by 1:
-                switchcount++;
-            } else {
-                /*If no switching has been done AND the direction is "asc",
-                set the direction to "desc" and run the while loop again.*/
-                if (switchcount == 0 && dir == "asc") {
-                    dir = "desc";
-                    switching = true;
-                }
-            }
-        }
-    }
 });
 
 

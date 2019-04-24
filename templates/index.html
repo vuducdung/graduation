@@ -7,23 +7,23 @@
 <div class="container-fluid background-image">
     {% include 'header.html' %}
 
-    <nav class="nav-scroller">
-        <div class="container">
-            <div class="row">
-                <li class="list-nav"><a>Trang chủ</a></li>
-                <li class="list-nav"><a>Giới thiệu</a></li>
-                <li class="list-nav"><a>Địa điểm</a></li>
-                <li class="list-nav"><a>Nổi bật</a></li>
-            </div>
-        </div>
-    </nav>
+{#    <nav class="nav-scroller">#}
+    {#        <div class="container">#}
+    {#            <div class="row">#}
+    {#                <li class="list-nav"><a>Trang chủ</a></li>#}
+    {#                <li class="list-nav"><a>Giới thiệu</a></li>#}
+    {#                <li class="list-nav"><a>Địa điểm</a></li>#}
+    {#                <li class="list-nav"><a>Nổi bật</a></li>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </nav>#}
 
     <section class="showcase my-custom-scrollbar my-custom-scrollbar-primary">
-        <div class="container">
+        <div class="container" style="margin-top:120px;">
             <div class="row">
                 <div class="form" method="get"></div>
                 <div class="floating-main">
-                    <h1>Tim dia diem an uong cua ban</h1>
+                    <h1>Tìm địa điểm ăn uống của bạn</h1>
                     <div id="word-search" class="search-box">
                         <i style="margin-left: -30px;color:#9ba2a9;margin-right: 10px;font-size:21px"
                            class="fa fa-map-marker"></i>
@@ -112,10 +112,12 @@
         {% endif %}
     </div>
 </div>
+{% include 'stick_suggest.html' %}
 {% include 'footer.html' %}
-<script src="https://code.jquery.com/jquery-4.4.1.slim.min.js"></script>
-<script>window.jQuery || document.write('<script src="js/jquery-slim.min.js"><\/script>')</script>
-<script src="js/bootstrap.bundle.min.js"></script>
+{#<script src="{% static "js/member.js" %}"></script>#}
+{#<script src="https://code.jquery.com/jquery-4.4.1.slim.min.js"></script>#}
+<script>window.jQuery || document.write('<script src="{% static "js/jquery-slim.min.js" %}"><\/script>')</script>
+<script src="{% static "js/bootstrap.bundle.min.js" %}"></script>
 </body>
 </html>
 

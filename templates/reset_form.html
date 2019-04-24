@@ -1,33 +1,22 @@
-
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-
 {% extends 'base.html' %}
-
 {% block content %}
-    <div id="content-container" class="container p-none">
-        <div class="lgn-container col-lg-8">
-            <form id="reset-form" method="post"
-                  action="">
-                 {% csrf_token %}
-                <table class="table">
-                    <tr>
-                        <td><label for="pass1">Địa chỉ email</label></td>
-                        <td><input id="pass1" name="pass1"
-                                   type="password" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td><label for="pass2">Địa chỉ email</label></td>
-                        <td><input id="pass2" name="pass2"
-                                   type="password" class="form-control"></td>
-                    </tr>
-                </table>
-
-                <input type="submit" value="Thay đổi"
-                       class="btn btn-primary pull-right" />
-                <input type="hidden" name="next" value="{{ next }}" />
-
+    <div class="wrapper fadeInDown">
+        <div id="formContent">
+            <div class="fadeIn first">
+                <img style="width:50px;height:50px;"
+                     src="http://hinhnendethuong.com/uploads/images/tong-hop-20-hinh-nen-kinh-dien-ve-songoku-cuc-dep-va-chat-1483783077-19.jpg"
+                     class="rounded-circle" id="icon" alt="User Icon"/>
+            </div>
+            <!-- Login Form -->
+            <form id="login-form" method="post" action="">
+                {% csrf_token %}
+                <input required pattern=".{1,50}"  title="Tối đa 50 ký tự" type="password" class="fadeIn second" id="pass1" name="pass1" placeholder="Mật khẩu mới">
+                <input required pattern=".{1,50}"  title="Tối đa 50 ký tự" type="password" class="fadeIn third" id="pass2" name="pass2" placeholder="Xác nhận mật khẩu">
+                <input type="hidden" name="next" value="{{ next }}"/>
+                {% if message %}
+                    <p style="color:red">Hai mật khẩu không khớp</p>
+                {% endif %}
+                 <input type="submit" class="fadeIn fourth" value="Thay đổi mật khẩu">
             </form>
         </div>
     </div>

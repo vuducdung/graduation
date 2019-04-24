@@ -10,6 +10,8 @@ from app.models import Accounts, Roles
 from admin.models import *
 from app.views import tran_word_search, get_categories, get_cuisines, get_districts
 from django import forms
+import json
+from decouple import config
 
 
 def admin_login(request):
@@ -32,8 +34,9 @@ def location(request):
 
     page = request.GET.get('page', 1)
 
-    str1 = """¹²³ÀÁẢẠÂẤẦẨẬẪÃÄÅÆàáảạâấầẩẫậãäåæĀāĂẮẰẲẴẶăắằẳẵặĄąÇçĆćĈĉĊċČčĎďĐđÈÉẸÊẾỀỄỆËèéẹêềếễệëĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨÌÍỈỊÎÏìíỉịîïĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłÑñŃńŅņŇňŉŊŋÒÓỎỌÔỐỒỔỖỘỐỒỔỖỘƠỚỜỞỠỢÕÖòóỏọôốồổỗộơớờỡợởõöŌōŎŏŐőŒœØøŔŕŖŗŘřßŚśŜŝŞşŠšŢţŤťŦŧÙÚỦỤƯỪỨỬỮỰÛÜùúủụûưứừửữựüŨũŪūŬŭŮůŰűŲųŴŵÝýÿŶŷŸŹźŻżŽžёЁ"""
-    str2 = """123AAAAAAAAAAAAAAaaaaaaaaaaaaaaAaAAAAAAaaaaaaAaCcCcCcCcCcDdDdEEEEEEEEEeeeeeeeeeEeEeEeEeEeGgGgGgGgHhHhIIIIIIIiiiiiiiIiIiIiIiIiJjKkkLlLlLlLlLlNnNnNnNnnNnOOOOOOOOOOOOOOOOOOOOOOOooooooooooooooooooOoOoOoEeOoRrRrRrSSsSsSsSsTtTtTtUUUUUUUUUUUUuuuuuuuuuuuuUuUuUuUuUuUuWwYyyYyYZzZzZzеЕ"""
+    str1 = config('str1')
+    str2 = config('str2')
+
     sql1 = "select admin_locations.* from admin_locations"
     sql2 = ' where True'
 
@@ -74,6 +77,12 @@ def location(request):
 
     if location_id:
         location = Locations.objects.filter(id=location_id).first()
+        is_active = request.GET.get('is_active', None)
+        if is_active:
+            location.is_active = True
+            require = RequireFromUser.objects.filter(location=location)
+            if len(require) > 0:
+                require[0].delete()
         nameLoc = request.GET.get('nameLoc', None)
         if nameLoc:
             location.name = nameLoc
@@ -218,10 +227,12 @@ def parking(request, id):
 def add_location(request):
     hourL = ["%02d" % x for x in range(24)]
     minuteL = ["%02d" % x for x in range(60)]
+
     categories = get_categories()
     cuisines = get_cuisines()
     services = Services.objects.all()
     districts = get_districts()
+
     id_max = Locations.objects.order_by('-id').first().id + 1
 
     nameLoc = request.GET.get('nameLoc', None)
@@ -237,16 +248,21 @@ def add_location(request):
         timeClose1 = request.GET.get('timeClose1', '00')
         timeClose2 = request.GET.get('timeClose2', '00')
         timeClose = timeClose1 + ':' + timeClose2
-        location.workTime24h = timeOpen + ' | ' + timeClose
+        location.workTime24h = timeOpen + ' - ' + timeClose
         description = request.GET.get('description', None)
         location.description = description
         latitude = request.GET.get('latitude', 0)
         location.latitude = latitude
         longitude = request.GET.get('longitude', 0)
         location.longitude = longitude
-        str1 = """¹²³ÀÁẢẠÂẤẦẨẬẪÃÄÅÆàáảạâấầẩẫậãäåæĀāĂẮẰẲẴẶăắằẳẵặĄąÇçĆćĈĉĊċČčĎďĐđÈÉẸÊẾỀỄỆËèéẹêềếễệëĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨÌÍỈỊÎÏìíỉịîïĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłÑñŃńŅņŇňŉŊŋÒÓỎỌÔỐỒỔỖỘỐỒỔỖỘƠỚỜỞỠỢÕÖòóỏọôốồổỗộơớờỡợởõöŌōŎŏŐőŒœØøŔŕŖŗŘřßŚśŜŝŞşŠšŢţŤťŦŧÙÚỦỤƯỪỨỬỮỰÛÜùúủụûưứừửữựüŨũŪūŬŭŮůŰűŲųŴŵÝýÿŶŷŸŹźŻżŽžёЁ"""
-        str2 = """123AAAAAAAAAAAAAAaaaaaaaaaaaaaaAaAAAAAAaaaaaaAaCcCcCcCcCcDdDdEEEEEEEEEeeeeeeeeeEeEeEeEeEeGgGgGgGgHhHhIIIIIIIiiiiiiiIiIiIiIiIiJjKkkLlLlLlLlLlNnNnNnNnnNnOOOOOOOOOOOOOOOOOOOOOOOooooooooooooooooooOoOoOoEeOoRrRrRrSSsSsSsSsTtTtTtUUUUUUUUUUUUuuuuuuuuuuuuUuUuUuUuUuUuWwYyyYyYZzZzZzеЕ"""
-        location.url = tran_word_search('-'.join(location.name.lower().split(' ')), str1, str2)
+
+        str1 = config('str1')
+        str2 = config('str2')
+        
+        location.url = tran_word_search(' '.join(location.name.lower().split(' ')), str1, str2).replace(' ', '-')
+        exits_location = Locations.objects.filter(url=location.url)
+        if len(exits_location) > 0:
+            return HttpResponse('Địa điểm đã tồn tại')
 
         category = request.GET.get('category', None)
         category = Categories.objects.get(id=category)
@@ -287,3 +303,22 @@ def add_location(request):
 
 def success(request):
     return HttpResponse('successfuly uploaded')
+
+
+def get_required_message(request):
+    if not request.user.is_authenticated or not request.user.role_id == 1:
+        return redirect('/admin/login/')
+
+    requires = RequireFromUser.objects.all()
+    # location_deactive = Locations.objects.filter(is_active=False)
+    messages = []
+    if len(requires) > 0:
+        for require in requires:
+            required_user = require.user
+            loc = require.location
+            m = dict(userId=required_user.id, user_avatar=required_user.avatar, username=required_user.name,
+                     loc_name=loc.name,
+                     loc_id=loc.id, require_name=require.name, count=len(requires))
+            messages.append(m)
+    messages = json.dumps(messages)
+    return HttpResponse(messages, content_type='application/json', )

@@ -6,9 +6,8 @@ var ready = $(document).ready(function () {
         }
     });
 
-
     $(".page-link").click(function () {
-        pageURL = window.location.href;
+        let pageURL = window.location.href;
         if ($(this).attr("value")) {
             if (pageURL.includes("&page")) {
 
@@ -18,7 +17,6 @@ var ready = $(document).ready(function () {
             window.location.replace(pageURL);
         }
     });
-
 
     function saveSearchForm() {
         let pageURL = window.location.href;
@@ -37,28 +35,33 @@ var ready = $(document).ready(function () {
     }
 
     saveSearchForm();
-    var input1 = document.getElementById("word-search");
+    let input1 = document.getElementById("word-search");
     input1.addEventListener("keyup", function (event) {
         if (event.keyCode === 13) {
             event.preventDefault();
             submitSearch();
         }
     });
-    var input2 = document.getElementById("cat-search");
+    let input2 = document.getElementById("cat-search");
     input2.addEventListener("keyup", function (event) {
         if (event.keyCode === 13) {
             event.preventDefault();
             submitSearch();
         }
     });
-    var input3 = document.getElementById("loc-search");
+    let input3 = document.getElementById("loc-search");
     input3.addEventListener("keyup", function (event) {
         if (event.keyCode === 13) {
             event.preventDefault();
             submitSearch();
         }
     });
-    var input4 = document.getElementById("cui-search");
+
+    $("#but-sub").click(function(){
+        submitSearch();
+    });
+
+    let input4 = document.getElementById("cui-search");
     input4.addEventListener("keyup", function (event) {
         if (event.keyCode === 13) {
             event.preventDefault();
@@ -91,10 +94,6 @@ var ready = $(document).ready(function () {
             pageURL += '&cui=' + cui;
         }
         window.location.href=pageURL;
-        // document.getElementById("word").innerHTML = word;
-        // document.getElementById("select-loc").innerHTML = loc;
-        // document.getElementById("select-cat").innerHTML = cat;
-        // document.getElementById("select-cui").innerHTML = cui;
     }
 
 

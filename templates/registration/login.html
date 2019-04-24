@@ -1,30 +1,23 @@
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-
 {% extends 'base.html' %}
 {% block title %}Login{% endblock %}
 
 <!-- templates/home.html -->
 
 {% block content %}
-    <div id="content-container" class="container p-none">
-        <div class="lgn-container col-lg-8">
-            <form id="login-form" method="post"
-                  action="">
-                {% csrf_token %}
-                <table class="table">
-                    <tr>
-                        <td><label for="id_username">Địa chỉ email</label></td>
-                        <td><input id="id_username" name="username"
-                                   type="text" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td><label for="id_password">Mật khẩu</label></td>
-                        <td><input id="id_password" name="password"
-                                   type="password" class="form-control"></td>
-                    </tr>
-                </table>
+    <div class="wrapper fadeInDown">
+        <div id="formContent">
+            <div class="fadeIn first">
+                <img style="width:50px;height:50px;"
+                     src="http://hinhnendethuong.com/uploads/images/tong-hop-20-hinh-nen-kinh-dien-ve-songoku-cuc-dep-va-chat-1483783077-19.jpg"
+                    class="rounded-circle" id="icon" alt="User Icon"/>
+            </div>
+            <!-- Login Form -->
+            <form id="login-form" method="post" action="">
+                 {% csrf_token %}
+                <input pattern=".{1,255}"  title="Tối đa 255 ký tự" required  type="text" class="fadeIn second" id="id_username" name="username" placeholder="Địa chỉ email">
+                <input pattern=".{1,255}"  title="Tối đa 255 ký tự" required type="password" class="fadeIn third" id="id_password" name="password" placeholder="password">
+                <input type="hidden" name="next" value="{{ next }}"/>
+                <input type="submit" class="fadeIn fourth" value="Đăng nhập">
                 {% if form.errors %}
                     <p class=" label label-danger">
                         Địa chỉ email hoặc mật khẩu không đúng.
@@ -32,13 +25,12 @@
                     </p>
                 {% endif %}
 
-                <input type="submit" value="Đăng nhập"
-                       class="btn btn-primary pull-right"/>
-                <input type="hidden" name="next" value="{{ next }}"/>
-                <div><p style="margin-top:10px; color:#4285f4">
-                    <a href="{% url 'resetRequire' %}">Quên mật khẩu ?</a></p></div>
-
             </form>
+            <!-- Remind Passowrd -->
+            <div id="formFooter">
+                <a class="underlineHover" href="{% url 'resetRequire' %}">Forgot Password?</a>
+            </div>
         </div>
     </div>
 {% endblock content %}
+

@@ -3,6 +3,13 @@
 {% load static %}
 {% include 'head.html' %}
 <body>
+{#<div class="icon-bar">#}
+{#  <a href="#" class="facebook">Gợi ý địa điểm</a>#}
+{#  <a href="#" class="twitter"><i class="fa fa-twitter"></i></a>#}
+{#  <a href="#" class="google"><i class="fa fa-google"></i></a>#}
+{#  <a href="#" class="linkedin"><i class="fa fa-linkedin"></i></a>#}
+{#  <a href="#" class="youtube"><i class="fa fa-youtube"></i></a>#}
+{#</div>#}
 {% include 'header.html' %}
 <div class="container-fluid">
     <div class="row">
@@ -29,29 +36,34 @@
         </div>
     </div>
 </div>
-{% include 'stick_suggest.html' %}
-<div class="result-page" style="margin-top:20px">
+
+<div class="result-page" style="">
     <div class="container">
         {% if locations %}
             <div style="margin-top:0px;margin-bottom:20px;" class="row">
-                <div class="thumbnail-list col-lg-3 col-md-4">{{ count }} kết quả tìm kiếm</div>
+                {% if suggest %}
+                    <div class="thumbnail-list col-lg-3 col-md-4">Gợi ý {{ count }} địa điểm cho bạn</div>
+                {% else %}
+                    <div class="thumbnail-list col-lg-3 col-md-4">{{ count }} kết quả tìm kiếm</div>
+                {% endif %}
+
             </div>
             {% for loc in locations %}
                 <div class="item-res">
                     <div class="row" style="">
                         <div class="thumbnail-list col-lg-3 col-md-4">
                             <a class="view-location" value="{{ loc.id }}|{{ user.id }}"
-                               href="/ha-noi/{{ loc.url }}/"><img src="{{ loc.avatar }}"
-                                                                  class="rounded"
-                                                                  alt="Cinque Terre" width="256.5"
-                                                                  height="180"></a>
+                               href="/ha-noi/{{ loc.url }}/?comment=True"><img src="{{ loc.avatar }}"
+                                                                               class="rounded"
+                                                                               alt="Cinque Terre" width="256.5"
+                                                                               height="180"></a>
                         </div>
                         <div class="col-lg-9 col-md-8">
                             <div class="container">
                                 <div class="row">
                                     <div class="col-lg-9 col-md-8">
                                         <h4><a class="view-location" value="{{ loc.id }}|{{ user.id }}"
-                                               href="/ha-noi/{{ loc.url }}/"
+                                               href="/ha-noi/{{ loc.url }}/?comment=True"
                                         >{{ loc.name }}</a></h4>
                                         <i style="color:#ffa800;" class="fa fa-star"></i> <i style="color:#ffa800;"
                                                                                              class="fa fa-star"></i> <i
@@ -131,7 +143,11 @@
     </div>
 
 </div>
+{% include 'stick_suggest.html' %}
 {% include 'footer.html' %}
 <script src="{% static "js/search.js" %}"></script>
+<script>window.jQuery || document.write('<script src="{% static "js/jquery-slim.min.js" %}"><\/script>')</script>
+<script src="{% static "js/bootstrap.bundle.min.js" %}"></script>
+
 </body>
 </html>

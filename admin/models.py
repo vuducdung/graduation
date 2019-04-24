@@ -114,6 +114,8 @@ class Locations(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    # created_by = models.IntegerField(null=True, default='1')
+
     menu = models.ManyToManyField(Menus, through='MenuLocation')
     parking = models.ManyToManyField(Parkings, through='ParkingLocation')
     service = models.ManyToManyField(Services, through='ServiceLocation')
@@ -129,7 +131,7 @@ class CommentLikeShare(models.Model):
     user = models.ForeignKey(Accounts, on_delete=models.CASCADE)
     location = models.ForeignKey(Locations, on_delete=models.CASCADE)
     type = models.ForeignKey(InteractiveTypes, on_delete=models.CASCADE)
-    content = models.TextField(max_length=255, null=True)
+    content = models.TextField(null=True)
     score = models.FloatField(null=True)
     evaluation = models.CharField(max_length=255, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -197,3 +199,15 @@ class CollectionLocation(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class User_Location(models.Model):
+    location = models.ForeignKey(Locations, on_delete=models.CASCADE)
+    user = models.ForeignKey(Accounts, on_delete=models.CASCADE)
+    rating = models.FloatField(null=True)
+
+
+class RequireFromUser(models.Model):
+    name = models.CharField(max_length=255, default='Thêm địa điểm')
+    user = models.ForeignKey(Accounts, on_delete=models.CASCADE)
+    location = models.ForeignKey(Locations, on_delete=models.CASCADE, null=True)

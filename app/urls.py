@@ -29,8 +29,13 @@ urlpatterns = [
     url(r'^location_suggest/$', views.location_suggest, name='location_suggest'),
     url(r'^location_to_collection/$', views.location_to_collection, name='location_to_collection'),
     url(r'^get_collection/$', views.get_collection, name='get_collection'),
+    url(r'^get_collections/$', views.get_collections, name='get_collections'),
     url(r'^locations_in_collection/$', views.locations_in_collection, name='locations_in_collection'),
+    url(r'^choice_collection/$', views.choice_collection, name='choice_collection'),
     url(r'^delete_location_in_collection/$', views.delete_location_in_collection, name='delete_location_in_collection'),
-    # url(r'^(?P<locationUrl>[0-9A-Za-z_\-/]+)/thuc-don/$', views.menu, name='menu'),
+    url(r'^create_location/$', views.create_location, name='create_location'),
+    url(r'^success/$', views.success, name='success'),
+
+
 
 ]

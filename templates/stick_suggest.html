@@ -1,22 +1,25 @@
-<div class="sticky" onclick="getLocation()"><i class="fa fa-utensils"></i>Gợi ý nào</div>
+<div class="sticky" onclick="getLocation()">Gợi ý <i class="fa fa-cutlery"></i></div>
 <script>
-    var x = document.getElementById("demo");
-
     function getLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition);
-            getSuggestLocation();
-        } else {
-            x.innerHTML = "Geolocation is not supported by this browser.";
-        }
+        navigator.geolocation.getCurrentPosition(
+            function (position) {
+                //do succes handling
+                window.open("https://maps.google.com/?q=" + position.coords.latitude +
+                    "," + position.coords.longitude)
+                alert('click')
+                let pageUrl = window.location.href.split('/')[0] + `/search/?suggest=True&lat=${position.coords.latitude}&long=${position.coords.longitude}`;
+                window.location.href = pageUrl
+            },
+            function errorCallback(error) {
+                //do error handling
+                alert('not click')
+                let pageUrl = window.location.href.split('/')[0] + '/search/?suggest=True';
+                window.location.href = pageUrl
+            },
+            {
+                maximumAge: Infinity,
+                timeout: 10000
+            }
+        );
     }
-
-    function showPosition(position) {
-        window.open("https://maps.google.com/?q=" + position.coords.latitude + "," + position.coords.longitude)
-    }
-    function getSuggestLocation(){
-        var pageUrl = window.location.href.split('/')[0]+'/search/?suggest=True';
-        window.location.href = pageUrl
-    }
-
 </script>

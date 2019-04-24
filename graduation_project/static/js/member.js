@@ -1,17 +1,16 @@
-$("#back").click(function () {
-    get_collection();
-});
+
 
 function get_collection() {
     $.get('/get_collection/', function (data) {
         let optionss = ""
         $.each(data, function () {
-            optionss += `<div onclick="change(${this.id},'${this.name}'),locations_in_collection(${this.id})" class="col-xs-3 col-sm-3 col-mm-3 col-lg-3 change">
+            optionss += `<div onclick="change(${this.id},'${this.name}'),locations_in_collection(${this.id})" 
+class="col-xs-3 col-sm-3 col-mm-3 col-lg-3 change suggest-collection">
                                     <a href="#"><img src="https://images.foody.vn/default/s480x300/no-image.png" alt=""
                                          style="width: 100%"
                                          class="img-thumbnail img-fluid"></a>
                                     <div class="caption text-center">
-                                        <a href="#">` + this.name + `</a>
+                                        <div class="crop"> ${this.name}</div>
                                     </div>
                                 </div>`
         });
@@ -59,7 +58,7 @@ function location_to_collection(locationId, collectionId) {
     $(".close").click();
 }
 
-$("#name-location").keyup(function () {
+function suggest_location () {
     let name = $(this).val();
     let collection_id = $(".addLocation").attr('value');
     $.get('/location_suggest/', {location_name: name}, function (data) {
@@ -74,13 +73,15 @@ $("#name-location").keyup(function () {
         });
         $("#location-suggest").html(optionss);
     });
-});
+}
 
 
 function change(col_id, col_name) {
     let collec = '';
     if (col_name != 'Yêu thích') {
-        let name_html = `<div class="col-xs-3 col-sm-3 col-mm-3 col-lg-3" >` + col_name + `</div>`
+        let name_html = `<div class="col-xs-3 col-sm-3 col-mm-3 col-lg-3" > 
+<button type="button" 
+ class="btn btn-outline-warning crop">${col_name}</button></div>`
         collec += `
 <div class="container"><div class="row">` + name_html + `
   <div class="col-xs-3 col-sm-3 col-mm-3 col-lg-3">
@@ -90,19 +91,19 @@ function change(col_id, col_name) {
   onclick="deleteColl(${col_id},'${col_name}')"
   class="btn btn-outline-danger">Xóa bộ sưu tập</button></div>
   </div>
-  <div class="row"><div id="location-list"></div></div>
+  <div class="row" style="margin-top: 20px;"><div id="location-list"></div></div>
 </div>
 `
         $("#cat").html(collec)
     } else {
-        let name_html = `<div class="col-xs-3 col-sm-3 col-mm-3 col-lg-3" >` + col_name + `</div>`
+        let name_html = `<div class="col-xs-3 col-sm-3 col-mm-3 col-lg-3" > <button type="button" class="btn btn-outline-warning">${col_name}</button></div>`
         collec += `
 <div class="container"><div class="row">` + name_html + `
   <div class="col-xs-3 col-sm-3 col-mm-3 col-lg-3">
   <button type="button" data-toggle="modal" data-target="#addColl" 
   class="btn btn-outline-warning">Thêm địa điểm</button></div>
   <div class="col-xs-3 col-sm-3 col-mm-3 col-lg-3"></div>
-  <div id="location-list"></div>
+  <div id="location-list" style="margin-top: 20px;"></div>
 </div></div>
 `
         $("#cat").html(collec)
@@ -110,11 +111,12 @@ function change(col_id, col_name) {
 }
 
 
-$("#submit-collection").click(function () {
+function create_collection() {
     if ($("#name-col").val() == '') {
         alert('Hãy nhập tên bộ sưu tập');
         return false;
     }
+    alert($('form#collection-form').serialize());
     $.get('/collection_create/', $('form#collection-form').serialize(), function (data) {
 
         if (data == 'None') {
@@ -123,19 +125,10 @@ $("#submit-collection").click(function () {
             return false;
         }
         // alert(data )
-        let optionss = ""
-        $.each(data, function () {
-            optionss += `<div onclick="change(${this.id},'${this.name}');locations_in_collection(${this.id})" class="col-xs-3 col-sm-3 col-mm-3 col-lg-3 change">
-                                    <a href="#"><img src="https://images.foody.vn/default/s480x300/no-image.png" alt=""
-                                         style="width: 100%"
-                                         class="img-thumbnail img-fluid"></a>
-                                    <div class="caption text-center">
-                                        <a href="#">` + this.name + `</a>
-                                    </div>
-                                </div>`
-        });
-        $("#cat").html(optionss);
+        get_collection();
+
+        $('form#collection-form')[0].reset();
         $("#close").click();
     });
 
-});
+}

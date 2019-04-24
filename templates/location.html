@@ -7,14 +7,14 @@
     {% include 'header.html' %}
 </div>
 {% include 'search_bar.html' %}
-<div style="margin-top:20px; " class="container">
-    <div class="row">
+<div style="" class="container">
+    <div class="row" style="padding-top:20px;">
         <div class="thumbnail-list col-lg-7 col-xs-7 col-sm-7 col-md-7">
             <img style="border-radius: 10px;" src="{{ location.avatar }}" alt="">
         </div>
-        <div class="col-lg-5 col-md-5">
+        <div class="col-lg-5 col-md-5" style="padding-top:20px;">
             <div>
-                <span class="float-left" style="color: #03ae03;margin-right:5px;" class="main-info-title-contracted">
+                <span style="color: #03ae03;margin-right:5px;" class="float-left main-info-title-contracted">
                     <span class="fa fa-check-circle"></span>
                 </span>
                 <h4>{{ location.name }}</h4>
@@ -96,11 +96,37 @@
             <script async defer crossorigin="anonymous"
                     src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v3.2&appId=315330665943671&autoLogAppEvents=1">
             </script>
-            <button type="button" class="btn btn-primary">Thêm vào bộ sưu tập</button>
+            <button type="button" onclick="get_collections({{ location.id }});" class="btn btn-primary"
+                    data-toggle="modal"
+                    data-target="#collectionModal">Thêm vào bộ sưu tập
+            </button>
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
                 Bình luận
             </button>
             {% if user.is_authenticated %}
+                <div class="modal fade" id="collectionModal">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                                <h5 class="modal-title">Chọn bộ sưu tập</h5>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+
+                            <!-- Modal body -->
+                            <div class="modal-body">
+                                <div class="item-collection"></div>
+                            </div>
+
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
                 <div class="modal" id="myModal">
                     <div class="modal-dialog" style="max-width: 900px;">
                         <div class="modal-content">
@@ -182,9 +208,10 @@
                                             </div>
                                             <div class="col-lg-6 col-md-6 ">
                                                 <div class="slidecontainer">
-                                                    <input style="background:orange;" type="range" min="0" max="10"
-                                                           value="0" class="slider"
-                                                           id="myRange5" name="capacity" required>
+                                                    <input
+                                                            style="background:orange;" type="range" min="0" max="10"
+                                                            value="0" class="slider"
+                                                            id="myRange5" name="capacity" required>
                                                 </div>
                                             </div>
                                             <div class="col-lg-2 col-md-2">
@@ -196,12 +223,17 @@
                                         </div>
                                     </div>
                                     <input type="text" class="form-control" placeholder="Tiêu đề"
-                                           name="title" maxlength="255" required>
+                                           name="title"
+                                           pattern=".{1,255}" title="Tối đa 255 ký tự"
+                                           required>
 
-                                    <textarea class="form-control" rows="5" id="comment" name="content"
-                                              required></textarea>
+                                    <textarea
+                                            class="form-control" rows="5" id="comment" name="content"
+                                            required>
+                                    </textarea>
                                     <input type="hidden" name="userId" value="{{ user.id }}"/>
-                                    <button type="submit" class="btn btn-primary" id="submit-comment">Hoàn tất
+                                    <button type="submit" class="btn btn-primary" id="submit-comment">
+                                        Hoàn tất
                                     </button>
 
                                 </div>
@@ -233,14 +265,28 @@
                         </div>
                     </div>
                 </div>
+                <div class="modal" id="collectionModal">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                Hãy đăng nhập để thực hiện chức năng này
+                            </div>
+                        </div>
+                    </div>
+                </div>
             {% endif %}
             <!-- The Modal -->
             <button type="button" {% if user.is_authenticated %} id="create-like" {% endif %}
                     value="{{ user.id }}|{{ location.id }}" data-toggle="modal"
                     data-target="#contentModal"
-                    class="btn btn-primary"><i id="like" {% if like_loc %}class="fa fa-check" {% else %}
-                                               class="fa fa-thumbs-up"{% endif %}>Like<span id="like-count"
-                                                                                            class="badge badge-light">{{ location.totalFavourite }}</span></i>
+                    class="btn btn-primary">
+                <i id="like" {% if like_loc %}class="fa fa-check" {% else %}
+                   class="fa fa-thumbs-up"{% endif %}>
+                    Like
+                    <span id="like-count"
+                          class="badge badge-light">{{ location.totalFavourite }}
+                    </span>
+                </i>
             </button>
 
 
@@ -265,9 +311,10 @@
                                     <div class="container">
                                         {% for dish in menu.dishes %}
                                             <div class="row" style="margin-top:2px;">
-                                                <div class="col-lg-4 col-md-4"><img style="width:60px;height:60px;"
-                                                                                    src="{{ dish.ImageUrl }}"
-                                                                                    alt="">
+                                                <div class="col-lg-4 col-md-4">
+                                                    <img style="width:60px;height:60px;"
+                                                         src="{{ dish.ImageUrl }}"
+                                                         alt="">
                                                 </div>
                                                 <div class="col-lg-4 col-md-4">{{ dish.Name }}</div>
                                                 <div class="col-lg-4 col-md-4">{{ dish.Price }}</div>
@@ -288,8 +335,9 @@
                             {% for parking in parkings.items %}
                                 <div class="col-lg-12 col-md-12" style="margin-top:20px">
                                     <div class="row" style="margin-top:2px;">
-                                        <div class="col-lg-4 col-md-4"><img style="width:240px;height:240px;"
-                                                                            src="{{ parking.map }}" alt="">
+                                        <div class="col-lg-4 col-md-4">
+                                            <img style="width:240px;height:240px;"
+                                                 src="{{ parking.map }}" alt="">
                                         </div>
 
                                         <div class="col-lg-8 col-md-8">
@@ -297,8 +345,10 @@
                                             <div>{{ parking.address }}</div>
 
                                             <div>Giờ mở cửa: {{ parking.startTime24h }} - {{ parking.endTime24h }}</div>
-                                            <div>Sức chứa: {{ parking.capacity }} <i class="fa fa-motorcycle"></i>
-                                                - {{ parking.capacityCar }} <i class="fa fa-car"></i>
+                                            <div>Sức chứa: {{ parking.capacity }}
+                                                <i class="fa fa-motorcycle"></i>
+                                                - {{ parking.capacityCar }}
+                                                <i class="fa fa-car"></i>
                                             </div>
                                         </div>
                                     </div>
@@ -342,12 +392,13 @@
                                     </div>
                                     <div class="row" style="margin-top:2px; background:#fff">
                                         <div class="col-lg-12 col-md-12">
-                                            <b style="margin:10px 0px 10px 0px">{{ comment.title }}</b>
+                                            <div class="crop"
+                                                 style="font-weight:bold;margin:10px 0px 10px 0px">{{ comment.title }}</div>
                                         </div>
                                     </div>
                                     <div class="row" style="margin-top:2px; background:#fff">
                                         <div class="col-lg-12 col-md-12">
-                                            <p style="word-wrap: break-word;">{{ comment.content }}</p>
+                                            <div style="word-wrap: break-word;">{{ comment.content }}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -365,41 +416,57 @@
                                     {% if comments.items.has_previous %}
                                         <li class="page-item"><a class="page-link" value="1">First</a>
                                         </li>
-                                        <li class="page-item"><a class="page-link"
-                                                                 value="{{ comments.items.previous_page_number }}">Previous</a>
+                                        <li class="page-item">
+                                            <a class="page-link"
+                                               value="{{ comments.items.previous_page_number }}">
+                                                Previous
+                                            </a>
                                         </li>
                                     {% else %}
-                                        <li class="page-item disabled"><a class="page-link" href="">Previous</a>
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="">Previous</a>
                                         </li>
                                     {% endif %}
 
                                     {% if comments.items.number|add:'-4' > 1 %}
-                                        <li class="page-item"><a class="page-link"
-                                                                 value="{{ comments.items.number|add:'-5' }}">&hellip;</a>
+                                        <li class="page-item">
+                                            <a class="page-link"
+                                               value="{{ comments.items.number|add:'-5' }}">&hellip;
+                                            </a>
                                         </li>
                                     {% endif %}
                                     {% for i in comments.items.paginator.page_range %}
                                         {% if comments.items.number == i %}
-                                            <li class="page-item active"><a class="page-link" href="">{{ i }}</a></li>
+                                            <li class="page-item active">
+                                                <a class="page-link" href="">{{ i }}</a>
+                                            </li>
                                         {% elif i > comments.items.number|add:'-5' and i < comments.items.number|add:'5' %}
-                                            <li class="page-item"><a class="page-link" value="{{ i }}">{{ i }}</a>
+                                            <li class="page-item">
+                                                <a class="page-link" value="{{ i }}">{{ i }}
+                                                </a>
                                             </li>
                                         {% endif %}
                                     {% endfor %}
 
                                     {% if comments.items.paginator.num_pages > comments.items.number|add:'4' %}
-                                        <li class="page-item"><a class="page-link"
-                                                                 value="{{ comments.items.number|add:'5' }}">&hellip;</a>
+                                        <li class="page-item">
+                                            <a class="page-link"
+                                               value="{{ comments.items.number|add:'5' }}">&hellip;</a>
                                         </li>
                                     {% endif %}
                                     {% if comments.items.has_next %}
-                                        <li class="page-item"><a class="page-link"
-                                                                 value="{{ comments.items.next_page_number }}">Next</a>
+                                        <li class="page-item">
+                                            <a class="page-link"
+                                               value="{{ comments.items.next_page_number }}">Next</a>
                                         </li>
-                                        <li class="page-item"><a class="page-link"
-                                                                 value="{{ comments.items.paginator.num_pages }}">Last</a>
+                                        <li class="page-item">
+                                            <a class="page-link"
+                                               value="{{ comments.items.paginator.num_pages }}">
+                                                Last</a>
                                             {% else %}
-                                        <li class="page-item disabled"><a class="page-link" href="">Next</a></li>
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="">
+                                                Next</a></li>
                                     {% endif %}
                                     <li class="page-item disabled">
                                         <a class="page-link">Page {{ comments.items.number }}

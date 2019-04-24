@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'^user/$', views.user, name='user'),
     url(r'^user/(?P<id>[0-9A-Za-z_\-]+)/$', views.user, name='user'),
     path('success', views.success, name='success'),
+    url(r'^get_required_message/$', views.get_required_message, name='get_required_message'),
 ]
 
 if settings.DEBUG:
