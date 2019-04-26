@@ -1,8 +1,13 @@
-
-
-
 {% extends 'base.html' %}
-
+{% load static %}
+{% block front %}
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link href="{% static "css/login.css" %}" rel="stylesheet">
+    <meta charset="utf-8">
+{% endblock %}
 {% block content %}
     <div class="wrapper fadeInDown">
         <div id="formContent">
@@ -13,14 +18,18 @@
             </div>
             <!-- Login Form -->
             <form id="reset-form" method="get" action="">
-                <input pattern=".{1,255}"  title="Tối đa 255 ký tự" required type="email" class="fadeIn second" id="email" name="email" placeholder="Địa chỉ email">
-                <input  type="hidden" name="next" value="{{ next }}"/>
+                <input pattern=".{1,255}" title="Tối đa 255 ký tự" required type="email" class="fadeIn second"
+                       id="email" name="email" placeholder="Địa chỉ email">
+                <input type="hidden" name="next" value="{{ next }}"/>
                 <input type="submit" class="fadeIn fourth" value="Thay đổi mật khẩu">
                 {% if form.errors %}
                     <p class=" label label-danger">
                         Địa chỉ email hoặc mật khẩu không đúng.
                         Xin hãy thử lại.
                     </p>
+                {% endif %}
+                {% if message %}
+                    <p>{{ message }}</p>
                 {% endif %}
             </form>
             <!-- Remind Passowrd -->

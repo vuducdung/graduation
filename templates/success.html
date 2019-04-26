@@ -1,22 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 {% load static %}
-{% include 'head.html' %}
-<body>
-<div class="container-fluid background-image">
-    {% include 'header.html' %}
-</div>
+{% block front %}
+    {% include 'head.html' %}
+{% endblock %}
+{% block title %}Success{% endblock %}
 
-
-<div style="margin-top:20px; " class="container">
-    <div class="row">
-        <div>Bạn đã tạo địa điểm thành công xin chờ Admin duyệt</div>
+<!-- templates/home.html -->
+{% block content %}
+    <div class="container-fluid background-image">
+        {% include 'header.html' %}
     </div>
-</div>
-<script src="{% static "js/member.js" %}"></script>
-<script>window.jQuery || document.write('<script src="{% static "js/jquery-slim.min.js" %}"><\/script>')</script>
-<script src="{% static "js/bootstrap.bundle.min.js" %}"></script>
-</body>
-{% include 'footer.html' %}
-</html>
+    <div style="margin-top:20px; " class="container">
+        <div class="row">
+            <div>Bạn đã tạo địa điểm thành công xin chờ Admin duyệt</div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block dynamic %}
+    <script src="{% static "js/member.js" %}"></script>
+    <script>window.jQuery || document.write('<script src="{% static "js/jquery-slim.min.js" %}"><\/script>')</script>
+    <script src="{% static "js/bootstrap.bundle.min.js" %}"></script>
+    {% include 'footer.html' %}
+{% endblock %}
+
 

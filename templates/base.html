@@ -2,19 +2,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-    {% load static %}
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <link href="{% static "css/login.css" %}" rel="stylesheet">
-    <meta charset="utf-8">
-    <title>{% block title %}Login{% endblock %}</title>
+    {% block front %}
+    {% endblock %}
+    <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
 <main>
     {% block content %}
     {% endblock %}
 </main>
+{% block dynamic %}
+{% endblock %}
 </body>
 </html>

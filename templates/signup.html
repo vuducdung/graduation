@@ -1,4 +1,13 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block front %}
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link href="{% static "css/login.css" %}" rel="stylesheet">
+    <meta charset="utf-8">
+{% endblock %}
 {% block title %}Đăng ký{% endblock %}
 {% block content %}
     <div class="wrapper fadeInDown">
@@ -11,20 +20,18 @@
             <!-- Login Form -->
             <form id="login-form" method="post" action="">
                 {% csrf_token %}
-                <input required type="text" class="fadeIn second" id="id_name" name="name"
+                <input pattern=".{1,30}" title="Tối đa 30 ký tự" required type="text" class="fadeIn second" id="id_name" name="name"
                        placeholder="Tên người dùng">
                 <input required type="email" class="fadeIn third" id="id_email" name="email"
                        placeholder="Địa chỉ email">
-                <input required type="password" class="fadeIn third" id="id_password1" name="password1"
+                <input pattern=".{8,20}" title="8-20 ký tự" required type="password" class="fadeIn third" id="id_password1" name="password1"
                        placeholder="Mật khẩu">
-                <input required type="password" class="fadeIn third" id="id_password2" name="password2"
+                <input pattern=".{8,20}" title="8-20 ký tự" required type="password" class="fadeIn third" id="id_password2" name="password2"
                        placeholder="Mật khẩu xác thực">
                 <input type="hidden" name="next" value="{{ next }}"/>
                 <input type="submit" class="fadeIn fourth" value="Đăng ký">
                 {% if form.errors %}
-                    <p class=" label label-danger">
                         {{ form.errors }}
-                    </p>
                 {% endif %}
             </form>
         </div>

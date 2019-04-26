@@ -1,4 +1,13 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block front %}
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link href="{% static "css/login.css" %}" rel="stylesheet">
+    <meta charset="utf-8">
+{% endblock %}
 {% block title %}Login{% endblock %}
 
 <!-- templates/home.html -->
@@ -9,13 +18,15 @@
             <div class="fadeIn first">
                 <img style="width:50px;height:50px;"
                      src="http://hinhnendethuong.com/uploads/images/tong-hop-20-hinh-nen-kinh-dien-ve-songoku-cuc-dep-va-chat-1483783077-19.jpg"
-                    class="rounded-circle" id="icon" alt="User Icon"/>
+                     class="rounded-circle" id="icon" alt="User Icon"/>
             </div>
             <!-- Login Form -->
             <form id="login-form" method="post" action="">
-                 {% csrf_token %}
-                <input pattern=".{1,255}"  title="Tối đa 255 ký tự" required  type="text" class="fadeIn second" id="id_username" name="username" placeholder="Địa chỉ email">
-                <input pattern=".{1,255}"  title="Tối đa 255 ký tự" required type="password" class="fadeIn third" id="id_password" name="password" placeholder="password">
+                {% csrf_token %}
+                <input pattern=".{1,255}" title="Tối đa 255 ký tự" required type="text" class="fadeIn second"
+                       id="id_username" name="username" placeholder="Địa chỉ email">
+                <input pattern=".{1,255}" title="Tối đa 255 ký tự" required type="password" class="fadeIn third"
+                       id="id_password" name="password" placeholder="password">
                 <input type="hidden" name="next" value="{{ next }}"/>
                 <input type="submit" class="fadeIn fourth" value="Đăng nhập">
                 {% if form.errors %}

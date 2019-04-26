@@ -68,20 +68,24 @@ def resetRequire(request):
         email = request.GET.get('email', None)
         if email:
             User = get_user_model()
-            user = User.objects.get(email=email)
-            current_site = get_current_site(request)
-            mail_subject = 'Reset your account.'
-            message = render_to_string('reset_email.html', {
-                'user': user,
-                'domain': current_site.domain,
-                'id': user.id,
-                'token': account_reset_token.make_token(user),
-            })
-            emails = EmailMessage(
-                mail_subject, message, to=[email]
-            )
-            emails.send()
-            return HttpResponse('Please confirm your email address to complete the reset password')
+            user = User.objects.filter(email=email)
+            if len(user) > 0:
+                user = user[0]
+                current_site = get_current_site(request)
+                mail_subject = 'Reset your account.'
+                message = render_to_string('reset_email.html', {
+                    'user': user,
+                    'domain': current_site.domain,
+                    'id': user.id,
+                    'token': account_reset_token.make_token(user),
+                })
+                emails = EmailMessage(
+                    mail_subject, message, to=[email]
+                )
+                emails.send()
+                return HttpResponse('Please confirm your email address to complete the reset password')
+            else:
+                return render(request, 'registration/resetRequire.html', {'message': 'Account not found'})
     return render(request, 'registration/resetRequire.html')
 
 

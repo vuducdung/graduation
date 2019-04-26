@@ -20,7 +20,7 @@ def admin_login(request):
         password = request.POST.get('password')
         user = authenticate(username=username, password=password)
 
-        if user.is_active:
+        if user and user.is_active:
             # Redirecting to the required login according to user status.
             if user.role_id == 1:
                 login(request, user)
