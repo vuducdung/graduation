@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block front %}
+    {% include 'head.html' %}
+{% endblock %}
+{% block title %}Member{% endblock %}
+
+<!-- templates/home.html -->
+
+{% block content %}
+    <div class="container-fluid background-image">
+        {% include 'header.html' %}
+    </div>
+    <div style="margin-top:20px; " class="container">
+        {% if acc %}
+            <div class="row">
+
+                <div class="col-3">
+                    <div class="list-group" id="list-tab" role="tablist">
+                        <a class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list"
+                           href="#list-home" role="tab" aria-controls="home">
+                            <img class="rounded-circle" style="width: 50px;height:50px;" src="{{ acc.avatar }}" alt="">
+                            {{ acc.name }}
+                        </a>
+                        <a class="list-group-item list-group-item-action" id="list-activities-list" data-toggle="list"
+                           href="#list-activities" role="tab" aria-controls="activities">Hoạt động</a>
+                        <a class="list-group-item list-group-item-action" id="list-collections-list" data-toggle="list"
+                           href="#list-collections" role="tab" aria-controls="collections">Bộ sưu tập địa điểm</a>
+                        <a class="list-group-item list-group-item-action" id="list-info-list" data-toggle="list"
+                           href="#list-info" role="tab" aria-controls="info">Thông tin cơ bản</a>
+                        <a class="list-group-item list-group-item-action" id="list-avatar-list" data-toggle="list"
+                           href="#list-avatar" role="tab" aria-controls="avatar">Cập nhật ảnh đại diện</a>
+                        <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list"
+                           href="#list-settings" role="tab" aria-controls="settings">Đăng xuất</a>
+                    </div>
+                </div>
+
+
+                <div class="col-8">
+                    <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-pane fade" id="list-activities" role="tabpanel"
+                             aria-labelledby="list-activities-list">
+                            {#                    {% if comments %}#}
+                            <div class="row item-res">
+                                {% if comments %}
+                                    {% for comment in comments %}
+                                        <div class="col-lg-9 col-md-9" style="margin-top:20px">
+                                            <div class="row" style="margin-top:2px; background:#fff">
+                                                <div class="col-lg-8 col-md-8">
+                                                    <img class="float-left rounded-circle"
+                                                         style="width:40px;height:40px;margin:5px;"
+                                                         src="{{ comment.user.avatar }}" alt="">
+                                                    <h5>{{ comment.user.name }}</h5>
+                                                    <small>{{ comment.created_at }}</small>
+                                                </div>
+                                                <div class="col-lg-4 col-md-4">
+                                                    <div class="row justify-content-end">
+                                                        <div class="circle">{{ comment.score }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" style="margin-top:2px; background:#fff">
+                                                <div class="col-lg-12 col-md-12">
+                                                    <b style="margin:10px 0px 10px 0px">{{ comment.title }}</b>
+                                                </div>
+                                            </div>
+                                            <div class="row" style="margin-top:2px; background:#fff">
+                                                <div class="col-lg-12 col-md-12">
+                                                    <p style="word-wrap: break-word;">{{ comment.content }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    Chưa có bình luận
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="list-collections" role="tabpanel"
+                             aria-labelledby="list-collectioins-list">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-1">
+                                        <a href="#"><i onclick="get_collection();" style="font-size: 20px;"
+                                                       class="fa fa-arrow-left float-left"></i></a>
+                                    </div>
+                                    <div class="col-md-3">
+
+                                        <div class="btn-group ">
+
+                                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                    data-target="#createCol">
+                                                Tạo bộ sưu tập
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal fade" id="addColl">
+                                <div class="modal-dialog modal-sm">
+                                    <div class="modal-content" style="width: 600px;height:600px;">
+
+                                        <!-- Modal Header -->
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">Thêm địa điểm</h4>
+                                            <button type="button" class="close" data-dismiss="modal">&times;
+                                            </button>
+                                        </div>
+
+                                        <!-- Modal body -->
+                                        <form id="add-location" method="get">
+                                            <div class="modal-body">
+                                                <input id="name-location" onkeyup="suggest_location();" type="text"
+                                                       class="form-control"
+                                                       placeholder="Tên địa điểm"
+                                                       name="name" maxlength="255" required>
+                                                <div id="location-suggest"></div>
+
+                                            </div>
+                                        </form>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="container" style="margin-top:20px">
+                                <div class="row" id="cat">
+                                    {% for collection in collections %}
+                                        <div onclick="change({{ collection.id }}, '{{ collection.name }}');locations_in_collection({{ collection.id }})"
+                                             class="col-xs-3 col-sm-3 col-mm-3 col-lg-3 change suggest-collection">
+                                            <a href="#"><img src="https://images.foody.vn/default/s480x300/no-image.png"
+                                                             alt=""
+                                                             style="width: 100%"
+                                                             class="img-thumbnail img-fluid"></a>
+                                            <div class="caption text-center">
+                                                <div class="crop">{{ collection.name }}</div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="list-info" role="tabpanel" aria-labelledby="list-settings-info">
+                            <h4 style="margin-bottom:15px;">Thông tin tài khoản</h4>
+                            <table class="table">
+                                <tbody>
+                                <form id="user-info" method="post" action="">
+                                    {% csrf_token %}
+                                    <tr>
+                                        <td>Tên tài khoản</td>
+                                        <td><input name="name" type="text" class="form-control"
+                                                   placeholder="{{ acc.name }}" required maxlength="255">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Email</td>
+                                        <td>
+                                            <div>{{ acc.email }}</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input id="show-button-update" type="submit" value="Lưu thay đổi"
+                                                   class="btn btn-primary pull-right"/>
+                                        </td>
+                                    </tr>
+                                </form>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="list-avatar" role="tabpanel" aria-labelledby="list-avatar-list">
+                            <div>Chưa cập nhật...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div>Không thể xem trang cá nhân của người này</div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block dynamic %}
+    {% include 'footer.html' %}
+    <script src="{% static "js/member.js" %}"></script>
+    <script>window.jQuery || document.write('<script src="{% static "js/jquery-slim.min.js" %}"><\/script>')</script>
+    <script src="{% static "js/bootstrap.bundle.min.js" %}"></script>
+{% endblock %}

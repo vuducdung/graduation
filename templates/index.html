@@ -1,171 +1,134 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 {% load static %}
-{% include 'head.html' %}
-<body>
-<div class="container-fluid background-image">
-    {% include 'header.html' %}
-    <nav class="nav-scroller">
-        <div class="container">
-            <div class="row">
-                <li class="list-nav"><a>Trang chủ</a></li>
-                <li class="list-nav"><a>Giới thiệu</a></li>
-                <li class="list-nav"><a>Địa điểm</a></li>
-                <li class="list-nav"><a>Nổi bật</a></li>
-            </div>
-        </div>
+{% block front %}
+    {% include 'head.html' %}
+{% endblock %}
+{% block title %}Home{% endblock %}
 
-    </nav>
+<!-- templates/home.html -->
+
+{% block content %}
+
+{#    <body style="margin-top:-100px;">#}
+{#    {% include 'stick_suggest.html' %}#}
+    <div class="container-fluid background-image">
+        {% include 'header.html' %}
+{#        {% include 'stick_suggest.html' %}#}
 
 
-    <section class="showcase my-custom-scrollbar my-custom-scrollbar-primary">
-        <div class="container">
-            <div class="row">
-                <div class="form" method="get"></div>
-                <div class="floating-main">
-                    <h1>Tim dia diem an uong cua ban</h1>
-                    <div id="word-search" class="search-box">
-                        <i style="margin-left: -30px;color:#9ba2a9;margin-right: 10px;font-size:21px"
-                           class="fa fa-map-marker"></i>
-                        <input id="word" class="box" type="text" placeholder="Tim kiem dia diem, thanh pho mon an"
-                               aria-label="Search">
+        {#    <nav class="nav-scroller">#}
+        {#        <div class="container">#}
+        {#            <div class="row">#}
+        {#                <li class="list-nav"><a>Trang chủ</a></li>#}
+        {#                <li class="list-nav"><a>Giới thiệu</a></li>#}
+        {#                <li class="list-nav"><a>Địa điểm</a></li>#}
+        {#                <li class="list-nav"><a>Nổi bật</a></li>#}
+        {#            </div>#}
+        {#        </div>#}
+        {#    </nav>#}
 
-                    </div>
-
-                    <div id='loc-search' class="form-group">
-                        <select id="select-loc" style="height:50px;border: 0;" class="form-control"
-                                id="exampleFormControlSelect1">
-                            <option value="" selected="selected">Chọn khu vực...</option>
-                            {% for dis in districts %}
-                                <option value="{{ dis.id }}">{{ dis.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div id='cat-search' class="form-group">
-                        <select id="select-cat" style="height:50px;border: 0;" class="form-control"
-                                id="exampleFormControlSelect1">
-                            <option value="">Loại nhà hàng...</option>
-                            {% for cat in categories %}
-                                <option value="{{ cat.id }}">{{ cat.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div id='cui-search' class="form-group">
-                        <select id="select-cui" style="height:50px;border: 0;" class="form-control"
-                                id="exampleFormControlSelect1">
-                            <option value="" selected="selected">Loại ẩm thực...</option>
-                            {% for cui in cuisines %}
-                                <option value="{{ cui.id }}">{{ cui.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <input id="but-sub" type="submit" value="Lets go!"
-                           class="btn btn-primary pull-right"/>
-                    <input type="hidden" name="next" value="{{ next }}"/>
-
-                </div>
-            </div>
-        </div>
-    </section>
-</div>
-<br>
-
-<div class="feedback">
-    <div class="container">
-        {#        <div class="col-xs-12 col-sm-12 col-mm-12 col-lg-12">#}
-        <h2>Địa Điểm Nổi Bật</h2>
-        {% if locations %}
-            <div class="row">
-                {% for location in locations|slice:"0:4" %}
-                    <div class="col-xs-3 col-sm-3 col-mm-3 col-lg-3">
-                        {#                            <div class="thumbnail">#}
-                        <img src="{{ location.avatar }}" alt="" style="width: 100% \9" class="img-thumbnail img-fluid">
-                        <div class="caption text-center">
-                            <a target="_blank" href=" ha-noi/{{ location.url }}">{{ location.name }}</a>
+        <section class="showcase my-custom-scrollbar my-custom-scrollbar-primary">
+            <div class="container" style="margin-top:120px;">
+                <div class="row">
+                    <div class="form" method="get"></div>
+                    <div class="floating-main">
+                        <h1>Tìm địa điểm ăn uống của bạn</h1>
+                        <div id="word-search" class="search-box">
+                            <i style="margin-left: -30px;color:#9ba2a9;margin-right: 10px;font-size:21px"
+                               class="fa fa-map-marker"></i>
+                            <input id="word" class="box" type="text" placeholder="Tim kiem dia diem, thanh pho mon an"
+                                   aria-label="Search">
 
                         </div>
-                    </div>
-                {% endfor %}
-            </div>
-            <div class="row">
-                {% for location in locations|slice:"4:8" %}
-                    <div class="col-xs-3 col-sm-3 col-mm-3 col-lg-3">
-                        {#                            <div class="thumbnail">#}
-                        <img src="{{ location.avatar }}" alt="" style="width: 100% \9" class="img-thumbnail img-fluid">
-                        <div class="caption text-center">
-                            <a target="_blank" href=" ha-noi/{{ location.url }}">{{ location.name }}</a>
 
+                        <div id='loc-search' class="form-group">
+                            <select id="select-loc" style="height:50px;border: 0;" class="form-control"
+                                    id="exampleFormControlSelect1">
+                                <option value="" selected="selected">Chọn khu vực...</option>
+                                {% for dis in districts %}
+                                    <option value="{{ dis.id }}">{{ dis.name }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
-                    </div>
-                {% endfor %}
-            </div>
-            <div class="row">
-                {% for location in locations|slice:"8:12" %}
-                    <div class="col-xs-3 col-sm-3 col-mm-3 col-lg-3">
-                        {#                            <div class="thumbnail">#}
-                        <img src="{{ location.avatar }}" alt="" style="width: 100% \9" class="img-thumbnail img-fluid">
-                        <div class="caption text-center">
-                            <a target="_blank" href=" ha-noi/{{ location.url }}">{{ location.name }}</a>
-
+                        <div id='cat-search' class="form-group">
+                            <select id="select-cat" style="height:50px;border: 0;" class="form-control"
+                                    id="exampleFormControlSelect1">
+                                <option value="">Loại nhà hàng...</option>
+                                {% for cat in categories %}
+                                    <option value="{{ cat.id }}">{{ cat.name }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
+                        <div id='cui-search' class="form-group">
+                            <select id="select-cui" style="height:50px;border: 0;" class="form-control"
+                                    id="exampleFormControlSelect1">
+                                <option value="" selected="selected">Loại ẩm thực...</option>
+                                {% for cui in cuisines %}
+                                    <option value="{{ cui.id }}">{{ cui.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <input id="but-sub" type="submit" value="Lets go!"
+                               class="btn btn-primary pull-right"/>
+                        <input type="hidden" name="next" value="{{ next }}"/>
+
                     </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-    </div>
-</div>
-
-<footer class="footer">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-3 col-xs-6 col-sm-3 col-lg-3">
-
-                <div class="caption text-center">
-                    <h8>SẢN PHẨM</h8>
-                    <p>Địa điểm</p>
-                    <p>Tỉnh thành</p>
-
                 </div>
-
             </div>
-            <div class="col-md-3 col-xs-6 col-sm-3 col-lg-3">
-
-                <div class="caption text-center">
-                    <h8>TỔ CHỨC</h8>
-                    <p>Giới thiệu</p>
-                    <p>Tin mới</p>
-                    <p>Liên hệ</p>
-
-                </div>
-
-            </div>
-            <div class="col-md-3 col-xs-6 col-sm-3 col-lg-3">
-
-                <div class="caption text-center">
-                    <h8>LEARN MORE</h8>
-                    <p>Hỗ trợ</p>
-                    <p></p>
-                </div>
-
-            </div>
-            <div class="col-md-3 col-xs-6 col-sm-3 col-lg-3">
-
-                <div class="caption text-center">
-                    <h8>CONNECT WITH US</h8>
-
-                </div>
-
-            </div>
-
-        </div>
+        </section>
     </div>
 
-</footer>
+    <br>
 
+    <div class="feedback">
+        <div class="container">
+            <h2>Địa Điểm Nổi Bật</h2>
+            {% if locations %}
+                <div class="row">
+                    {% for location in locations|slice:"0:4" %}
+                        <div class="col-xs-3 col-sm-3 col-mm-3 col-lg-3">
+                            <img src="{{ location.avatar }}" alt="" style="width: 100% \9"
+                                 class="img-thumbnail img-fluid">
+                            <div class="caption text-center">
+                                <a target="_blank" href=" ha-noi/{{ location.url }}">{{ location.name }}</a>
 
-<script src="https://code.jquery.com/jquery-4.4.1.slim.min.js"></script>
-<script>window.jQuery || document.write('<script src="js/jquery-slim.min.js"><\/script>')</script>
-<script src="js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="row">
+                    {% for location in locations|slice:"4:8" %}
+                        <div class="col-xs-3 col-sm-3 col-mm-3 col-lg-3">
+                            {#                            <div class="thumbnail">#}
+                            <img src="{{ location.avatar }}" alt="" style="width: 100% \9"
+                                 class="img-thumbnail img-fluid">
+                            <div class="caption text-center">
+                                <a target="_blank" href=" ha-noi/{{ location.url }}">{{ location.name }}</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="row">
+                    {% for location in locations|slice:"8:12" %}
+                        <div class="col-xs-3 col-sm-3 col-mm-3 col-lg-3">
+                            {#                            <div class="thumbnail">#}
+                            <img src="{{ location.avatar }}" alt="" style="width: 100% \9"
+                                 class="img-thumbnail img-fluid">
+                            <div class="caption text-center">
+                                <a target="_blank" href=" ha-noi/{{ location.url }}">{{ location.name }}</a>
 
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block dynamic %}
+     {% include 'stick_suggest.html' %}
+    {% include 'footer.html' %}
+    <script>window.jQuery || document.write('<script src="{% static "js/jquery-slim.min.js" %}"><\/script>')</script>
+    <script src="{% static "js/bootstrap.bundle.min.js" %}"></script>
+{% endblock %}

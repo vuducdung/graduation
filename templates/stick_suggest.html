@@ -1,0 +1,25 @@
+<div class="sticky" onclick="getLocation()">Gợi ý <i class="fa fa-cutlery"></i></div>
+<script>
+    function getLocation() {
+        navigator.geolocation.getCurrentPosition(
+            function (position) {
+                //do succes handling
+                window.open("https://maps.google.com/?q=" + position.coords.latitude +
+                    "," + position.coords.longitude)
+                alert('click')
+                let pageUrl = window.location.href.split('/')[0] + `/search/?suggest=True&lat=${position.coords.latitude}&long=${position.coords.longitude}`;
+                window.location.href = pageUrl
+            },
+            function errorCallback(error) {
+                //do error handling
+                alert('not click')
+                let pageUrl = window.location.href.split('/')[0] + '/search/?suggest=True';
+                window.location.href = pageUrl
+            },
+            {
+                maximumAge: Infinity,
+                timeout: 10000
+            }
+        );
+    }
+</script>

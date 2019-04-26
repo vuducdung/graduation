@@ -23,10 +23,12 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('login/', auth_views.LoginView.as_view(redirect_authenticated_user=True), name='login'),
-    # path('admin/', admin.site.urls),
-    path('', include('app.urls')),
-    path('', include('django.contrib.auth.urls')),
-    path('admin/', include('admin.urls')),
+                  path('login/', auth_views.LoginView.as_view(redirect_authenticated_user=True), name='login'),
+                  # path('admin/', admin.site.urls),
+                  path('', include('app.urls')),
+                  path('', include('django.contrib.auth.urls')),
+                  # path('admin/', include('admin.urls')),
+                  url(r'^admin/', include('admin.urls')),
+                  # path('accounts/', include('allauth.urls')),  # new
 
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

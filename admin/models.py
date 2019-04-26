@@ -84,16 +84,6 @@ class InteractiveTypes(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-class Collections(models.Model):
-    id = models.IntegerField(primary_key=True)
-    name = models.CharField(max_length=255, null=False)
-    user = models.ForeignKey(Accounts, on_delete=models.CASCADE)
-    description = models.CharField(max_length=255, null=True)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-
 class Locations(models.Model):
     id = models.BigIntegerField(primary_key=True)
     name = models.CharField(max_length=255, null=False)
@@ -116,13 +106,15 @@ class Locations(models.Model):
     # timeEnd24h = models.CharField(max_length=20, default='00:00:00')
     # menu = models.TextField(null=True)
     url = models.CharField(max_length=255, default='')
-    keyWords = models.CharField(max_length=255, default='', null=True)
-    description = models.CharField(max_length=255, default='', null=True)
+    keyWords = models.TextField(default='', null=True)
+    description = models.TextField(default='', null=True)
     district = models.ForeignKey(Districts, on_delete=models.CASCADE, default=20)
     evaluation = models.CharField(max_length=255, default='[0,0,0,0,0,0]')
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    # created_by = models.IntegerField(null=True, default='1')
 
     menu = models.ManyToManyField(Menus, through='MenuLocation')
     parking = models.ManyToManyField(Parkings, through='ParkingLocation')
@@ -135,21 +127,13 @@ class Locations(models.Model):
 
 class CommentLikeShare(models.Model):
     # id = models.BigIntegerField(primary_key=True)
-    title = models.CharField(max_length=255, null=True)
+    title = models.TextField(null=True)
     user = models.ForeignKey(Accounts, on_delete=models.CASCADE)
     location = models.ForeignKey(Locations, on_delete=models.CASCADE)
     type = models.ForeignKey(InteractiveTypes, on_delete=models.CASCADE)
-    content = models.TextField(max_length=255, null=True)
+    content = models.TextField(null=True)
     score = models.FloatField(null=True)
-    evaluation = models.CharField(max_length=255, default='[0,0,0,0,0,0]')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-
-class CollectionLocation(models.Model):
-    collection = models.ForeignKey(Collections, on_delete=models.CASCADE)
-    location = models.ForeignKey(Locations, on_delete=models.CASCADE)
-
+    evaluation = models.CharField(max_length=255, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -196,3 +180,34 @@ class CuisineLocation(models.Model):
 
 class uploadImage(models.Model):
     image = models.ImageField(upload_to='location/')
+
+
+class Collections(models.Model):
+    # id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=255, null=False)
+    user = models.ForeignKey(Accounts, on_delete=models.CASCADE)
+    description = models.TextField(max_length=255, null=True)
+    location = models.ManyToManyField(Locations, through='CollectionLocation')
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class CollectionLocation(models.Model):
+    collection = models.ForeignKey(Collections, on_delete=models.CASCADE)
+    location = models.ForeignKey(Locations, on_delete=models.CASCADE)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class User_Location(models.Model):
+    location = models.ForeignKey(Locations, on_delete=models.CASCADE)
+    user = models.ForeignKey(Accounts, on_delete=models.CASCADE)
+    rating = models.FloatField(null=True)
+
+
+class RequireFromUser(models.Model):
+    name = models.CharField(max_length=255, default='Thêm địa điểm')
+    user = models.ForeignKey(Accounts, on_delete=models.CASCADE)
+    location = models.ForeignKey(Locations, on_delete=models.CASCADE, null=True)

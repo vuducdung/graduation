@@ -27,7 +27,7 @@ SECRET_KEY = 'yhsfmn7myt!tygnzp@zg!v=0o&j*34==yypr=_0j5&oj#w7p*m'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['graduation-vuducdung.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['graduation-vuducdung.herokuapp.com', '127.0.0.1','localhost']
 
 # Application definition
 # LOGIN_REDIRECT_URL = '/'
@@ -42,9 +42,26 @@ INSTALLED_APPS = [
     'app.apps.AccountsConfig',
     'django.contrib.postgres',
 
-    'social_django',
+    # 'django.contrib.sites',  # new
+    #
+    # 'allauth',  # new
+    # 'allauth.account',  # new
+    # 'allauth.socialaccount',  # new
+    # 'allauth.socialaccount.providers.google',  # new
+    # 'social_django',
     'admin',
 ]
+
+# demo_project/settings.py
+# AUTHENTICATION_BACKENDS = (
+#     "django.contrib.auth.backends.ModelBackend",
+#     "allauth.account.auth_backends.AuthenticationBackend",
+# )
+#
+# SITE_ID = 1
+#
+# ACCOUNT_EMAIL_REQUIRED = True
+# ACCOUNT_USERNAME_REQUIRED = False
 
 AUTH_USER_MODEL = 'app.Accounts'
 
@@ -83,15 +100,6 @@ LOGOUT_REDIRECT_URL = '../'
 
 WSGI_APPLICATION = 'graduation_project.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
 
 DATABASES = {
     'default': {
@@ -159,8 +167,8 @@ STATIC_URL = '/static/'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'vuducdung8195@gmail.com'
-EMAIL_HOST_PASSWORD = 'bandoioi'
-EMAIL_PORT = 587
+EMAIL_USE_TLS = config('EMAIL_USE_TLS')
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = config('EMAIL_PORT')

@@ -29,9 +29,9 @@ if (current_url.includes('price')) {
 $(".bg-light").click(function () {
     var url = window.location.href;
     if (url.includes('sort')) {
-        url = url.split('?&sort')[0]
+        url = url.split('&sort')[0]
     }
-    url = url + '?&sort=' + $(this).attr('id');
+    url = url + '&sort=' + $(this).attr('id');
     window.location.href = url;
 });
 

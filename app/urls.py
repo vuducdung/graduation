@@ -18,10 +18,24 @@ urlpatterns = [
         views.reset, name='reset'),
     url(r'^resetRequire/$', views.resetRequire, name='resetRequire'),
     url(r'^ha-noi/(?P<locationUrl>[0-9A-Za-z_\-]+)/$', views.location, name='location'),
+    url(r'^thanh-vien/(?P<userId>[0-9A-Za-z_\-]+)/$', views.member, name='member'),
     url(r'^search/$', views.search, name='search'),
     url(r'^like_create/$', views.like_create, name='like_create'),
     url(r'^like_decreate/$', views.like_decreate, name='like_decreate'),
     url(r'^view_create/$', views.view_create, name='view_create'),
-    # url(r'^(?P<locationUrl>[0-9A-Za-z_\-/]+)/thuc-don/$', views.menu, name='menu'),
+    url(r'^share_create/$', views.share_create, name='share_create'),
+    url(r'^collection_create/$', views.collection_create, name='collection_create'),
+    url(r'^collection_delete/$', views.collection_delete, name='collection_delete'),
+    url(r'^location_suggest/$', views.location_suggest, name='location_suggest'),
+    url(r'^location_to_collection/$', views.location_to_collection, name='location_to_collection'),
+    url(r'^get_collection/$', views.get_collection, name='get_collection'),
+    url(r'^get_collections/$', views.get_collections, name='get_collections'),
+    url(r'^locations_in_collection/$', views.locations_in_collection, name='locations_in_collection'),
+    url(r'^choice_collection/$', views.choice_collection, name='choice_collection'),
+    url(r'^delete_location_in_collection/$', views.delete_location_in_collection, name='delete_location_in_collection'),
+    url(r'^create_location/$', views.create_location, name='create_location'),
+    url(r'^success/$', views.success, name='success'),
+
+
 
 ]

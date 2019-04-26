@@ -1,3 +1,67 @@
+function get_collections(locationId) {
+    $.get('/get_collections/', {locationId: locationId}, function (data) {
+        let optionss = ""
+        // alert(data.length)
+        $.each(data, function () {
+            if (this.check != '0') {
+                optionss += `<div>
+                                    <div class="row">
+                                        <div class="col-xs-6 col-sm-6 col-mm-6 col-lg-6">
+                                            <div class="caption text-center">
+                                                <div class="crop suggest-collection" href="#" onclick="choice_collection(${this.id},${locationId});">${this.name}</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-5 col-sm-5 col-mm-5 col-lg-5">
+                                            <div>${this.count}</div>
+                                        </div>
+                                        <div class="col-xs-1 col-sm-1 col-mm-1 col-lg-1">
+                                            <div><i class="fa fa-check"></i></div>
+                                        </div>
+                                    </div>
+                                </div>`
+            } else {
+                optionss += `<div>
+                                    <div class="row">
+                                        <div class="col-xs-6 col-sm-6 col-mm-6 col-lg-6">
+                                            <div class="caption text-center">
+                                                <div class="crop suggest-collection" onclick="choice_collection(${this.id},${locationId});">` + this.name + `</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-6 col-sm-6 col-mm-6 col-lg-6">
+                                            <div>${this.count}</div>
+                                        </div>
+                                    </div>
+                                </div>`
+            }
+        });
+        $(".item-collection").html(optionss);
+    });
+}
+
+function choice_collection(collectionId, locationId) {
+    $.get('/choice_collection/', {collectionId: collectionId, locationId: locationId}, function (data) {
+        get_collections(locationId);
+    });
+}
+
+document.getElementById('shareBtn').onclick = function () {
+    // alert(window.location.href)
+    FB.ui({
+        display: 'popup',
+        method: 'share',
+        href: String(window.location.hef),
+    }, function (response) {
+        let locationId = $('#shareBtn').attr('value').split('|')[0]
+        let userId = $('#shareBtn').attr('value').split('|')[1]
+        // alert($('#shareBtn').attr('value'))
+        // alert(locationId != 'None' && userId != 'None')
+        if (locationId != 'None' && userId != 'None') {
+            $.get('/share_create/', {locationId: locationId, userId: userId}, function (data) {
+                // $('#like-count').html(data);
+            });
+        }
+    });
+}
 $("#create-like").click(function () {
     $("#like").toggleClass('fa fa-thumbs-up');
     $("#like").toggleClass('fa fa-check');

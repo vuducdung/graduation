@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+{% include 'head.html' %}
+<body>
+<div class="container-fluid background-image">
+    {% include 'header.html' %}
+</div>
+
+
+<div style="margin-top:20px; " class="container">
+    {% if success %}
+        <div>Bạn đã tạo địa điểm thành công xin chờ Admin duyệt</div>
+    {% else %}
+        <div class="bs-example">
+            <table class="table">
+                <tbody>
+                <form id="login-form" method="get" action="">
+                    <tr>
+                        <td><h4 id="h4.-bootstrap-heading">Tên địa điểm<a
+                                class="anchorjs-link" href="#h4.-bootstrap-heading"><span
+                                class="anchorjs-icon"></span></a></h4>
+                        </td>
+                        <td style="width: 60%;float: left;" class="type-info">
+                            <input name="nameLoc" type="text" style="padding:5px;width:100%;"
+                                   maxlength="255" class="box-search-page" placeholder="Tối đa 255 kí tự"
+                                   required>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td><h4 id="h4.-bootstrap-heading">Địa chỉ<a
+                                class="anchorjs-link" href="#h4.-bootstrap-heading"><span
+                                class="anchorjs-icon"></span></a></h4></td>
+                        <td style="width: 60%;float: left;" class="type-info">
+                            <input name="address" type="text" style="padding:5px;width: 100%;"
+                                   class="box-search-page" placeholder="Tối đa 255 kí tự"
+                                   required>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><h4 id="h4.-bootstrap-heading">Giờ mở cửa<a
+                                class="anchorjs-link" href="#h4.-bootstrap-heading"><span
+                                class="anchorjs-icon"></span></a></h4></td>
+                        <td style="width: 60%;float: left;" class="type-info">
+                            <select name="timeOpen1" class="form-control"
+                                    style="padding:5px;width: 50%;float:left;border:0;">
+                                <option value="" selected="selected">Chọn giờ</option>
+                                {% for i in hourL %}
+                                    <option value="{{ i }}">{{ i }}</option>
+                                {% endfor %}
+                            </select>
+                            <select name="timeOpen2" class="form-control"
+                                    style="padding:5px;width: 50%;float:left;border:0;">
+                                <option value="" selected="selected">Chọn phút</option>
+                                {% for i in minuteL %}
+                                    <option value="{{ i }}">{{ i }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><h4 id="h4.-bootstrap-heading">Giờ đóng cửa<a
+                                class="anchorjs-link" href="#h4.-bootstrap-heading"><span
+                                class="anchorjs-icon"></span></a></h4></td>
+                        <td style="width: 60%;float: left;" class="type-info">
+                            <select name="timeClose1" class="form-control"
+                                    style="padding:5px;width: 50%;float:left;border:0;">
+                                <option value="" selected="selected">Chọn giờ</option>
+                                {% for i in hourL %}
+                                    <option value="{{ i }}">{{ i }}</option>
+                                {% endfor %}
+                            </select>
+                            <select name="timeClose2" class="form-control"
+                                    style="padding:5px;width: 50%;float:left;border:0;">
+                                <option value="" selected="selected">Chọn phút</option>
+                                {% for i in minuteL %}
+                                    <option value="{{ i }}">{{ i }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><h4 id="h4.-bootstrap-heading">Mô tả<a
+                                class="anchorjs-link" href="#h4.-bootstrap-heading"><span
+                                class="anchorjs-icon"></span></a></h4></td>
+                        <td style="width: 60%;float: left;" class="type-info">
+                            <input type="text" style="padding:5px;width: 100%;"
+                                   class="box-search-page"
+                                   placeholder="Tối đa 255 kí tự"
+                                   name="description"
+                            >
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4 id="h4.-bootstrap-heading">Danh mục<a
+                                    class="anchorjs-link" href="#h4.-bootstrap-heading"><span
+                                    class="anchorjs-icon"></span></a>
+                            </h4>
+                        </td>
+                        <td style="width: 60%;float: left;" class="type-info">
+                            <select required name="category" class="form-control"
+                                    style="padding:5px;width: 50%;float:left;border:0;">
+                                <option value="" selected="selected">Loại danh mục</option>
+                                {% for cat in categories %}
+                                    <option value="{{ cat.id }}">{{ cat.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4 id="h4.-bootstrap-heading">Loại ẩm thực<a
+                                    class="anchorjs-link" href="#h4.-bootstrap-heading"><span
+                                    class="anchorjs-icon"></span></a>
+                            </h4>
+                        </td>
+                        <td style="width: 60%;float: left;" class="type-info">
+                            <select required name="cuisine" class="form-control"
+                                    style="padding:5px;width: 50%;float:left;border:0;">
+                                <option value="" selected="selected">Loại ẩm thực</option>
+                                {% for cui in cuisines %}
+                                    <option value="{{ cui.id }}">{{ cui.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4 id="h4.-bootstrap-heading">Dịch vụ<a
+                                    class="anchorjs-link" href="#h4.-bootstrap-heading"><span
+                                    class="anchorjs-icon"></span></a>
+                            </h4>
+                        </td>
+                        <td style="width: 60%;float: left;" class="type-info">
+                            <select name="service" class="form-control"
+                                    style="padding:5px;width: 50%;float:left;border:0;">
+                                <option value="" selected="selected">Loại dịch vụ</option>
+                                {% for ser in services %}
+                                    <option value="{{ ser.id }}">{{ ser.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4 id="h4.-bootstrap-heading">Quận/Huyện<a
+                                    class="anchorjs-link" href="#h4.-bootstrap-heading"><span
+                                    class="anchorjs-icon"></span></a>
+                            </h4>
+                        </td>
+                        <td style="width: 60%;float: left;" class="type-info">
+                            <select required name="district" class="form-control"
+                                    style="padding:5px;width: 50%;float:left;border:0;">
+                                <option value="" selected="selected">Quận/Huyện</option>
+                                {% for dis in districts %}
+                                    <option value="{{ dis.id }}">{{ dis.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><h4 id="h4.-bootstrap-heading">Vị trí<a
+                                class="anchorjs-link" href="#h4.-bootstrap-heading"><span
+                                class="anchorjs-icon"></span></a></h4></td>
+                        <td style="width: 60%;float: left;" class="type-info">
+                            <input style="padding:5px;width: 50%;float: left;"
+                                   class="box-search-page"
+                                   name="latitude"
+                                   placeholder="11 -> 21"
+                                   type=number step=any
+                                   min="11" max="21"
+                                   required
+                            >
+                            <input style="padding:5px;width: 50%;float: left;"
+                                   class="box-search-page"
+                                   name="longitude"
+                                   placeholder="21 -> 107"
+                                   type=number step=any
+                                   min="21" max="107"
+                                   required
+                            >
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="float: left;">
+                            <input type="submit" value="Thêm địa điểm"
+                                   class="btn btn-primary pull-right"/>
+                            <input type="hidden" name="next" value="{{ next }}"/>
+                        </td>
+                    </tr>
+                </form>
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+</div>
+
+<script src="{% static "js/member.js" %}"></script>
+<script>window.jQuery || document.write('<script src="{% static "js/jquery-slim.min.js" %}"><\/script>')</script>
+<script src="{% static "js/bootstrap.bundle.min.js" %}"></script>
+</body>
+{% include 'footer.html' %}
+</html>
+

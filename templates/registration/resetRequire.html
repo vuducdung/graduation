@@ -1,28 +1,40 @@
-
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-
 {% extends 'base.html' %}
-
+{% load static %}
+{% block front %}
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link href="{% static "css/login.css" %}" rel="stylesheet">
+    <meta charset="utf-8">
+{% endblock %}
 {% block content %}
-    <div id="content-container" class="container p-none">
-        <div class="lgn-container col-lg-8">
-            <form id="reset-form" method="get"
-                  action="">
-                <table class="table">
-                    <tr>
-                        <td><label for="email">Địa chỉ email</label></td>
-                        <td><input id="email" name="email"
-                                   type="email" class="form-control"></td>
-                    </tr>
-                </table>
-
-                <input type="submit" value="Lấy lại mật khẩu"
-                       class="btn btn-primary pull-right" />
-                <input type="hidden" name="next" value="{{ next }}" />
-
+    <div class="wrapper fadeInDown">
+        <div id="formContent">
+            <div class="fadeIn first">
+                <img style="width:50px;height:50px;"
+                     src="http://hinhnendethuong.com/uploads/images/tong-hop-20-hinh-nen-kinh-dien-ve-songoku-cuc-dep-va-chat-1483783077-19.jpg"
+                     class="rounded-circle" id="icon" alt="User Icon"/>
+            </div>
+            <!-- Login Form -->
+            <form id="reset-form" method="get" action="">
+                <input pattern=".{1,255}" title="Tối đa 255 ký tự" required type="email" class="fadeIn second"
+                       id="email" name="email" placeholder="Địa chỉ email">
+                <input type="hidden" name="next" value="{{ next }}"/>
+                <input type="submit" class="fadeIn fourth" value="Thay đổi mật khẩu">
+                {% if form.errors %}
+                    <p class=" label label-danger">
+                        Địa chỉ email hoặc mật khẩu không đúng.
+                        Xin hãy thử lại.
+                    </p>
+                {% endif %}
+                {% if message %}
+                    <p>{{ message }}</p>
+                {% endif %}
             </form>
+            <!-- Remind Passowrd -->
+            <div id="formFooter">
+            </div>
         </div>
     </div>
 {% endblock content %}
