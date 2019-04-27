@@ -655,7 +655,7 @@ def location_suggest(request):
 
         sql = sql1 + sql2
         locations_list = Locations.objects.raw(sql)[:10]
-        locations = [dict(id=m.id, name=m.name, avatar=m.avatar, url= m.url) for m in locations_list]
+        locations = [dict(id=m.id, name=m.name, avatar=m.avatar, url=m.url) for m in locations_list]
         locations = json.dumps(locations)
         return HttpResponse(locations, content_type='application/json', )
 
