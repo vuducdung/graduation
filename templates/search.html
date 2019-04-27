@@ -9,7 +9,6 @@
 
 {% block content %}
 
-    <body>
     {% include 'header.html' %}
     <div class="container-fluid">
         <div class="row">
@@ -36,6 +35,11 @@
             </div>
         </div>
     </div>
+    <div class="container">
+        <div class="row">
+            <div class="location-suggest" style="margin-left:40px;"></div>
+        </div>
+    </div>
 
     <div class="result-page" style="">
         <div class="container">
@@ -46,17 +50,18 @@
                     {% else %}
                         <div class="thumbnail-list col-lg-3 col-md-4">{{ count }} kết quả tìm kiếm</div>
                     {% endif %}
-
                 </div>
                 {% for loc in locations %}
                     <div class="item-res">
                         <div class="row" style="">
                             <div class="thumbnail-list col-lg-3 col-md-4">
                                 <a class="view-location" value="{{ loc.id }}|{{ user.id }}"
-                                   href="/ha-noi/{{ loc.url }}/?comment=True"><img src="{{ loc.avatar }}"
-                                                                                   class="rounded"
-                                                                                   alt="Cinque Terre" width="256.5"
-                                                                                   height="180"></a>
+                                   href="/ha-noi/{{ loc.url }}/?comment=True">
+                                    <img src="{{ loc.avatar }}"
+                                         class="rounded"
+                                         alt="Cinque Terre" width="256.5"
+                                         height="180">
+                                </a>
                             </div>
                             <div class="col-lg-9 col-md-8">
                                 <div class="container">
@@ -65,21 +70,20 @@
                                             <h4><a class="view-location" value="{{ loc.id }}|{{ user.id }}"
                                                    href="/ha-noi/{{ loc.url }}/?comment=True"
                                             >{{ loc.name }}</a></h4>
-                                            <i style="color:#ffa800;" class="fa fa-star"></i> <i style="color:#ffa800;"
-                                                                                                 class="fa fa-star"></i>
-                                            <i
-                                                    style="color:#ffa800;" class="fa fa-star"></i> <i
-                                                style="color:#ffa800;"
-                                                class="fa fa-star"></i> <i
-                                                style="color:#ffa800;"
-                                                class="fa fa-star"></i> {{ loc.avgRating }}
-
+                                            <i style="color:#ffa800;" class="fa fa-star"></i>
+                                            <i style="color:#ffa800;" class="fa fa-star"></i>
+                                            <i style="color:#ffa800;" class="fa fa-star"></i>
+                                            <i style="color:#ffa800;" class="fa fa-star"></i>
+                                            <i style="color:#ffa800;" class="fa fa-star"></i> {{ loc.avgRating }}
                                             <div>{{ loc.description }}</div>
-                                            <div><i style="color:green;" class="fa fa-money"></i> {{ loc.priceMin }}
-                                                - {{ loc.priceMax }}</div>
-                                            <div><i style="color:green;" class="fa fa-eye"></i> {{ loc.totalView }}
+                                            <div><i style="color:green;" class="fa fa-money"></i> {{ loc.priceMin }}đ
+                                                - {{ loc.priceMax }}đ
                                             </div>
-                                            <div><i style="color:green;" class="fa fa-road"></i> {{ loc.distance }} cách
+                                            <div><i style="color:green;" class="fa fa-eye"></i> {{ loc.totalView }} lượt
+                                                xem
+                                            </div>
+                                            <div><i style="color:green;" class="fa fa-road"></i> {{ loc.distance }} mét
+                                                cách
                                                 từ
                                                 thành phố hà nội
                                             </div>

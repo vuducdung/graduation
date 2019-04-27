@@ -1,5 +1,6 @@
 var ready = $(document).ready(function () {
 
+
     $(".form-control").keydown(function (e) {
         if (e.keyCode == 13) {
             return false;
@@ -8,6 +9,9 @@ var ready = $(document).ready(function () {
 
     $(".page-link").click(function () {
         let pageURL = window.location.href;
+        if (!pageURL.includes("/?")) {
+            pageURL += "?"
+        }
         if ($(this).attr("value")) {
             if (pageURL.includes("&page")) {
 
@@ -20,7 +24,7 @@ var ready = $(document).ready(function () {
 
     function saveSearchForm() {
         let pageURL = window.location.href;
-        let word = getQueryStringValue("word").replace('?','');
+        let word = getQueryStringValue("word").replace('?', '');
         let loc = getQueryStringValue("loc");
         let cat = getQueryStringValue("cat");
         let cui = getQueryStringValue("cui");
@@ -57,7 +61,7 @@ var ready = $(document).ready(function () {
         }
     });
 
-    $("#but-sub").click(function(){
+    $("#but-sub").click(function () {
         submitSearch();
     });
 
@@ -93,7 +97,7 @@ var ready = $(document).ready(function () {
         if (cui) {
             pageURL += '&cui=' + cui;
         }
-        window.location.href=pageURL;
+        window.location.href = pageURL;
     }
 
 

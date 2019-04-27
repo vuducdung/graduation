@@ -23,10 +23,35 @@ License URL: http://creativecommons.org/licenses/by/3.0/
     <!-- main content start-->
     <div id="page-wrapper">
         <div class="main-page">
+            <div class="row">
+                <div class="col-xs-9 col-sm-9 col-mm-9 col-lg-9">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div id="custom-search-input">
+                                    <form action="" method="get">
+                                        <div class="input-group col-md-12">
 
+                                            <input type="text" class="form-control input-lg"
+                                                   name="user-name"
+                                                   placeholder="Tên người dùng"/>
+                                            <input type="hidden" name="next" value="{{ next }}"/>
+                                            <span class="input-group-btn">
+                                            <button type=submit class="btn btn-info btn-lg">
+                                                <i class="glyphicon glyphicon-search"></i>
+                                            </button>
+                                        </span>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             {% if account %}
                 <div class="typography">
-                    <h2 class="title1">Typography</h2>
+                    {#                    <h2 class="title1">Typography</h2>#}
                     <div class="grid_3 grid_4 widget-shadow">
                         <h3 style="width: 30%;float: left;" class="hdg">Tài khoản</h3>
 
@@ -37,14 +62,16 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a  href="?id={{ account.id }}&active=True" {% if account.is_active %} style="pointer-events: none;" {% endif %}>
+                                        <a href="?id={{ account.id }}&active=True" {% if account.is_active %}
+                                           style="pointer-events: none;" {% endif %}>
                                             <i class="fa fa-reply mail-icon "></i>
                                             Mở khóa
                                         </a>
                                     </li>
                                     <li>
                                         <a  {% if not account.is_active %} style="pointer-events: none;" {% endif %}
-                                           href="?id={{ account.id }}&deactive=True" title="">
+                                                                           href="?id={{ account.id }}&deactive=True"
+                                                                           title="">
                                             <i class="fa fa-download mail-icon"></i>
                                             Khóa
                                         </a>
@@ -58,7 +85,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                 </ul>
                             </div>
                         </div>
-
 
 
                         <div class="bs-example">
@@ -91,13 +117,13 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                     <td><h4 id="h4.-bootstrap-heading">Vai trò<a
                                             class="anchorjs-link" href="#h4.-bootstrap-heading"><span
                                             class="anchorjs-icon"></span></a></h4></td>
-                                    <td class="type-info">{{ user.role.name }}</td>
+                                    <td class="type-info">{{ account.role.name }}</td>
                                 </tr>
                                 <tr>
                                     <td><h4 id="h4.-bootstrap-heading">Trang cá nhân<a
                                             class="anchorjs-link" href="#h4.-bootstrap-heading"><span
                                             class="anchorjs-icon"></span></a></h4></td>
-                                    <td class="type-info"><a href="/thanh-vien/{{ nickName }}">127.0.0.1:8080/thanh-vien/{{ nickName }}</a>
+                                    <td class="type-info"><a href="/thanh-vien/{{ account.id }}">{{ nickName }}</a>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -108,7 +134,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
             {% endif %}
             {% if accounts %}
                 <div class="tables">
-                <h2 class="title1">Tables</h2>
+                {#                <h2 class="title1">Tables</h2>#}
                 <div class="bs-example widget-shadow" data-example-id="hoverable-table">
                 <h4>Danh sách tài khoản người dùng:</h4>
                 <table class="table table-hover">
@@ -207,10 +233,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                     </div>
                 </div>
             {% endif %}
-
             </div>
-
-
             </div>
         </div>
     </div>

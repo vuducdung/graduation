@@ -40,9 +40,9 @@ def location(request):
     sql1 = "select admin_locations.* from admin_locations"
     sql2 = ' where True'
 
-    username = request.GET.get('username', None)
-    if username:
-        query = tran_word_search(username, str1, str2)
+    locationName = request.GET.get('location-name', None)
+    if locationName:
+        query = tran_word_search(locationName, str1, str2)
         # query = query.replace(" ", ":*&")
         query_list = []
         for q in query.split(' '):
@@ -118,6 +118,20 @@ def user(request):
     deactive = request.GET.get('deactive', None)
     active = request.GET.get('active', None)
     delete = request.GET.get('delete', None)
+
+    user_name = request.GET.get('user-name', None)
+    if user_name:
+        accounts = Accounts.objects.filter(name__icontans=user_name).order_by('id')
+        page = request.GET.get('page', 1)
+        paginator = Paginator(accounts, 10)
+        try:
+            accounts = paginator.page(page)
+        except PageNotAnInteger:
+            accounts = paginator.page(1)
+        except EmptyPage:
+            accounts = paginator.page(paginator.num_pages)
+
+        return render(request, 'admin/user.html', {'accounts': accounts})
 
     if deactive and user_id:
         account = Accounts.objects.filter(id=user_id).first()
@@ -258,7 +272,7 @@ def add_location(request):
 
         str1 = config('str1')
         str2 = config('str2')
-        
+
         location.url = tran_word_search(' '.join(location.name.lower().split(' ')), str1, str2).replace(' ', '-')
         exits_location = Locations.objects.filter(url=location.url)
         if len(exits_location) > 0:

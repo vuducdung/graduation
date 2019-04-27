@@ -58,7 +58,9 @@
                                             class="anchorjs-icon"></span></a></h4>
                                     </td>
                                     <td style="width: 60%;float: left;" class="type-info">
-                                        <input name="nameLoc" type="text" style="padding:5px;width:100%;"
+                                        <input pattern=".{1,255}" title="Tối đa 255 ký tự"
+                                               name="nameLoc" type="text"
+                                               style="padding:5px;width:100%;"
                                                maxlength="255" class="box-search-page" placeholder="Tối đa 255 kí tự"
                                                required>
                                     </td>
@@ -69,7 +71,9 @@
                                             class="anchorjs-link" href="#h4.-bootstrap-heading"><span
                                             class="anchorjs-icon"></span></a></h4></td>
                                     <td style="width: 60%;float: left;" class="type-info">
-                                        <input name="address" type="text" style="padding:5px;width: 100%;"
+                                        <input pattern=".{1,255}" title="Tối đa 255 ký tự"
+                                               name="address" type="text"
+                                               style="padding:5px;width: 100%;"
                                                class="box-search-page" placeholder="Tối đa 255 kí tự"
                                                required>
                                     </td>
@@ -124,6 +128,7 @@
                                             class="anchorjs-icon"></span></a></h4></td>
                                     <td style="width: 60%;float: left;" class="type-info">
                                         <input type="text" style="padding:5px;width: 100%;"
+                                               pattern=".{1,255}" title="Tối đa 255 ký tự"
                                                class="box-search-page"
                                                placeholder="Tối đa 255 kí tự"
                                                name="description"

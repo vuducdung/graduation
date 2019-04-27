@@ -14,11 +14,28 @@
     <div id="page-wrapper">
         <div class="main-page">
             <div class="row">
-                <div style="width:60%;" class="col-xs-9 col-sm-9 col-mm-9 col-lg-9">
-                    <div id="word-search">
-                        <input id="user-name" type="text" style="width:100%;padding: 20px;"
-                               class="box-search-page" placeholder="Tên địa điểm..."
-                               aria-label="Search">
+                <div class="col-xs-9 col-sm-9 col-mm-9 col-lg-9">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div id="custom-search-input">
+                                    <form action="" method="get">
+                                        <div class="input-group col-md-12">
+                                            <input type="text" class="form-control input-lg"
+                                                   name="location-name"
+                                                   placeholder="Tên địa điểm"/>
+
+                                            <span class="input-group-btn">
+                                                <input type="hidden" name="next" value="{{ next }}"/>
+                                                <button type="submit" class="btn btn-info btn-lg">
+                                                    <i class="glyphicon glyphicon-search"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-xs-3 col-sm-3 col-mm-3 col-lg-3">
@@ -56,7 +73,8 @@
                                         </li>
                                     {% endif %}
                                     <li>
-                                        <a href="/admin/location/?id={{ location.id }}&delete=True" class="font-red" title="">
+                                        <a href="/admin/location/?id={{ location.id }}&delete=True" class="font-red"
+                                           title="">
                                             <i class="fa fa-trash-o mail-icon"></i>
                                             Delete
                                         </a>
@@ -93,6 +111,7 @@
                                         </td>
                                         <td class="type-info">
                                             <input type="text" style="padding:5px;width:100%;"
+                                                   pattern=".{1,255}" title="Tối đa 255 ký tự"
                                                    placeholder="{{ location.name }}"
                                                    maxlength="255"
                                                    name="nameLoc"
@@ -106,6 +125,7 @@
                                         <td class="type-info">
                                             <input type="text" style="padding:5px;width:100%;"
                                                    placeholder="{{ location.address }}"
+                                                   pattern=".{1,255}" title="Tối đa 255 ký tự"
                                                    maxlength="255"
                                                    name="address"
                                             >
@@ -119,6 +139,7 @@
                                         <td class="type-info">
                                             <input type="text" style="padding:5px;width:100%;"
                                                    placeholder="{{ location.workTime24h }}"
+                                                   pattern=".{1,30}" title="Tối đa 30 ký tự"
                                                    maxlength="30"
                                                    name="time"
                                             >
@@ -155,11 +176,9 @@
                                     </tr>
                                     <tr>
                                         <td style="float: left;">
-                                            {#                                            <a href="?id={{ location.id }}&update=True">#}
                                             <input id="show-button-update" type="submit" value="Cập nhật địa điểm"
                                                    style="display: none;"
                                                    class="btn btn-primary pull-right"/>
-                                            {#                                            </a>#}
                                             <input type="hidden" name="id" value="{{ location.id }}"/>
                                         </td>
                                     </tr>

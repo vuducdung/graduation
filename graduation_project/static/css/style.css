@@ -24,7 +24,7 @@ body {
 }
 
 div.sticky {
-    color:#fff;
+    color: #fff;
     position: -webkit-sticky; /* Safari */
     position: sticky;
     bottom: 55%;
@@ -49,10 +49,6 @@ div.sticky {
     padding: 22px;
     border-radius: 4px;
     margin-bottom: 15px
-}
-
-.background-page {
-    /*background: url('../imgs/background.webp') no-repeat center center;*/
 }
 
 .showcase {
@@ -279,7 +275,7 @@ input:focus {
 
 .suggest-collection:hover {
     background: yellow;
-    color:#007bff;
+    color: #007bff;
 }
 
 .slider::-moz-range-thumb {
@@ -301,56 +297,64 @@ input:focus {
 }
 
 .icon-bar {
-  position: fixed;
-  top: 50%;
-  -webkit-transform: translateY(-50%);
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
+    position: fixed;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
 }
+
 .icon-bar a {
-  display: block;
-  text-align: center;
-  padding: 16px;
-  transition: all 0.3s ease;
-  color: white;
-  font-size: 20px;
+    display: block;
+    text-align: center;
+    padding: 16px;
+    transition: all 0.3s ease;
+    color: white;
+    font-size: 20px;
 }
+
 .icon-bar a:hover {
-  background-color: #000;
+    background-color: #000;
 }
 
 .facebook {
-  background: #3B5998;
-  color: white;
+    background: #3B5998;
+    color: white;
 }
 
 .twitter {
-  background: #55ACEE;
-  color: white;
+    background: #55ACEE;
+    color: white;
 }
 
 .google {
-  background: #dd4b39;
-  color: white;
+    background: #dd4b39;
+    color: white;
 }
 
 .linkedin {
-  background: #007bb5;
-  color: white;
+    background: #007bb5;
+    color: white;
 }
 
 .youtube {
-  background: #bb0000;
-  color: white;
+    background: #bb0000;
+    color: white;
 }
 
 .content {
-  margin-left: 75px;
-  font-size: 30px;
+    margin-left: 75px;
+    font-size: 30px;
 }
+
 .crop {
-  overflow:hidden;
-  white-space:nowrap;
-  text-overflow:ellipsis;
-  width:100%;
-}​
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+.bg-light:hover {
+    background: yellow;
+    color: #007bff;
+}

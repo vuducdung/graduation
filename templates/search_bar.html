@@ -1,36 +1,62 @@
 <div style="height: 80px;background-color: #e8eff6;">
-<div class="container">
-    <div class="row">
-        <div class="col-xs-12 col-sm-12 col-mm-12 col-lg-12">
-            <div id="word-search">
-                <input id="word" type="text" style="width:30%;padding: 20px;"
-                       class="box-search-page" placeholder="Tìm kiếm địa điểm yêu thích..."
-                       aria-label="Search"></div>
-            <div id='loc-search' class="box-search-page">
-                <select id="select-loc" class="form-control" style="height:50px;border: 0;">
-                    <option value="" selected="selected">Chọn khu vực...</option>
-                    {% for dis in districts %}
-                        <option value="{{ dis.id }}">{{ dis.name }}</option>
-                    {% endfor %}
-                </select>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-mm-12 col-lg-12">
+                <div id="word-search">
+                    <input onkeyup="suggest_location_for_search();" id="word" type="text"
+                           style="width:30%;padding: 20px;"
+                           class="box-search-page" placeholder="Tìm kiếm địa điểm yêu thích...">
+                    <script>
+                        function suggest_location_for_search() {
+                            let name = $("#word").val();
+                            {#alert(name=='')#}
+                            if (name != '') {
+                                let collection_id = $(".addLocation").attr('value');
+                                $.get('/location_suggest/', {location_name: name}, function (data) {
+                                    let optionss = ""
+                                    $.each(data, function () {
+                                        optionss += `
+            <div>
+            <img style="width:30px;height:30px;" src="${this.avatar}" alt="">
+            <a href="/ha-noi/${this.url}"><span>${this.name}</span></a>
             </div>
-            <div id='cat-search' class="box-search-page">
-                <select id="select-cat" class="form-control" style="height:50px;border: 0;">
-                    <option value="" selected="selected">Loại nhà hàng...</option>
-                    {% for cat in categories %}
-                        <option value="{{ cat.id }}">{{ cat.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div id='cui-search' class="box-search-page">
-                <select id="select-cui" class="form-control" style="height:50px;border: 0;">
-                    <option value="" selected="selected">Loại ẩm thực...</option>
-                    {% for cui in cuisines %}
-                        <option value="{{ cui.id }}">{{ cui.name }}</option>
-                    {% endfor %}
-                </select>
+            `
+                                    });
+                                    $(".location-suggest").html(optionss);
+                                });
+                            } else {
+                                $(".location-suggest").empty();
+                            }
+
+                        }
+                    </script>
+                </div>
+
+                <div id='loc-search' class="box-search-page">
+                    <select id="select-loc" class="form-control" style="height:50px;border: 0;">
+                        <option value="" selected="selected">Chọn khu vực...</option>
+                        {% for dis in districts %}
+                            <option value="{{ dis.id }}">{{ dis.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div id='cat-search' class="box-search-page">
+                    <select id="select-cat" class="form-control" style="height:50px;border: 0;">
+                        <option value="" selected="selected">Loại nhà hàng...</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat.id }}">{{ cat.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div id='cui-search' class="box-search-page">
+                    <select id="select-cui" class="form-control" style="height:50px;border: 0;">
+                        <option value="" selected="selected">Loại ẩm thực...</option>
+                        {% for cui in cuisines %}
+                            <option value="{{ cui.id }}">{{ cui.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
         </div>
     </div>
-</div>
 </div>

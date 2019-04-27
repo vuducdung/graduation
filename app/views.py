@@ -107,7 +107,7 @@ def reset(request, id, token):
 
 
 def get_locations():
-    locations = Locations.objects.filter(is_active=True).order_by('-totalView')[:12] \
+    locations = Locations.objects.filter(is_active=True).order_by('-totalView') \
         .only("id", "name", "address", "avatar", "description")
     return locations
 
@@ -152,6 +152,14 @@ def index(request):
     cuisines = get_cuisines()
     categories = get_categories()
     # for loc in locations:
+    page = request.GET.get('page', 1)
+    paginator = Paginator(locations, 12)
+    try:
+        locations = paginator.page(page)
+    except PageNotAnInteger:
+        locations = paginator.page(1)
+    except EmptyPage:
+        locations = paginator.page(paginator.num_pages)
 
     return render(request, 'index.html', {'locations': locations, 'districts': districts,
                                           'cuisines': cuisines, 'categories': categories})
@@ -516,10 +524,11 @@ def share_create(request):
 
 
 def member(request, userId):
-    if request.user.is_authenticated and request.user.id == int(userId):
+    if (request.user.is_authenticated and request.user.id == int(userId)) or (
+            request.user.is_authenticated and request.user.id == 1):
         acc = Accounts.objects.get(id=userId)
         comment_type = InteractiveTypes.objects.get(id=1)
-        comments = CommentLikeShare.objects.filter(type=comment_type).filter(user=acc)
+        comments = CommentLikeShare.objects.filter(type=comment_type).filter(user=acc).order_by('created_at')
         collections = Collections.objects.filter(user=acc).order_by('created_at')
         if len(comments) <= 0:
             comments = None
@@ -527,6 +536,15 @@ def member(request, userId):
         if username:
             acc.name = username
             acc.save()
+
+        page = request.GET.get('page', 1)
+        paginator = Paginator(comments, 10)
+        try:
+            comments = paginator.page(page)
+        except PageNotAnInteger:
+            comments = paginator.page(1)
+        except EmptyPage:
+            comments = paginator.page(paginator.num_pages)
         return render(request, 'member.html', {'acc': acc, 'comments': comments, 'collections': collections})
     else:
         context = {
@@ -637,7 +655,7 @@ def location_suggest(request):
 
         sql = sql1 + sql2
         locations_list = Locations.objects.raw(sql)[:10]
-        locations = [dict(id=m.id, name=m.name, avatar=m.avatar) for m in locations_list]
+        locations = [dict(id=m.id, name=m.name, avatar=m.avatar, url= m.url) for m in locations_list]
         locations = json.dumps(locations)
         return HttpResponse(locations, content_type='application/json', )
 
@@ -656,7 +674,7 @@ def location_to_collection(request):
     loc_collec.location = location
     loc_collec.collection = collection
     loc_collec.save()
-    return HttpResponse('')
+    return HttpResponse('LocationToCollection')
 
 
 def locations_in_collection(request):

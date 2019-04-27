@@ -59,7 +59,8 @@ function location_to_collection(locationId, collectionId) {
 }
 
 function suggest_location () {
-    let name = $(this).val();
+    let name = $("#name-location").val();
+    // alert(name)
     let collection_id = $(".addLocation").attr('value');
     $.get('/location_suggest/', {location_name: name}, function (data) {
         let optionss = ""

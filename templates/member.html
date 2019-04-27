@@ -17,12 +17,13 @@
 
                 <div class="col-3">
                     <div class="list-group" id="list-tab" role="tablist">
-                        <a class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list"
+                        <a class="list-group-item list-group-item-action " id="list-home-list" data-toggle="list"
                            href="#list-home" role="tab" aria-controls="home">
                             <img class="rounded-circle" style="width: 50px;height:50px;" src="{{ acc.avatar }}" alt="">
                             {{ acc.name }}
                         </a>
-                        <a class="list-group-item list-group-item-action" id="list-activities-list" data-toggle="list"
+                        <a class="list-group-item list-group-item-action active" id="list-activities-list"
+                           data-toggle="list"
                            href="#list-activities" role="tab" aria-controls="activities">Hoạt động</a>
                         <a class="list-group-item list-group-item-action" id="list-collections-list" data-toggle="list"
                            href="#list-collections" role="tab" aria-controls="collections">Bộ sưu tập địa điểm</a>
@@ -35,12 +36,11 @@
                     </div>
                 </div>
 
-
                 <div class="col-8">
                     <div class="tab-content" id="nav-tabContent">
-                        <div class="tab-pane fade" id="list-activities" role="tabpanel"
+                        <div class="tab-pane fade show active" id="list-activities" role="tabpanel"
                              aria-labelledby="list-activities-list">
-                            {#                    {% if comments %}#}
+                            <h4>Bình luận</h4>
                             <div class="row item-res">
                                 {% if comments %}
                                     {% for comment in comments %}
@@ -62,12 +62,13 @@
                                             </div>
                                             <div class="row" style="margin-top:2px; background:#fff">
                                                 <div class="col-lg-12 col-md-12">
-                                                    <b style="margin:10px 0px 10px 0px">{{ comment.title }}</b>
+                                                    <div class="crop"
+                                                         style="font-weight:bold;margin:10px 0px 10px 0px">{{ comment.title }}</div>
                                                 </div>
                                             </div>
                                             <div class="row" style="margin-top:2px; background:#fff">
                                                 <div class="col-lg-12 col-md-12">
-                                                    <p style="word-wrap: break-word;">{{ comment.content }}</p>
+                                                    <div style="word-wrap: break-word;">{{ comment.content }}</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -75,6 +76,75 @@
                                 {% else %}
                                     Chưa có bình luận
                                 {% endif %}
+                            </div>
+                            <div class="paging-result">
+                                <div class="row ">
+                                    <div class="col-lg-12 col-md-12">
+                                        {% if comments.has_other_pages %}
+                                            <ul class="pagination">
+                                                {% if comments.has_previous %}
+                                                    <li class="page-item"><a class="page-link" value="1">First</a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link"
+                                                           value="{{ comments.previous_page_number }}">
+                                                            Previous
+                                                        </a>
+                                                    </li>
+                                                {% else %}
+                                                    <li class="page-item disabled">
+                                                        <a class="page-link" href="">Previous</a>
+                                                    </li>
+                                                {% endif %}
+
+                                                {% if comments.number|add:'-4' > 1 %}
+                                                    <li class="page-item">
+                                                        <a class="page-link"
+                                                           value="{{ comments.number|add:'-5' }}">&hellip;
+                                                        </a>
+                                                    </li>
+                                                {% endif %}
+                                                {% for i in comments.paginator.page_range %}
+                                                    {% if comments.number == i %}
+                                                        <li class="page-item active">
+                                                            <a class="page-link" href="">{{ i }}</a>
+                                                        </li>
+                                                    {% elif i > comments.number|add:'-5' and i < comments.number|add:'5' %}
+                                                        <li class="page-item">
+                                                            <a class="page-link" value="{{ i }}">{{ i }}
+                                                            </a>
+                                                        </li>
+                                                    {% endif %}
+                                                {% endfor %}
+
+                                                {% if comments.paginator.num_pages > comments.number|add:'4' %}
+                                                    <li class="page-item">
+                                                        <a class="page-link"
+                                                           value="{{ comments.number|add:'5' }}">&hellip;</a>
+                                                    </li>
+                                                {% endif %}
+                                                {% if comments.has_next %}
+                                                    <li class="page-item">
+                                                        <a class="page-link"
+                                                           value="{{ comments.next_page_number }}">Next</a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link"
+                                                           value="{{ comments.paginator.num_pages }}">
+                                                            Last</a>
+                                                        {% else %}
+                                                    <li class="page-item disabled">
+                                                        <a class="page-link" href="">
+                                                            Next</a></li>
+                                                {% endif %}
+                                                <li class="page-item disabled">
+                                                    <a class="page-link">Page {{ comments.number }}
+                                                        of {{ comments.paginator.num_pages }}</a>
+                                                </li>
+                                            </ul>
+                                        {% endif %}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="tab-pane fade" id="list-collections" role="tabpanel"
@@ -86,15 +156,12 @@
                                                        class="fa fa-arrow-left float-left"></i></a>
                                     </div>
                                     <div class="col-md-3">
-
                                         <div class="btn-group ">
-
                                             <button type="button" class="btn btn-primary" data-toggle="modal"
                                                     data-target="#createCol">
                                                 Tạo bộ sưu tập
                                             </button>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
@@ -117,11 +184,8 @@
                                                        placeholder="Tên địa điểm"
                                                        name="name" maxlength="255" required>
                                                 <div id="location-suggest"></div>
-
                                             </div>
                                         </form>
-
-
                                     </div>
                                 </div>
                             </div>
@@ -151,7 +215,9 @@
                                     {% csrf_token %}
                                     <tr>
                                         <td>Tên tài khoản</td>
-                                        <td><input name="name" type="text" class="form-control"
+                                        <td>
+                                            <input name="name" type="text" class="form-control"
+                                                   pattern=".{1,255}" title="Tối đa 255 ký tự"
                                                    placeholder="{{ acc.name }}" required maxlength="255">
                                         </td>
                                     </tr>
@@ -163,7 +229,8 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            <input id="show-button-update" type="submit" value="Lưu thay đổi"
+                                            <input id="show-button-update" type="submit"
+                                                   value="Lưu thay đổi"
                                                    class="btn btn-primary pull-right"/>
                                         </td>
                                     </tr>

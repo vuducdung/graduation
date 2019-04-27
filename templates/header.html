@@ -56,7 +56,8 @@
                                     <!-- Modal body -->
                                     <form id="collection-form" method="get">
                                         <div class="modal-body">
-                                            <input id="name-col" type="text" class="form-control"
+                                            <input pattern=".{1,255}" title="Tối đa 255 ký tự" id="name-col" type="text"
+                                                   class="form-control"
                                                    placeholder="Tên bộ sưu tập"
                                                    name="name" maxlength="255" required>
                                             <div id="validate-name"></div>
