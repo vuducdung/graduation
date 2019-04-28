@@ -756,10 +756,11 @@ def create_location(request):
             ser = ser.objects.get(id=service)
             service_location.service = ser
             service_location.location = location
+            service_location.save()
 
         location.is_active = False
         location.save()
-        service_location.save()
+
         cuisine_location.save()
         category_location.save()
 
