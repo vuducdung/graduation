@@ -448,13 +448,15 @@ def search(request):
 
     if sort == 'view':
         sql2 += ' order by "totalView" desc'
-    if sort == 'evaluate':
+    elif sort == 'evaluate':
         sql2 += ' order by "avgRating" desc'
-    if sort == 'price':
+    elif sort == 'price':
         sql2 += ' order by "priceMax" asc'
 
-    if sort == 'distance':
+    elif sort == 'distance':
         sql2 += ' order by "distance"  '
+    else:
+        sql2 += ' order by "totalView" desc'
     locations, count = get_search_location(sql1, sql2, page)
     return render(request, 'search.html',
                   {'locations': locations, 'districts': districts,
