@@ -3,6 +3,12 @@ psql -d database_name -f backup.sql
 
 ./manage.py dumpdata --exclude auth.permission --exclude contenttypes --exclude sessions --indent 2 > db.json
 
+CREATE DATABASE "graduation"
+    ENCODING 'UTF8'
+    LC_COLLATE = 'en_US.UTF-8'
+    LC_CTYPE = 'en_US.UTF-8'
+    TEMPLATE template0;
+    
 CREATE OR REPLACE FUNCTION vn_unaccent(text)
   RETURNS text AS
 $func$

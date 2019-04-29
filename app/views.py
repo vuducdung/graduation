@@ -17,6 +17,9 @@ from django.core.mail import EmailMessage
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+from django.utils.dateparse import parse_datetime
+from datetime import datetime
+
 
 def signup(request):
     if request.method == 'POST':
@@ -121,7 +124,37 @@ def get_location_by_url(locationUrl):
         # evaluation = [i.strip(' ') for i in evaluation]
         loc.evaluation = evaluation.split(',')[1:6]
         loc.evaluation = [i.strip(' ') for i in loc.evaluation]
-
+        totalReview = 0
+        avgRating = 0
+        if loc.avgRating:
+            avgRating = loc.avgRating
+        if loc.totalReview:
+            totalReview = loc.totalReview
+        point = float(avgRating) * float(totalReview)
+        point_1 = float(loc.evaluation[0]) * float(totalReview)
+        point_2 = float(loc.evaluation[1]) * float(totalReview)
+        point_3 = float(loc.evaluation[2]) * float(totalReview)
+        point_4 = float(loc.evaluation[3]) * float(totalReview)
+        point_5 = float(loc.evaluation[4]) * float(totalReview)
+        new_reviews = CommentLikeShare.objects.filter(location=loc).filter(type_id=1).filter(
+            created_at__range=(parse_datetime('2019-04-20 20:48:17.099000'), datetime.now()))
+        if len(new_reviews)>0:
+            for re in new_reviews:
+                point += float(re.score)
+                review_list = re.evaluation.split(',')
+                point_1 += float(review_list[0])
+                point_2 += float(review_list[1])
+                point_3 += float(review_list[2])
+                point_4 += float(review_list[3])
+                point_5 += float(review_list[4])
+            loc.avgRating = round(float(point) / int(len(new_reviews) + int(totalReview)),1)
+            loc.evaluation = [
+                round(float(point_1) / int(len(new_reviews) + int(totalReview)),1),
+                round(float(point_2) / int(len(new_reviews) + int(totalReview)),1),
+                round(float(point_3) / int(len(new_reviews) + int(totalReview)),1),
+                round(float(point_4) / int(len(new_reviews) + int(totalReview)),1),
+                round(float(point_5) / int(len(new_reviews) + int(totalReview)),1),
+            ]
         return loc
     return None
 
@@ -193,7 +226,7 @@ def get_location_menu(loc):
 
 def get_location_comment(loc):
     type = InteractiveTypes.objects.get(id=1)
-    comments = CommentLikeShare.objects.filter(location=loc).filter(type=type).order_by('created_at')
+    comments = CommentLikeShare.objects.filter(location=loc).filter(type=type).order_by('-created_at')
     return comments
 
 
@@ -251,7 +284,7 @@ def location(request, locationUrl):
 
         comment = request.GET.get('comment', None)
         if comment:
-            comments = get_location_comment(loc).order_by('-created_at')
+            comments = get_location_comment(loc)
 
             if len(comments) <= 0:
                 comments = None
@@ -308,10 +341,11 @@ def get_suggest_location(sql1, sql2, page):
 
 
 def get_location_from_list(list):
-    locations_list = []
-    for locationId in list:
-        location = Locations.objects.get(id=locationId)
-        locations_list.append(location)
+    # locations_list = []
+    # for locationId in list:
+    #     location = Locations.objects.get(id=locationId)
+    #     locations_list.append(location)
+    locations_list = Locations.objects.filter(pk__in=list).order_by('-avgRating', '-totalView', 'priceMax')
     return locations_list
 
 
@@ -343,26 +377,34 @@ def search(request):
             userId = request.user.id
             user = Accounts.objects.get(id=userId)
             suggestion_location = user.recommend_locs
-            suggestion_locations = ast.literal_eval(suggestion_location)
-            suggestion_locations = sorted(suggestion_locations, key=lambda x: -x[1])
-            locationId_list = [x[0] for x in suggestion_locations]
-            locations_list = get_location_from_list(locationId_list)
-            count = len(locations_list)
-            paginator = Paginator(locations_list, 10)
-            try:
-                locations = paginator.page(page)
-            except PageNotAnInteger:
-                locations = paginator.page(1)
-            except EmptyPage:
-                locations = paginator.page(paginator.num_pages)
-            return render(request, 'search.html',
-                          {'suggest': True, 'locations': locations, 'districts': districts,
-                           'cuisines': cuisines, 'categories': categories, 'count': count})
+            if suggestion_location and (not suggestion_location == ''):
+                suggestion_locations = ast.literal_eval(suggestion_location)
+                suggestion_locations = sorted(suggestion_locations, key=lambda x: -x[1])
+                locationId_list = [x[0] for x in suggestion_locations]
+                locations_list = get_location_from_list(locationId_list)
+                count = len(locations_list)
+                paginator = Paginator(locations_list, 10)
+                try:
+                    locations = paginator.page(page)
+                except PageNotAnInteger:
+                    locations = paginator.page(1)
+                except EmptyPage:
+                    locations = paginator.page(paginator.num_pages)
+                return render(request, 'search.html',
+                              {'suggest': True, 'locations': locations, 'districts': districts,
+                               'cuisines': cuisines, 'categories': categories, 'count': count})
             if lat and long:
                 point = f"point({lat},{long})"
                 sql1 = f"select admin_locations.*,round((point(longitude,latitude) <@> {point})*1609)" \
                     f" as distance from admin_locations"
-                sql2 = ' where admin_locations.is_active=TRUE'
+                sql2 = ''' where admin_locations.is_active=TRUE 
+                order by 
+                "avgRating" desc,
+                "totalView" desc,
+                distance asc,
+                "priceMax" asc;
+                
+                '''
 
                 sql = sql1 + sql2
                 locations_list = Locations.objects.raw(sql)[:20]
@@ -409,7 +451,7 @@ def search(request):
     if sort == 'evaluate':
         sql2 += ' order by "avgRating" desc'
     if sort == 'price':
-        sql2 += ' order by "priceMax"'
+        sql2 += ' order by "priceMax" asc'
 
     if sort == 'distance':
         sql2 += ' order by "distance"  '

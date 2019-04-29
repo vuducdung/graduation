@@ -65,11 +65,9 @@ class Accounts(AbstractBaseUser):
     # status = models.CharField(max_length=20)
     # nickName = models.CharField(max_length=255)
     role = models.ForeignKey(Roles, on_delete=models.CASCADE, default=2)
-    avatar=models.CharField(max_length=255, default="#")
-    recommend_locs = models.TextField(default='')
-
+    avatar = models.CharField(max_length=255, default="#")
+    recommend_locs = models.TextField(null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
     objects = MyUserManager()
-

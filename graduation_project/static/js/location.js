@@ -45,11 +45,11 @@ function choice_collection(collectionId, locationId) {
 }
 
 document.getElementById('shareBtn').onclick = function () {
-    // alert(window.location.href)
+    alert(window.location.href)
     FB.ui({
         display: 'popup',
         method: 'share',
-        href: String(window.location.hef),
+        href: window.location.href,
     }, function (response) {
         let locationId = $('#shareBtn').attr('value').split('|')[0]
         let userId = $('#shareBtn').attr('value').split('|')[1]
