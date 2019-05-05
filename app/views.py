@@ -138,7 +138,7 @@ def get_location_by_url(locationUrl):
         point_5 = float(loc.evaluation[4]) * float(totalReview)
         new_reviews = CommentLikeShare.objects.filter(location=loc).filter(type_id=1).filter(
             created_at__range=(parse_datetime('2019-04-20 20:48:17.099000'), datetime.now()))
-        if len(new_reviews)>0:
+        if len(new_reviews) > 0:
             for re in new_reviews:
                 point += float(re.score)
                 review_list = re.evaluation.split(',')
@@ -147,13 +147,13 @@ def get_location_by_url(locationUrl):
                 point_3 += float(review_list[2])
                 point_4 += float(review_list[3])
                 point_5 += float(review_list[4])
-            loc.avgRating = round(float(point) / int(len(new_reviews) + int(totalReview)),1)
+            loc.avgRating = round(float(point) / int(len(new_reviews) + int(totalReview)), 1)
             loc.evaluation = [
-                round(float(point_1) / int(len(new_reviews) + int(totalReview)),1),
-                round(float(point_2) / int(len(new_reviews) + int(totalReview)),1),
-                round(float(point_3) / int(len(new_reviews) + int(totalReview)),1),
-                round(float(point_4) / int(len(new_reviews) + int(totalReview)),1),
-                round(float(point_5) / int(len(new_reviews) + int(totalReview)),1),
+                round(float(point_1) / int(len(new_reviews) + int(totalReview)), 1),
+                round(float(point_2) / int(len(new_reviews) + int(totalReview)), 1),
+                round(float(point_3) / int(len(new_reviews) + int(totalReview)), 1),
+                round(float(point_4) / int(len(new_reviews) + int(totalReview)), 1),
+                round(float(point_5) / int(len(new_reviews) + int(totalReview)), 1),
             ]
         return loc
     return None
@@ -392,18 +392,22 @@ def search(request):
                     locations = paginator.page(paginator.num_pages)
                 return render(request, 'search.html',
                               {'suggest': True, 'locations': locations, 'districts': districts,
-                               'cuisines': cuisines, 'categories': categories, 'count': count})
+                               'cuisines': cuisines, 'categories': categories, 'count': count,
+                               'not_distance': True
+                               })
+
             if lat and long:
                 point = f"point({lat},{long})"
                 sql1 = f"select admin_locations.*,round((point(longitude,latitude) <@> {point})*1609)" \
                     f" as distance from admin_locations"
                 sql2 = ''' where admin_locations.is_active=TRUE 
                 order by 
-                "avgRating" desc,
-                "totalView" desc,
-                distance asc,
-                "priceMax" asc;
                 
+                "avgRating" desc,
+                distance asc,
+                "totalView" desc,
+                
+                "priceMax" asc; 
                 '''
 
                 sql = sql1 + sql2
@@ -419,7 +423,33 @@ def search(request):
                 return render(request, 'search.html',
                               {'suggest': True, 'locations': locations, 'districts': districts,
                                'cuisines': cuisines, 'categories': categories, 'count': count})
-        return HttpResponse('Hãy đăng nhập để thực hiện chức năng này')
+            else:
+                # point = f"point({lat},{long})"
+                sql1 = '''select admin_locations.* from admin_locations'''
+                sql2 = ''' where admin_locations.is_active=TRUE 
+                order by 
+                "avgRating" desc,
+                "totalView" desc,
+                "priceMax" asc;
+                '''
+
+                sql = sql1 + sql2
+                locations_list = Locations.objects.raw(sql)[:20]
+                count = len(locations_list)
+                paginator = Paginator(locations_list, 10)
+                try:
+                    locations = paginator.page(page)
+                except PageNotAnInteger:
+                    locations = paginator.page(1)
+                except EmptyPage:
+                    locations = paginator.page(paginator.num_pages)
+                return render(request, 'search.html',
+                              {'suggest': True, 'locations': locations, 'districts': districts,
+                               'cuisines': cuisines, 'categories': categories, 'count': count,
+                               'not_distance': True})
+
+        else:
+            return HttpResponse('Hãy đăng nhập để thực hiện chức năng này')
 
     # Search location
     sql1 = f"select admin_locations.*,round((point(longitude,latitude) <@> {point})*1609)" \
@@ -574,21 +604,27 @@ def member(request, userId):
         comment_type = InteractiveTypes.objects.get(id=1)
         comments = CommentLikeShare.objects.filter(type=comment_type).filter(user=acc).order_by('created_at')
         collections = Collections.objects.filter(user=acc).order_by('created_at')
+        if len(collections) > 0:
+            for coll in collections:
+                if len(coll.location.all()) > 0:
+                    coll.avatar = coll.location.all()[0].avatar
+                else:
+                    coll.avatar = "https://images.foody.vn/default/s480x300/no-image.png"
         if len(comments) <= 0:
             comments = None
         username = request.POST.get('name', None)
         if username:
             acc.name = username
             acc.save()
-
-        page = request.GET.get('page', 1)
-        paginator = Paginator(comments, 10)
-        try:
-            comments = paginator.page(page)
-        except PageNotAnInteger:
-            comments = paginator.page(1)
-        except EmptyPage:
-            comments = paginator.page(paginator.num_pages)
+        if comments:
+            page = request.GET.get('page', 1)
+            paginator = Paginator(comments, 10)
+            try:
+                comments = paginator.page(page)
+            except PageNotAnInteger:
+                comments = paginator.page(1)
+            except EmptyPage:
+                comments = paginator.page(paginator.num_pages)
         return render(request, 'member.html', {'acc': acc, 'comments': comments, 'collections': collections})
     else:
         context = {
@@ -634,7 +670,13 @@ def get_collection(request):
         userId = request.user.id
     user = Accounts.objects.get(id=userId)
     collections = Collections.objects.filter(user=user).order_by('created_at')
-    collections = [dict(id=m.id, name=m.name, count=len(m.location.all())) for m in collections]
+    if len(collections) > 0:
+        for coll in collections:
+            if len(coll.location.all()) > 0:
+                coll.avatar = coll.location.all()[0].avatar
+            else:
+                coll.avatar = "https://images.foody.vn/default/s480x300/no-image.png"
+    collections = [dict(id=m.id, name=m.name, avatar=m.avatar, count=len(m.location.all())) for m in collections]
     return HttpResponse(json.dumps(collections), content_type='application/json', )
 
 

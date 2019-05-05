@@ -82,11 +82,15 @@
                                             <div><i style="color:green;" class="fa fa-eye"></i> {{ loc.totalView }} lượt
                                                 xem
                                             </div>
-                                            <div><i style="color:green;" class="fa fa-road"></i> {{ loc.distance }} mét
-                                                cách
-                                                từ
-                                                thành phố hà nội
-                                            </div>
+                                            {% if not not_distance %}
+                                                <div><i style="color:green;" class="fa fa-road"></i> {{ loc.distance }}
+                                                    mét
+                                                    cách
+                                                    từ
+                                                    thành phố hà nội
+                                                </div>
+                                            {% endif %}
+
                                         </div>
                                     </div>
                                 </div>

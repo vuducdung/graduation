@@ -6,13 +6,13 @@
                 //do succes handling
                 window.open("https://maps.google.com/?q=" + position.coords.latitude +
                     "," + position.coords.longitude)
-                alert('click')
+                {#alert('click')#}
                 let pageUrl = window.location.href.split('/')[0] + `/search/?suggest=True&lat=${position.coords.latitude}&long=${position.coords.longitude}`;
                 window.location.href = pageUrl
             },
             function errorCallback(error) {
                 //do error handling
-                alert('not click')
+                {#alert('not click')#}
                 let pageUrl = window.location.href.split('/')[0] + '/search/?suggest=True';
                 window.location.href = pageUrl
             },

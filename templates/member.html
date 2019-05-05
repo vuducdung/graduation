@@ -194,10 +194,16 @@
                                     {% for collection in collections %}
                                         <div onclick="change({{ collection.id }}, '{{ collection.name }}');locations_in_collection({{ collection.id }})"
                                              class="col-xs-3 col-sm-3 col-mm-3 col-lg-3 change suggest-collection">
-                                            <a href="#"><img src="https://images.foody.vn/default/s480x300/no-image.png"
-                                                             alt=""
-                                                             style="width: 100%"
-                                                             class="img-thumbnail img-fluid"></a>
+                                            <a href="#">
+                                                {% if collection.avatar %}
+                                                    <img src={{ collection.avatar }}
+                                                {% else %}
+                                                    <img src="https://images.foody.vn/default/s480x300/no-image.png"
+                                                {% endif %}
+
+                                                         alt=""
+                                                         style="width: 100%"
+                                                         class="img-thumbnail img-fluid"></a>
                                             <div class="caption text-center">
                                                 <div class="crop">{{ collection.name }}</div>
                                             </div>

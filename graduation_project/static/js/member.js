@@ -6,7 +6,7 @@ function get_collection() {
         $.each(data, function () {
             optionss += `<div onclick="change(${this.id},'${this.name}'),locations_in_collection(${this.id})" 
 class="col-xs-3 col-sm-3 col-mm-3 col-lg-3 change suggest-collection">
-                                    <a href="#"><img src="https://images.foody.vn/default/s480x300/no-image.png" alt=""
+                                    <a href="#"><img src=${this.avatar} alt=""
                                          style="width: 100%"
                                          class="img-thumbnail img-fluid"></a>
                                     <div class="caption text-center">
@@ -102,7 +102,7 @@ function change(col_id, col_name) {
 <div class="container"><div class="row">` + name_html + `
   <div class="col-xs-3 col-sm-3 col-mm-3 col-lg-3">
   <button type="button" data-toggle="modal" data-target="#addColl" 
-  class="btn btn-outline-warning">Thêm địa điểm</button></div>
+  class="btn btn-outline-warning addLocation" value="${col_id}">Thêm địa điểm</button></div>
   <div class="col-xs-3 col-sm-3 col-mm-3 col-lg-3"></div>
   <div id="location-list" style="margin-top: 20px;"></div>
 </div></div>
