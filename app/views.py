@@ -422,7 +422,9 @@ def search(request):
                     locations = paginator.page(paginator.num_pages)
                 return render(request, 'search.html',
                               {'suggest': True, 'locations': locations, 'districts': districts,
-                               'cuisines': cuisines, 'categories': categories, 'count': count})
+                               'cuisines': cuisines, 'categories': categories, 'count': count,
+                               'from':"từ vị trị của bạn"
+                               })
             else:
                 # point = f"point({lat},{long})"
                 sql1 = '''select admin_locations.* from admin_locations'''
@@ -490,7 +492,9 @@ def search(request):
     locations, count = get_search_location(sql1, sql2, page)
     return render(request, 'search.html',
                   {'locations': locations, 'districts': districts,
-                   'cuisines': cuisines, 'categories': categories, 'count': count})
+                   'cuisines': cuisines, 'categories': categories, 'count': count,
+                   'from': "từ thành phố Hà Nội"
+                   })
 
 
 def get_search_location(sql1, sql2, page):
