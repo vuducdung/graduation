@@ -533,68 +533,100 @@ def tran_word_search(word, str1, str2):
 
 
 def like_create(request):
-    locationId = request.GET.get('locationId', None)
-    userId = request.GET.get('userId', None)
-    if locationId and userId:
-        like = CommentLikeShare()
-        like.user = Accounts.objects.get(id=userId)
-        location = Locations.objects.get(id=locationId)
-        like.location = location
-        like.type = InteractiveTypes.objects.get(id=2)
-        like.save()
-        location.totalFavourite += 1
-        location.save()
-        like_count = location.totalFavourite
-        return HttpResponse(like_count)
+    if request.user.is_authenticated:
+        locationId = request.GET.get('locationId', None)
+        userId = request.GET.get('userId', None)
+        if locationId and userId:
+            like = CommentLikeShare()
+            like.user = Accounts.objects.get(id=userId)
+            location = Locations.objects.get(id=locationId)
+            like.location = location
+            like.type = InteractiveTypes.objects.get(id=2)
+            like.save()
+            location.totalFavourite += 1
+            location.save()
+            like_count = location.totalFavourite
+            return HttpResponse(like_count)
+    else:
+        context = {
+            'status': '400', 'reason': 'you can access this view '
+        }
+        response = HttpResponse(json.dumps(context), content_type='application/json')
+        response.status_code = 400
+        return response
 
 
 def like_decreate(request):
-    locationId = request.GET.get('locationId', None)
-    userId = request.GET.get('userId', None)
-    if locationId and userId:
-        user = Accounts.objects.get(id=userId)
-        location = Locations.objects.get(id=locationId)
-        type = InteractiveTypes.objects.get(id=2)
-        likes = CommentLikeShare.objects.filter(user=user).filter(location=location).filter(type=type)
-        if likes and len(likes) > 0:
-            likes[0].delete()
-        location.totalFavourite -= 1
-        location.save()
-        like_count = location.totalFavourite
-        return HttpResponse(like_count)
+    if request.user.is_authenticated:
+        locationId = request.GET.get('locationId', None)
+        userId = request.GET.get('userId', None)
+        if locationId and userId:
+            user = Accounts.objects.get(id=userId)
+            location = Locations.objects.get(id=locationId)
+            type = InteractiveTypes.objects.get(id=2)
+            likes = CommentLikeShare.objects.filter(user=user).filter(location=location).filter(type=type)
+            if likes and len(likes) > 0:
+                likes[0].delete()
+            location.totalFavourite -= 1
+            location.save()
+            like_count = location.totalFavourite
+            return HttpResponse(like_count)
+    else:
+        context = {
+            'status': '400', 'reason': 'you can access this view '
+        }
+        response = HttpResponse(json.dumps(context), content_type='application/json')
+        response.status_code = 400
+        return response
 
 
 def view_create(request):
-    locationId = request.GET.get('locationId', None)
-    userId = request.GET.get('userId', None)
-    if locationId:
-        location = Locations.objects.get(id=locationId)
-        location.totalView += 1
-        location.save()
-        if userId:
-            user = Accounts.objects.get(id=userId)
-            type = InteractiveTypes.objects.get(id=3)
-            view = CommentLikeShare()
-            view.type = type
-            view.user = user
-            view.location = location
-            view.save()
-        return HttpResponse('None')
+    if request.user.is_authenticated:
+        locationId = request.GET.get('locationId', None)
+        userId = request.GET.get('userId', None)
+        if locationId:
+            location = Locations.objects.get(id=locationId)
+            location.totalView += 1
+            location.save()
+            if userId:
+                user = Accounts.objects.get(id=userId)
+                type = InteractiveTypes.objects.get(id=3)
+                view = CommentLikeShare()
+                view.type = type
+                view.user = user
+                view.location = location
+                view.save()
+            return HttpResponse('None')
+    else:
+        context = {
+            'status': '400', 'reason': 'you can access this view '
+        }
+        response = HttpResponse(json.dumps(context), content_type='application/json')
+        response.status_code = 400
+        return response
 
 
 def share_create(request):
-    locationId = request.GET.get('locationId', None)
-    userId = request.GET.get('userId', None)
-    if locationId and userId:
-        location = Locations.objects.get(id=locationId)
-        user = Accounts.objects.get(id=userId)
-        type = InteractiveTypes.objects.get(id=4)
-        share = CommentLikeShare()
-        share.type = type
-        share.user = user
-        share.location = location
-        share.save()
-    return HttpResponse('None')
+    if request.user.is_authenticated:
+        locationId = request.GET.get('locationId', None)
+        userId = request.GET.get('userId', None)
+        if locationId and userId:
+            location = Locations.objects.get(id=locationId)
+            user = Accounts.objects.get(id=userId)
+            type = InteractiveTypes.objects.get(id=4)
+            share = CommentLikeShare()
+            share.type = type
+            share.user = user
+            share.location = location
+            share.save()
+        return HttpResponse('None')
+    else:
+        context = {
+            'status': '400', 'reason': 'you can access this view '
+        }
+        response = HttpResponse(json.dumps(context), content_type='application/json')
+        response.status_code = 400
+        return response
 
 
 def member(request, userId):
@@ -636,85 +668,125 @@ def member(request, userId):
 
 
 def collection_create(request):
-    name = request.GET.get('name', None)
-    description = request.GET.get('description', None)
-    userId = request.GET.get('userId', None)
-    user = Accounts.objects.get(id=userId)
-    collectios = []
-    old_coll = Collections.objects.filter(user=user).filter(name=name)
-    if len(old_coll) > 0:
-        return HttpResponse('None')
+    if request.user.is_authenticated:
+        name = request.GET.get('name', None)
+        description = request.GET.get('description', None)
+        userId = request.GET.get('userId', None)
+        user = Accounts.objects.get(id=userId)
+        collectios = []
+        old_coll = Collections.objects.filter(user=user).filter(name=name)
+        if len(old_coll) > 0:
+            return HttpResponse('None')
 
-    new_collection = Collections()
-    new_collection.name = name
-    new_collection.description = description
-    new_collection.user = user
-    new_collection.save()
-    collectios = Collections.objects.filter(user=user).order_by('created_at')
-    collectios = [dict(id=m.id, name=m.name) for m in collectios]
-    return HttpResponse(
-        json.dumps(collectios),
-        content_type='application/json', )
+        new_collection = Collections()
+        new_collection.name = name
+        new_collection.description = description
+        new_collection.user = user
+        new_collection.save()
+        collectios = Collections.objects.filter(user=user).order_by('created_at')
+        collectios = [dict(id=m.id, name=m.name) for m in collectios]
+        return HttpResponse(
+            json.dumps(collectios),
+            content_type='application/json', )
+    else:
+        context = {
+            'status': '400', 'reason': 'you can access this view '
+        }
+        response = HttpResponse(json.dumps(context), content_type='application/json')
+        response.status_code = 400
+        return response
 
 
 def collection_delete(request):
-    collection_id = request.GET.get('collectionId', None)
-    if collection_id:
-        Collections.objects.get(id=collection_id).delete()
-        return HttpResponse('None')
+    if request.user.is_authenticated:
+        collection_id = request.GET.get('collectionId', None)
+        if collection_id:
+            Collections.objects.get(id=collection_id).delete()
+            return HttpResponse('None')
+    else:
+        context = {
+            'status': '400', 'reason': 'you can access this view '
+        }
+        response = HttpResponse(json.dumps(context), content_type='application/json')
+        response.status_code = 400
+        return response
 
 
 def get_collection(request):
-    userId = None
     if request.user.is_authenticated:
-        userId = request.user.id
-    user = Accounts.objects.get(id=userId)
-    collections = Collections.objects.filter(user=user).order_by('created_at')
-    if len(collections) > 0:
-        for coll in collections:
-            if len(coll.location.all()) > 0:
-                coll.avatar = coll.location.all()[0].avatar
-            else:
-                coll.avatar = "https://images.foody.vn/default/s480x300/no-image.png"
-    collections = [dict(id=m.id, name=m.name, avatar=m.avatar, count=len(m.location.all())) for m in collections]
-    return HttpResponse(json.dumps(collections), content_type='application/json', )
+        userId = None
+        if request.user.is_authenticated:
+            userId = request.user.id
+        user = Accounts.objects.get(id=userId)
+        collections = Collections.objects.filter(user=user).order_by('created_at')
+        if len(collections) > 0:
+            for coll in collections:
+                if len(coll.location.all()) > 0:
+                    coll.avatar = coll.location.all()[0].avatar
+                else:
+                    coll.avatar = "https://images.foody.vn/default/s480x300/no-image.png"
+        collections = [dict(id=m.id, name=m.name, avatar=m.avatar, count=len(m.location.all())) for m in collections]
+        return HttpResponse(json.dumps(collections), content_type='application/json', )
+    else:
+        context = {
+            'status': '400', 'reason': 'you can access this view '
+        }
+        response = HttpResponse(json.dumps(context), content_type='application/json')
+        response.status_code = 400
+        return response
 
 
 def get_collections(request):
-    userId = None
     if request.user.is_authenticated:
-        userId = request.user.id
-    user = Accounts.objects.get(id=userId)
+        userId = None
+        if request.user.is_authenticated:
+            userId = request.user.id
+        user = Accounts.objects.get(id=userId)
 
-    collections = Collections.objects.filter(user=user).order_by('created_at')
+        collections = Collections.objects.filter(user=user).order_by('created_at')
 
-    location_id = request.GET.get('locationId', None)
-    if location_id:
-        location = Locations.objects.get(id=location_id)
-        collections = [
-            dict(id=m.id, name=m.name, count=len(m.location.all()),
-                 check=len(m.location.filter(id=location_id))) for m in
-            collections]
+        location_id = request.GET.get('locationId', None)
+        if location_id:
+            location = Locations.objects.get(id=location_id)
+            collections = [
+                dict(id=m.id, name=m.name, count=len(m.location.all()),
+                     check=len(m.location.filter(id=location_id))) for m in
+                collections]
+        else:
+            collections = [dict(id=m.id, name=m.name, count=len(m.location.all())) for m in collections]
+        return HttpResponse(json.dumps(collections), content_type='application/json', )
     else:
-        collections = [dict(id=m.id, name=m.name, count=len(m.location.all())) for m in collections]
-    return HttpResponse(json.dumps(collections), content_type='application/json', )
+        context = {
+            'status': '400', 'reason': 'you can access this view '
+        }
+        response = HttpResponse(json.dumps(context), content_type='application/json')
+        response.status_code = 400
+        return response
 
 
 def choice_collection(request):
-    collection_id = request.GET.get('collectionId', None)
-    location_id = request.GET.get('locationId', None)
-    if location_id and collection_id:
-        location = Locations.objects.get(id=location_id)
-        collection = Collections.objects.get(id=collection_id)
-        exist = CollectionLocation.objects.filter(location=location).filter(collection=collection)
-        if len(exist) > 0:
-            exist[0].delete()
-            return HttpResponse('delete')
-        collection_location = CollectionLocation()
-        collection_location.collection = collection
-        collection_location.location = location
-        collection_location.save()
-    return HttpResponse('add')
+    if request.user.is_authenticated:
+        collection_id = request.GET.get('collectionId', None)
+        location_id = request.GET.get('locationId', None)
+        if location_id and collection_id:
+            location = Locations.objects.get(id=location_id)
+            collection = Collections.objects.get(id=collection_id)
+            exist = CollectionLocation.objects.filter(location=location).filter(collection=collection)
+            if len(exist) > 0:
+                exist[0].delete()
+                return HttpResponse('delete')
+            collection_location = CollectionLocation()
+            collection_location.collection = collection
+            collection_location.location = location
+            collection_location.save()
+        return HttpResponse('add')
+    else:
+        context = {
+            'status': '400', 'reason': 'you can access this view '
+        }
+        response = HttpResponse(json.dumps(context), content_type='application/json')
+        response.status_code = 400
+        return response
 
 
 def location_suggest(request):
@@ -747,120 +819,154 @@ def location_suggest(request):
 
 
 def location_to_collection(request):
-    locationId = request.GET.get('locationId', None)
-    collectionId = request.GET.get('collectionId', None)
-    location = Locations.objects.get(id=locationId)
-    collection = Collections.objects.get(id=collectionId)
+    if request.user.is_authenticated:
+        locationId = request.GET.get('locationId', None)
+        collectionId = request.GET.get('collectionId', None)
+        location = Locations.objects.get(id=locationId)
+        collection = Collections.objects.get(id=collectionId)
 
-    ex_loc = collection.location.filter(id=locationId)
-    if len(ex_loc) > 0:
-        return HttpResponse('None')
+        ex_loc = collection.location.filter(id=locationId)
+        if len(ex_loc) > 0:
+            return HttpResponse('None')
 
-    loc_collec = CollectionLocation()
-    loc_collec.location = location
-    loc_collec.collection = collection
-    loc_collec.save()
-    return HttpResponse('LocationToCollection')
+        loc_collec = CollectionLocation()
+        loc_collec.location = location
+        loc_collec.collection = collection
+        loc_collec.save()
+        return HttpResponse('LocationToCollection')
+    else:
+        context = {
+            'status': '400', 'reason': 'you can access this view '
+        }
+        response = HttpResponse(json.dumps(context), content_type='application/json')
+        response.status_code = 400
+        return response
 
 
 def locations_in_collection(request):
-    collectionId = request.GET.get('collectionId', None)
-    collection = Collections.objects.get(id=collectionId)
-    locations_list = collection.location.all()
-    locations = [dict(id=m.id, name=m.name, avatar=m.avatar, url=m.url) for m in locations_list]
-    locations = json.dumps(locations)
-    return HttpResponse(locations, content_type='application/json', )
+    if request.user.is_authenticated:
+        collectionId = request.GET.get('collectionId', None)
+        collection = Collections.objects.get(id=collectionId)
+        locations_list = collection.location.all()
+        locations = [dict(id=m.id, name=m.name, avatar=m.avatar, url=m.url) for m in locations_list]
+        locations = json.dumps(locations)
+        return HttpResponse(locations, content_type='application/json', )
+    else:
+        context = {
+            'status': '400', 'reason': 'you can access this view '
+        }
+        response = HttpResponse(json.dumps(context), content_type='application/json')
+        response.status_code = 400
+        return response
 
 
 def delete_location_in_collection(request):
-    collectionId = request.GET.get('collectionId', None)
-    locationId = request.GET.get('locationId', None)
-    collection = Collections.objects.get(id=collectionId)
-    location = Locations.objects.get(id=locationId)
-    CollectionLocation.objects.filter(location=location).filter(collection=collection)[0].delete()
-    return HttpResponse('None')
+    if request.user.is_authenticated:
+        collectionId = request.GET.get('collectionId', None)
+        locationId = request.GET.get('locationId', None)
+        collection = Collections.objects.get(id=collectionId)
+        location = Locations.objects.get(id=locationId)
+        CollectionLocation.objects.filter(location=location).filter(collection=collection)[0].delete()
+        return HttpResponse('None')
+    else:
+        context = {
+            'status': '400', 'reason': 'you can access this view '
+        }
+        response = HttpResponse(json.dumps(context), content_type='application/json')
+        response.status_code = 400
+        return response
 
 
 def create_location(request):
-    hourL = ["%02d" % x for x in range(24)]
-    minuteL = ["%02d" % x for x in range(60)]
+    if request.user.is_authenticated:
+        hourL = ["%02d" % x for x in range(24)]
+        minuteL = ["%02d" % x for x in range(60)]
 
-    categories = get_categories()
-    cuisines = get_cuisines()
-    services = Services.objects.all()
-    districts = get_districts()
+        categories = get_categories()
+        cuisines = get_cuisines()
+        services = Services.objects.all()
+        districts = get_districts()
 
-    id_max = Locations.objects.order_by('-id').first().id + 1
+        id_max = Locations.objects.order_by('-id').first().id + 1
 
-    nameLoc = request.GET.get('nameLoc', None)
-    if request.user.is_authenticated and nameLoc:
-        location = Locations()
-        location.id = id_max
-        location.name = nameLoc
-        address = request.GET.get('address', None)
-        location.address = address
-        timeOpen1 = request.GET.get('timeOpen1', '00')
-        timeOpen2 = request.GET.get('timeOpen2', '00')
-        timeOpen = timeOpen1 + ':' + timeOpen2
-        timeClose1 = request.GET.get('timeClose1', '00')
-        timeClose2 = request.GET.get('timeClose2', '00')
-        timeClose = timeClose1 + ':' + timeClose2
-        location.workTime24h = timeOpen + ' - ' + timeClose
-        description = request.GET.get('description', None)
-        location.description = description
-        latitude = request.GET.get('latitude', 0)
-        location.latitude = latitude
-        longitude = request.GET.get('longitude', 0)
-        location.longitude = longitude
-        str1 = config('str1')
-        str2 = config('str2')
-        location.url = tran_word_search(' '.join(location.name.lower().split(' ')), str1, str2).replace(' ', '-')
-        exits_location = Locations.objects.filter(url=location.url)
-        if len(exits_location) > 0:
-            return HttpResponse('Địa điểm đã tồn tại')
+        nameLoc = request.GET.get('nameLoc', None)
+        if request.user.is_authenticated and nameLoc:
+            location = Locations()
+            location.id = id_max
+            location.name = nameLoc
+            address = request.GET.get('address', None)
+            location.address = address
+            timeOpen1 = request.GET.get('timeOpen1', '00')
+            timeOpen2 = request.GET.get('timeOpen2', '00')
+            timeOpen = timeOpen1 + ':' + timeOpen2
+            timeClose1 = request.GET.get('timeClose1', '00')
+            timeClose2 = request.GET.get('timeClose2', '00')
+            timeClose = timeClose1 + ':' + timeClose2
+            location.workTime24h = timeOpen + ' - ' + timeClose
+            description = request.GET.get('description', None)
+            location.description = description
+            latitude = request.GET.get('latitude', 0)
+            location.latitude = latitude
+            longitude = request.GET.get('longitude', 0)
+            location.longitude = longitude
+            str1 = config('str1')
+            str2 = config('str2')
+            location.url = tran_word_search(' '.join(location.name.lower().split(' ')), str1, str2).replace(' ', '-')
+            location.created_by = request.user.id
 
-        category = request.GET.get('category', None)
-        category = Categories.objects.get(id=category)
-        category_location = CategoryLocation()
-        category_location.category = category
-        category_location.location = location
+            exits_location = Locations.objects.filter(url=location.url)
+            if len(exits_location) > 0:
+                return HttpResponse('Địa điểm đã tồn tại')
 
-        cuisine = request.GET.get('cuisine', None)
-        cuisine = Cuisines.objects.get(id=cuisine)
-        cuisine_location = CuisineLocation()
-        cuisine_location.cuisine = cuisine
-        cuisine_location.location = location
+            category = request.GET.get('category', None)
+            category = Categories.objects.get(id=category)
+            category_location = CategoryLocation()
+            category_location.category = category
+            category_location.location = location
 
-        district = request.GET.get('district', None)
-        district = Districts.objects.get(id=district)
-        location.district = district
+            cuisine = request.GET.get('cuisine', None)
+            cuisine = Cuisines.objects.get(id=cuisine)
+            cuisine_location = CuisineLocation()
+            cuisine_location.cuisine = cuisine
+            cuisine_location.location = location
 
-        service = request.GET.get('service', None)
-        service_location = ServiceLocation()
-        ser = Services
-        if service:
-            ser = ser.objects.get(id=service)
-            service_location.service = ser
-            service_location.location = location
-            service_location.save()
+            district = request.GET.get('district', None)
+            district = Districts.objects.get(id=district)
+            location.district = district
 
-        location.is_active = False
-        location.save()
+            service = request.GET.get('service', None)
+            service_location = ServiceLocation()
+            ser = Services
+            if service:
+                ser = ser.objects.get(id=service)
+                service_location.service = ser
+                service_location.location = location
+                service_location.save()
 
-        cuisine_location.save()
-        category_location.save()
+            location.is_active = False
+            location.save()
 
-        userId = request.user.id
-        user = Accounts.objects.get(id=userId)
-        require = RequireFromUser()
-        require.location = location
-        require.user = user
-        require.save()
-        return redirect('/success')
-    return render(request, 'addLocation.html', {
-        'hourL': hourL, 'minuteL': minuteL,
-        'cuisines': cuisines, 'services': services, 'districts': districts, 'categories': categories,
-    })
+            cuisine_location.save()
+            category_location.save()
+
+            userId = request.user.id
+            user = Accounts.objects.get(id=userId)
+            require = RequireFromUser()
+            require.location = location
+            require.user = user
+            require.save()
+            return redirect('/success')
+        return render(request, 'addLocation.html', {
+            'hourL': hourL, 'minuteL': minuteL,
+            'cuisines': cuisines, 'services': services, 'districts': districts, 'categories': categories,
+        })
+    else:
+        context = {
+            'status': '400', 'reason': 'you can access this view '
+        }
+        response = HttpResponse(json.dumps(context), content_type='application/json')
+        response.status_code = 400
+        return response
 
 
 def success(request):

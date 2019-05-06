@@ -95,6 +95,7 @@ def location(request):
         if avatar:
             location.avatar = avatar
         location.save()
+        location.created_by = Accounts.objects.get(id=location.created_by)
         return render(request, 'admin/location.html',
                       {'location': location, 'form': form, 'avatar': avatar, })
 
@@ -121,7 +122,7 @@ def user(request):
 
     user_name = request.GET.get('user-name', None)
     if user_name:
-        accounts = Accounts.objects.filter(name__icontans=user_name).order_by('id')
+        accounts = Accounts.objects.filter(name__icontains=user_name).order_by('id')
         page = request.GET.get('page', 1)
         paginator = Paginator(accounts, 10)
         try:
@@ -180,6 +181,9 @@ def index(request):
 
 
 def comment(request, id):
+    if not request.user.is_authenticated or not request.user.role_id == 1:
+        return redirect('/admin/login/')
+
     location = Locations.objects.filter(id=id).first()
     page = request.GET.get('page', 1)
     username = request.GET.get('username', None)
@@ -218,6 +222,9 @@ def comment(request, id):
 
 
 def parking(request, id):
+    if not request.user.is_authenticated or not request.user.role_id == 1:
+        return redirect('/admin/login/')
+
     location = Locations.objects.filter(id=id).first()
     page = request.GET.get('page', 1)
     # username = request.GET.get('username', None)
@@ -239,6 +246,9 @@ def parking(request, id):
 
 
 def add_location(request):
+    if not request.user.is_authenticated or not request.user.role_id == 1:
+        return redirect('/admin/login/')
+
     hourL = ["%02d" % x for x in range(24)]
     minuteL = ["%02d" % x for x in range(60)]
 
@@ -269,6 +279,7 @@ def add_location(request):
         location.latitude = latitude
         longitude = request.GET.get('longitude', 0)
         location.longitude = longitude
+        location.created_by = request.user.id
 
         str1 = config('str1')
         str2 = config('str2')
@@ -303,6 +314,7 @@ def add_location(request):
             service_location.location = location
 
         location.save()
+
         service_location.save()
         cuisine_location.save()
         category_location.save()

@@ -114,7 +114,7 @@ class Locations(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    # created_by = models.IntegerField(null=True, default='1')
+    created_by = models.IntegerField(default='1')
 
     menu = models.ManyToManyField(Menus, through='MenuLocation')
     parking = models.ManyToManyField(Parkings, through='ParkingLocation')
