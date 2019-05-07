@@ -378,26 +378,57 @@ def search(request):
             user = Accounts.objects.get(id=userId)
             suggestion_location = user.recommend_locs
             if suggestion_location and (not suggestion_location == ''):
-                suggestion_locations = ast.literal_eval(suggestion_location)
-                suggestion_locations = sorted(suggestion_locations, key=lambda x: -x[1])
-                locationId_list = [x[0] for x in suggestion_locations]
-                locations_list = get_location_from_list(locationId_list)
-                count = len(locations_list)
-                paginator = Paginator(locations_list, 10)
-                try:
-                    locations = paginator.page(page)
-                except PageNotAnInteger:
-                    locations = paginator.page(1)
-                except EmptyPage:
-                    locations = paginator.page(paginator.num_pages)
-                return render(request, 'search.html',
-                              {'suggest': True, 'locations': locations, 'districts': districts,
-                               'cuisines': cuisines, 'categories': categories, 'count': count,
-                               'not_distance': True
-                               })
+                if not (lat and long):
+                    suggestion_locations = ast.literal_eval(suggestion_location)
+                    suggestion_locations = sorted(suggestion_locations, key=lambda x: -x[1])
+                    locationId_list = [x[0] for x in suggestion_locations]
+                    locations_list = get_location_from_list(locationId_list)
+                    count = len(locations_list)
+                    paginator = Paginator(locations_list, 10)
+                    try:
+                        locations = paginator.page(page)
+                    except PageNotAnInteger:
+                        locations = paginator.page(1)
+                    except EmptyPage:
+                        locations = paginator.page(paginator.num_pages)
+                    return render(request, 'search.html',
+                                  {'suggest': True, 'locations': locations, 'districts': districts,
+                                   'cuisines': cuisines, 'categories': categories, 'count': count,
+                                   'not_distance': True
+                                   })
+                else:
+                    suggestion_locations = ast.literal_eval(suggestion_location)
+                    suggestion_locations = sorted(suggestion_locations, key=lambda x: -x[1])
+                    locationId_list = [x[0] for x in suggestion_locations]
+                    id_tuple = tuple(locationId_list)
+                    point = f"point({long},{lat})"
+                    sql1 = f"select admin_locations.*,round((point(longitude,latitude) <@> {point})*1609)" \
+                        f" as distance from admin_locations"
+                    sql2 = f" where admin_locations.is_active=TRUE and admin_locations.id in {id_tuple}" + \
+                           '''order by 
+                           "avgRating" desc,
+                           distance asc,
+                           "totalView" desc,
+                           "priceMax" asc; '''
+
+                    sql = sql1 + sql2
+                    locations_list = Locations.objects.raw(sql)[:20]
+                    count = len(locations_list)
+                    paginator = Paginator(locations_list, 10)
+                    try:
+                        locations = paginator.page(page)
+                    except PageNotAnInteger:
+                        locations = paginator.page(1)
+                    except EmptyPage:
+                        locations = paginator.page(paginator.num_pages)
+                    return render(request, 'search.html',
+                                  {'suggest': True, 'locations': locations, 'districts': districts,
+                                   'cuisines': cuisines, 'categories': categories, 'count': count,
+                                   'from': "từ vị trị của bạn"
+                                   })
 
             if lat and long:
-                point = f"point({lat},{long})"
+                point = f"point({long},{lat})"
                 sql1 = f"select admin_locations.*,round((point(longitude,latitude) <@> {point})*1609)" \
                     f" as distance from admin_locations"
                 sql2 = ''' where admin_locations.is_active=TRUE 
@@ -423,7 +454,7 @@ def search(request):
                 return render(request, 'search.html',
                               {'suggest': True, 'locations': locations, 'districts': districts,
                                'cuisines': cuisines, 'categories': categories, 'count': count,
-                               'from':"từ vị trị của bạn"
+                               'from': "từ vị trị của bạn"
                                })
             else:
                 # point = f"point({lat},{long})"
