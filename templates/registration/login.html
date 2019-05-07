@@ -25,7 +25,7 @@
                 {% csrf_token %}
                 <input pattern=".{1,255}" title="Tối đa 255 ký tự" required type="text" class="fadeIn second"
                        id="id_username" name="username" placeholder="Địa chỉ email">
-                <input pattern=".{1,255}" title="Tối đa 255 ký tự" required type="password" class="fadeIn third"
+                <input pattern=".{1,20}" title="Tối đa 20 ký tự" required type="password" class="fadeIn third"
                        id="id_password" name="password" placeholder="password">
                 <input type="hidden" name="next" value="{{ next }}"/>
                 <input type="submit" class="fadeIn fourth" value="Đăng nhập">

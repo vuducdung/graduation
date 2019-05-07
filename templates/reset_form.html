@@ -21,8 +21,8 @@
             <!-- Login Form -->
             <form id="login-form" method="post" action="">
                 {% csrf_token %}
-                <input required pattern=".{8,20}"  title="Tối đa 8-20 ký tự" type="password" class="fadeIn second" id="pass1" name="pass1" placeholder="Mật khẩu mới">
-                <input required pattern=".{8,20}"  title="Tối đa 8-20 ký tự" type="password" class="fadeIn third" id="pass2" name="pass2" placeholder="Xác nhận mật khẩu">
+                <input required pattern=".{1,20}"  title="Tối đa 20 ký tự" type="password" class="fadeIn second" id="pass1" name="pass1" placeholder="Mật khẩu mới">
+                <input required pattern=".{1,20}"  title="Tối đa 20 ký tự" type="password" class="fadeIn third" id="pass2" name="pass2" placeholder="Xác nhận mật khẩu">
                 <input type="hidden" name="next" value="{{ next }}"/>
                 {% if message %}
                     <p style="color:red">Hai mật khẩu không khớp</p>
