@@ -14,113 +14,213 @@
     <!-- main content start-->
     <div id="page-wrapper">
         <div class="main-page">
-            {% if parkings %}
-                <div class="tables">
+            <div class="col-md-12">
+                {#                <div class="panel-default">#}
+                <div>
+                    <div class="panel-heading float-left" style="width:70%">
+                        Danh sách bãi đỗ xe
+                    </div>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3">
+                                <div style="margin-left:25px;" class="float-left">
+                                    <button type="button" data-toggle="modal" data-target="#addParking"
+                                            class="btn btn-info float-left">Thêm bãi đỗ xe
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3">
+                                {% if parking %}
+                                    <div style="margin-left:25px;" class="float-left">
+                                        <button type="button"
+                                                class="btn btn btn-danger float-left">
+                                            <a style="color:white" href="?delete={{ parking.id }}">
+                                                Xóa bãi đỗ xe
+                                            </a>
+                                        </button>
+                                    </div>
+                                {% endif %}
+                            </div>
 
-                <div class="bs-example widget-shadow" data-example-id="hoverable-table">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-mm-12 col-lg-12">
-                        <div id="word-search">
-                            <input id="user-name" type="text" style="width:30%;padding: 20px;"
-                                   class="box-search-page" placeholder="ID người dùng..."
-                                   aria-label="Search">
                         </div>
                     </div>
+
+
+                    <div class="modal" id="addParking">
+                        <div class="modal-dialog">
+                            <div class="modal-content" style="height: 350px;">
+
+                                <div class="modal-body">
+
+                                    <form method="get" action="">
+
+                                        <h7 id="h7.-bootstrap-heading">Tên bãi đỗ xe
+                                        </h7>
+
+
+                                        <input pattern=".{1,255}" title="Tối đa 255 ký tự"
+                                               name="nameLoc" type="text"
+                                               style="width:100%;"
+                                               maxlength="255" class="box-search-page"
+                                               placeholder="Tối đa 255 kí tự"
+                                               required>
+
+
+                                        <h7 id="h7.-bootstrap-heading">Địa chỉ<a
+                                                class="anchorjs-link" href="#h7.-bootstrap-heading"><span
+                                                class="anchorjs-icon"></span></a></h7>
+
+
+                                        <input pattern=".{1,255}" title="Tối đa 255 ký tự"
+                                               name="address" type="text"
+                                               style="width: 100%;"
+                                               class="box-search-page" placeholder="Tối đa 255 kí tự"
+                                               required>
+
+
+                                        <h7 id="h7.-bootstrap-heading">Mô tả<a
+                                                class="anchorjs-link" href="#h7.-bootstrap-heading"><span
+                                                class="anchorjs-icon"></span></a></h7>
+
+
+                                        <input type="text" style="width: 100%;"
+                                               pattern=".{1,255}" title="Tối đa 255 ký tự"
+                                               class="box-search-page"
+                                               placeholder="Tối đa 255 kí tự"
+                                               name="description"
+                                        >
+
+
+                                        <h7 id="h7.-bootstrap-heading">Vị trí</h7>
+
+
+                                        <p> Hãy tìm vị trí bạn muốn sau đó điền thông tin giá trị Latitude và
+                                            Longitude
+                                        </p>
+
+                                        <a target="_blank"
+                                           href="https://www.latlong.net/"><span
+                                        >https://www.latlong.net/</span>
+                                        </a>
+
+
+                                        <input style=""
+                                               class="box-search-page"
+                                               name="latitude"
+                                               placeholder="latitude"
+                                               required
+                                        >
+                                        <input style=""
+                                               class="box-search-page"
+                                               name="longitude"
+                                               placeholder="longitude"
+                                               required
+                                        >
+
+                                        <div id="h8.-bootstrap-heading">Avatar</div>
+
+                                        {{ form.as_p }}
+
+                                        <input style="margin-top:10px;" type="submit" value="Thêm"
+                                               class="btn btn-primary pull-right"/>
+                                        <input type="hidden" name="next" value="{{ next }}"/>
+
+                                    </form>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
-                <h4>Danh sách tài khoản người dùng:</h4>
-                <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th>Avatar</th>
-                        <th style="width:15%;">Name</th>
-                        <th style="width: 40%;">Nội dung</th>
-                    </tr>
-                    </thead>
-                    {% for pk in parkings %}
-                        <tbody>
-                        <tr>
-                            <td><img style="width:50px;height:50px;" src="{{ pk.map }}" alt=""></td>
-                            <td>{{ pk.name }}</td>
-                            <td>{{ pk.address }}</td>
+                <div class="inbox-page">
 
-                            <td>
-                                <div class="dots_drop">
+                    <div class="inbox-row widget-shadow" id="accordion" role="tablist" aria-multiselectable="true">
+                        {#                            <div class="mail "><input type="checkbox" class="checkbox"></div>#}
+                        {% if parkings %}
+                            <div class="mail mail-name">Avatar</div>
+                            <div style="width:30%" class="mail mail-name">Name</div>
+                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
+                               aria-expanded="true" aria-controls="collapseOne">
+                                <div class="mail"><p>Address</p>
+                                </div>
+                            </a>
+                        {% endif %}
+
+                        <div class="clearfix"></div>
+
+                        {% for pk in parkings %}
+
+                            <div class="inbox-row widget-shadow" id="accordion" role="tablist"
+                                 aria-multiselectable="true">
+                                <div class="mail mail-name"><img style="width:30px;height:30px;"
+                                                                 src="{{ pk.map }}"></img></div>
+                                <div style="width:30%" class="mail mail-name">{{ pk.name }}</div>
+                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
+                                   aria-expanded="true" aria-controls="collapseOne">
+                                    <div class="mail"><p>{{ pk.address }}</p>
+                                    </div>
+                                </a>
+                                <div class="mail-right dots_drop">
                                     <div class="dropdown">
                                         <a href="#" data-toggle="dropdown" aria-expanded="false">
                                             <p><i class="fa fa-ellipsis-v mail-icon"></i></p>
                                         </a>
-                                        <ul class="dropdown-menu ">
+                                        <ul class="dropdown-menu float-right">
                                             <li>
-                                                <a href="/admin/location/27/binh-luan/?delete={{ pk.id }}">
+                                                <a role="button"
+                                                   href="?parking={{ pk.id }}" aria-expanded="true"
+                                                   aria-controls="collapseOne">
                                                     <i class="fa fa-reply mail-icon"></i>
                                                     View
+                                                </a>
+                                            </li>
+
+                                            <li>
+                                                <a href="#" class="font-red" title="">
+                                                    <i class="fa fa-trash-o mail-icon"></i>
+                                                    Delete
                                                 </a>
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
-                            </td>
-                        </tr>
-                        </tbody>
-                    {% endfor %}
-                </table>
-                <div class="paging-result">
-                    <div class="row justify-content-end">
-                        <div class="col-lg-9 col-md-8">
-                            {% if parkings.has_other_pages %}
-                                <ul class="pagination">
-                                    {% if parkings.has_previous %}
-                                        <li class="page-item"><a class="page-link" value="1">First</a>
-                                        </li>
-                                        <li class="page-item"><a class="page-link"
-                                                                 value="{{ parkings.previous_page_number }}">Previous</a>
-                                        </li>
-                                    {% else %}
-                                        <li class="page-item disabled"><a class="page-link" href="">Previous</a>
-                                        </li>
-                                    {% endif %}
 
-                                    {% if parkings.number|add:'-4' > 1 %}
-                                        <li class="page-item"><a class="page-link"
-                                                                 value="{{ parkings.number|add:'-5' }}">&hellip;</a>
-                                        </li>
-                                    {% endif %}
-                                    {% for i in parkings.paginator.page_range %}
-                                        {% if parkings.number == i %}
-                                            <li class="page-item active"><a class="page-link" href="">{{ i }}</a>
-                                            </li>
-                                        {% elif i > parkings.number|add:'-5' and i < parkings.number|add:'5' %}
-                                            <li class="page-item"><a class="page-link" value="{{ i }}">{{ i }}</a>
-                                            </li>
-                                        {% endif %}
-                                    {% endfor %}
+                                <div class="clearfix"></div>
 
-                                    {% if parkings.paginator.num_pages > parkings.number|add:'4' %}
-                                        <li class="page-item"><a value="{{ parkings.number|add:'5' }}">&hellip;</a>
-                                        </li>
-                                    {% endif %}
-                                    {% if parkings.has_next %}
-                                        <li class="page-item"><a class="page-link"
-                                                                 value="{{ parkings.next_page_number }}">Next</a>
-                                        </li>
-                                        <li class="page-item"><a class="page-link"
-                                                                 value="{{ parkings.paginator.num_pages }}">Last</a>
-                                            {% else %}
-                                        <li class="page-item disabled"><a class="page-link" href="">Next</a></li>
-                                    {% endif %}
-                                    <li class="page-item disabled">  <span class="page-link">
-            Page {{ parkings.number }} of {{ parkings.paginator.num_pages }} pages
-        </span></li>
-                                </ul>
-                            {% endif %}
-                        </div>
+                            </div>
+                        {% endfor %}
+
+                        {% if parking %}
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-lg-4 col-md-4 float-left">
+                                        <div>Tên: {{ parking.name }}</div>
+                                        <div>Địa chỉ: {{ parking.address }}</div>
+                                        <div>Số chỗ ô tô: {{ parking.capacityCar }}</div>
+                                        <div>Số chỗ xe máy: {{ parking.capacity }}</div>
+                                    </div>
+
+                                    <div class="float-left col-lg-6 col-md-6" style=" "><img class="rounded"
+                                                                                             alt="Cinque Terre"
+                                                                                             style="width:150px;"
+                                                                                             src="{{ parking.map }}"
+                                                                                             alt=""></div>
+                                </div>
+
+                            </div>
+
+
+                        {% endif %}
                     </div>
                 </div>
-            {% else %}
-                <div>Đang cập nhật...</div>
-            {% endif %}
+
             </div>
+
+            <div class="tables">
+
             </div>
         </div>
     </div>

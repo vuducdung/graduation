@@ -18,9 +18,11 @@ urlpatterns = [
     url(r'^location/add/$', views.add_location, name='add_location'),
     url(r'^location/(?P<id>[0-9A-Za-z_\-]+)/binh-luan/$', views.comment, name='comment'),
     url(r'^location/(?P<id>[0-9A-Za-z_\-]+)/bai-do-xe/$', views.parking, name='parking'),
+    url(r'^location/(?P<id>[0-9A-Za-z_\-]+)/menu/$', views.menu, name='menu'),
     url(r'^user/$', views.user, name='user'),
     url(r'^user/(?P<id>[0-9A-Za-z_\-]+)/$', views.user, name='user'),
     path('success', views.success, name='success'),
+    path('sync', views.sync, name='sync'),
     url(r'^get_required_message/$', views.get_required_message, name='get_required_message'),
 ]
 

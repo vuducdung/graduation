@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html>
+<html style="font-size: 14px;">
 {% load static %}
 {% include "admin/head.html" %}
 <body class="cbp-spmenu-push">
@@ -14,14 +14,14 @@
     <div id="page-wrapper">
         <div class="main-page">
             <div class="row">
-                <div class="col-xs-9 col-sm-9 col-mm-9 col-lg-9">
+                <div class="col-xs-7 col-sm-7 col-mm-7 col-lg-7">
                     <div class="container">
                         <div class="row">
                             <div class="col-md-6">
                                 <div id="custom-search-input">
                                     <form action="" method="get">
                                         <div class="input-group col-md-12">
-                                            <input type="text" class="form-control input-lg"
+                                            <input style="height: 25px;" type="text" class="form-control input-lg"
                                                    name="location-name"
                                                    placeholder="Tên địa điểm"/>
 
@@ -40,7 +40,7 @@
                 </div>
                 <div class="col-xs-3 col-sm-3 col-mm-3 col-lg-3">
                     <a href="/admin/location/add/">
-                        <button style="height:50px;" type="button" class="btn btn-info btn-flat btn-pri btn-sm">
+                        <button style="height:30px;" type="button" class="btn btn-info btn-flat btn-pri btn-sm">
                             Thêm địa điểm
                         </button>
                     </a>
@@ -51,7 +51,7 @@
                 <div class="typography">
                     {#                    <h2 class="title1">Typography</h2>#}
                     <div class="grid_3 grid_4 widget-shadow">
-                        <h3 style="width: 30%;float: left;" class="hdg">Địa điểm</h3>
+                        <h8 style="width: 30%;float: left;" class="hdg">Địa điểm</h8>
                         <div style="width: 30%;float: left; color:blue;" class="mail-right dots_drop">
                             <div class="dropdown">
                                 <a href="#" data-toggle="dropdown" aria-expanded="false">
@@ -85,32 +85,31 @@
                         <div class="bs-example">
                             <table class="table">
                                 <tbody>
-                                <tr>
-                                    <td><h4 id="h4.-bootstrap-heading">Avatar<a
-                                            class="anchorjs-link" href="#h4.-bootstrap-heading"><span
-                                            class="anchorjs-icon"></span></a></h4>
-                                    </td>
-                                    <td class="type-info"><img style="width:360px;" src="
-                                            {% if avatar %}{{ avatar }}{% else %}{{ location.avatar }}{% endif %}"
-                                                               alt="">
-                                    </td>
-                                    <td>
-                                        <form method="post" enctype="multipart/form-data">
-                                            {% csrf_token %}
-                                            {{ form.as_p }}
-                                            <button type="submit">Upload</button>
-                                        </form>
-                                    </td>
-
-                                </tr>
-                                <form id="login-form" method="get" action="">
+                                <form method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}
                                     <tr>
-                                        <td><h4 id="h4.-bootstrap-heading">Tên địa điểm<a
-                                                class="anchorjs-link" href="#h4.-bootstrap-heading"><span
-                                                class="anchorjs-icon"></span></a></h4>
+                                        <td>
+                                            <h8 id="h8.-bootstrap-heading">Avatar</h8>
+                                        </td>
+                                        <td class="type-info" style="height:30px;"><img style="width:240px;" src="
+                                            {% if avatar %}{{ avatar }}{% else %}{{ location.avatar }}{% endif %}"
+                                                                                        alt="">
+                                        </td>
+
+                                        <td>
+                                            {{ form.as_p }}
+                                        </td>
+
+                                    </tr>
+
+                                    <tr>
+                                        <td>
+                                            <h7 id="h7.-bootstrap-heading">Tên địa điểm<a
+                                                    class="anchorjs-link" href="#h7.-bootstrap-heading"><span
+                                                    class="anchorjs-icon"></span></a></h7>
                                         </td>
                                         <td class="type-info">
-                                            <input type="text" style="padding:5px;width:100%;"
+                                            <input type="text" style="width:100%;"
                                                    pattern=".{1,255}" title="Tối đa 255 ký tự"
                                                    placeholder="{{ location.name }}"
                                                    maxlength="255"
@@ -119,11 +118,13 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><h4 id="h4.-bootstrap-heading">Địa chỉ<a
-                                                class="anchorjs-link" href="#h4.-bootstrap-heading"><span
-                                                class="anchorjs-icon"></span></a></h4></td>
+                                        <td>
+                                            <h7 id="h7.-bootstrap-heading">Địa chỉ<a
+                                                    class="anchorjs-link" href="#h7.-bootstrap-heading"><span
+                                                    class="anchorjs-icon"></span></a></h7>
+                                        </td>
                                         <td class="type-info">
-                                            <input type="text" style="padding:5px;width:100%;"
+                                            <input type="text" style="width:100%;"
                                                    placeholder="{{ location.address }}"
                                                    pattern=".{1,255}" title="Tối đa 255 ký tự"
                                                    maxlength="255"
@@ -133,11 +134,13 @@
                                     </tr>
 
                                     <tr>
-                                        <td><h4 id="h4.-bootstrap-heading">Thời gian mở cửa<a
-                                                class="anchorjs-link" href="#h4.-bootstrap-heading"><span
-                                                class="anchorjs-icon"></span></a></h4></td>
+                                        <td>
+                                            <h7 id="h7.-bootstrap-heading">Thời gian mở cửa<a
+                                                    class="anchorjs-link" href="#h7.-bootstrap-heading"><span
+                                                    class="anchorjs-icon"></span></a></h7>
+                                        </td>
                                         <td class="type-info">
-                                            <input type="text" style="padding:5px;width:100%;"
+                                            <input type="text" style="width:100%;"
                                                    placeholder="{{ location.workTime24h }}"
                                                    pattern=".{1,30}" title="Tối đa 30 ký tự"
                                                    maxlength="30"
@@ -146,9 +149,11 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><h4 id="h4.-bootstrap-heading">Xem tại link<a
-                                                class="anchorjs-link" href="#h4.-bootstrap-heading"><span
-                                                class="anchorjs-icon"></span></a></h4></td>
+                                        <td>
+                                            <h7 id="h7.-bootstrap-heading">Xem tại link<a
+                                                    class="anchorjs-link" href="#h7.-bootstrap-heading"><span
+                                                    class="anchorjs-icon"></span></a></h7>
+                                        </td>
 
                                         <td class="type-info">
                                             <a href="/ha-noi/{{ location.url }}">Link</a>
@@ -156,29 +161,58 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            <h4 id="h4.-bootstrap-heading"><a
+                                            <h7 id="h7.-bootstrap-heading">Map</h7>
+                                        </td>
+                                        <td class="type-info"><img style="width:240px;" src="
+                                            {{ location.map }}"
+                                                                   alt="">
+                                        </td>
+
+                                        <td>
+                                            {{ form1.as_p }}
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h7 id="h7.-bootstrap-heading"><a
                                                     href="/admin/location/{{ location.id }}/bai-do-xe/">Bãi đỗ xe</a><a
-                                                    class="anchorjs-link" href="#h4.-bootstrap-heading"><span
+                                                    class="anchorjs-link" href="#h7.-bootstrap-heading"><span
                                                     class="anchorjs-icon"></span></a>
-                                            </h4>
+                                            </h7>
                                         </td>
                                         <td class="type-info"><a href=""></a>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><h4 id="h4.-bootstrap-heading"><a
-                                                href="/admin/location/{{ location.id }}/binh-luan/">Danh sách bình
-                                            luận</a><a
-                                                class="anchorjs-link" href="#h4.-bootstrap-heading"><span
-                                                class="anchorjs-icon"></span></a></h4></td>
+                                        <td>
+                                            <h7 id="h7.-bootstrap-heading"><a
+                                                    href="/admin/location/{{ location.id }}/binh-luan/">Danh sách bình
+                                                luận</a><a
+                                                    class="anchorjs-link" href="#h7.-bootstrap-heading"><span
+                                                    class="anchorjs-icon"></span></a></h7>
+                                        </td>
                                         <td class="type-info"><a href=""></a>
                                         </td>
                                     </tr>
-                                     <tr>
-                                        <td><h4 id="h4.-bootstrap-heading"><a
-                                                href="/admin/user/?id={{ location.created_by.id }}">Created by: {{ location.created_by.name }}</a><a
-                                                class="anchorjs-link" href="#h4.-bootstrap-heading"><span
-                                                class="anchorjs-icon"></span></a></h4></td>
+                                    <tr>
+                                        <td>
+                                            <h7 id="h7.-bootstrap-heading"><a
+                                                    href="/admin/location/{{ location.id }}/menu/">Danh sách thực đơn</a><a
+                                                    class="anchorjs-link" href="#h7.-bootstrap-heading"><span
+                                                    class="anchorjs-icon"></span></a></h7>
+                                        </td>
+                                        <td class="type-info"><a href=""></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h7 id="h7.-bootstrap-heading"><a
+                                                    href="/admin/user/?id={{ location.created_by.id }}">Created
+                                                by: {{ location.created_by.name }}</a><a
+                                                    class="anchorjs-link" href="#h7.-bootstrap-heading"><span
+                                                    class="anchorjs-icon"></span></a></h7>
+                                        </td>
                                         <td class="type-info"><a href=""></a>
                                         </td>
                                     </tr>
@@ -200,7 +234,7 @@
             {% if locations %}
                 <div class="tables">
                 <div class="bs-example widget-shadow" data-example-id="hoverable-table">
-                <h4>Danh sách địa điểm:</h4>
+                <h7>Danh sách địa điểm:</h7>
                 <table id="myTable" class="table table-hover">
                     <thead>
                     <tr>
@@ -216,7 +250,7 @@
                         <tr>
                             <td>{{ loc.id }}</td>
                             <td>{{ loc.name }}</td>
-                            <td><img style="width:50px;height:50px;" src="{{ loc.avatar }}" alt=""></td>
+                            <td><img style="width:40px;height:40px;" src="{{ loc.avatar }}" alt=""></td>
                             <td>{{ loc.address }}</td>
                             <td>
                                 <div class="dots_drop">

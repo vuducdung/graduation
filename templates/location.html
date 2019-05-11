@@ -33,19 +33,20 @@
                         <div class="col-lg-10 col-md-10 ">
                             <table class="table table-borderless">
                                 <thead>
-                                <tr style="color:#03ae03;">
-                                    {% for ava in location.evaluation %}
-                                        <th>{{ ava }}</th>
-                                    {% endfor %}
-                                </tr>
-                                </thead>
-                                <tbody>
                                 <tr>
                                     <td>Vị trí</td>
                                     <td>Giá cả</td>
                                     <td>Chất lượng</td>
                                     <td>Phục vụ</td>
                                     <td>Không gian</td>
+                                </tr>
+
+                                </thead>
+                                <tbody>
+                                <tr style="color:#03ae03;">
+                                    {% for ava in location.evaluation %}
+                                        <th>{{ ava }}</th>
+                                    {% endfor %}
                                 </tr>
                                 </tbody>
                             </table>
@@ -90,8 +91,8 @@
                        class="list-group-item list-group-item-action list-group-item-success">Thực đơn</a>
                     <a href="/ha-noi/{{ location.url }}/?map=True"
                        class="list-group-item list-group-item-action list-group-item-success">Bản đồ</a>
-                    <a href="/ha-noi/{{ location.url }}/?parking=True"
-                       class="list-group-item list-group-item-action list-group-item-success">Bãi đỗ xe</a>
+{#                    <a href="/ha-noi/{{ location.url }}/?parking=True"#}
+{#                       class="list-group-item list-group-item-action list-group-item-success">Bãi đỗ xe</a>#}
                     <a href="/ha-noi/{{ location.url }}/?comment=True"
                        class="list-group-item list-group-item-action list-group-item-success">Bình luận</a>
                 </div>
@@ -116,7 +117,15 @@
                                 <!-- Modal Header -->
                                 <div class="modal-header">
                                     <h5 class="modal-title">Chọn bộ sưu tập</h5>
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <button id="c_collection" style="margin-left:10px;" type="button"
+                                            class="btn btn-primary" data-toggle="modal"
+                                            data-target="#createCol">
+                                        Tạo bộ sưu tập
+                                    </button>
+
+                                    <button id="close" type="button" class="close" data-dismiss="modal">&times;</button>
+
+
                                 </div>
 
                                 <!-- Modal body -->
@@ -126,8 +135,15 @@
 
                                 <!-- Modal footer -->
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                    <button id="closed" type="button" class="btn btn-danger" data-dismiss="modal">
+                                        Close
+                                    </button>
                                 </div>
+                                <script>
+                                    $("#c_collection").click(function () {
+                                        $("#closed").click();
+                                    })
+                                </script>
 
                             </div>
                         </div>
@@ -314,15 +330,15 @@
                                     <div class="col-lg-12 col-md-12" style="margin-top:20px;">
                                         <h6>{{ menu.name }}</h6>
                                         <div class="container">
-                                            {% for dish in menu.dishes %}
+                                            {% for dish in menu.dish_set.all %}
                                                 <div class="row" style="margin-top:2px;">
                                                     <div class="col-lg-4 col-md-4">
-                                                        <img style="width:60px;height:60px;"
-                                                             src="{{ dish.ImageUrl }}"
+                                                        <img style="width:40px;height:40px;"
+                                                             src="{{ dish.image }}"
                                                              alt="">
                                                     </div>
-                                                    <div class="col-lg-4 col-md-4">{{ dish.Name }}</div>
-                                                    <div class="col-lg-4 col-md-4">{{ dish.Price }}</div>
+                                                    <div class="col-lg-4 col-md-4">{{ dish.name }}</div>
+                                                    <div class="col-lg-4 col-md-4">{{ dish.price }} nghìn đồng</div>
                                                 </div>
                                             {% endfor %}
                                         </div>
@@ -334,37 +350,37 @@
                         </div>
                     {% endif %}
 
-                    {% if parkings %}
-                        <div class="row item-res">
-                            {% if parkings.items %}
-                                {% for parking in parkings.items %}
-                                    <div class="col-lg-12 col-md-12" style="margin-top:20px">
-                                        <div class="row" style="margin-top:2px;">
-                                            <div class="col-lg-4 col-md-4">
-                                                <img style="width:240px;height:240px;"
-                                                     src="{{ parking.map }}" alt="">
-                                            </div>
-
-                                            <div class="col-lg-8 col-md-8">
-                                                <div>{{ parking.name }}</div>
-                                                <div>{{ parking.address }}</div>
-
-                                                <div>Giờ mở cửa: {{ parking.startTime24h }}
-                                                    - {{ parking.endTime24h }}</div>
-                                                <div>Sức chứa: {{ parking.capacity }}
-                                                    <i class="fa fa-motorcycle"></i>
-                                                    - {{ parking.capacityCar }}
-                                                    <i class="fa fa-car"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                {% endfor %}
-                            {% else %}
-                                Bãi đỗ xe đang cập nhật
-                            {% endif %}
-                        </div>
-                    {% endif %}
+{#                    {% if parkings %}#}
+{#                        <div class="row item-res">#}
+{#                            {% if parkings.items %}#}
+{#                                {% for parking in parkings.items %}#}
+{#                                    <div class="col-lg-12 col-md-12" style="margin-top:20px">#}
+{#                                        <div class="row" style="margin-top:2px;">#}
+{#                                            <div class="col-lg-4 col-md-4">#}
+{#                                                <img style="width:240px;height:240px;"#}
+{#                                                     src="{{ parking.map }}" alt="">#}
+{#                                            </div>#}
+{##}
+{#                                            <div class="col-lg-8 col-md-8">#}
+{#                                                <div>{{ parking.name }}</div>#}
+{#                                                <div>{{ parking.address }}</div>#}
+{##}
+{#                                                <div>Giờ mở cửa: {{ parking.startTime24h }}#}
+{#                                                    - {{ parking.endTime24h }}</div>#}
+{#                                                <div>Sức chứa: {{ parking.capacity }}#}
+{#                                                    <i class="fa fa-motorcycle"></i>#}
+{#                                                    - {{ parking.capacityCar }}#}
+{#                                                    <i class="fa fa-car"></i>#}
+{#                                                </div>#}
+{#                                            </div>#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                {% endfor %}#}
+{#                            {% else %}#}
+{#                                Bãi đỗ xe đang cập nhật#}
+{#                            {% endif %}#}
+{#                        </div>#}
+{#                    {% endif %}#}
 
                     {% if map %}
                         <div class="row item-res">

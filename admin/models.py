@@ -179,7 +179,15 @@ class CuisineLocation(models.Model):
 
 
 class uploadImage(models.Model):
-    image = models.ImageField(upload_to='location/')
+    image = models.ImageField(upload_to='location/', blank=True)
+
+
+class uploadMapImage(models.Model):
+    map = models.ImageField(upload_to='location/', blank=True)
+
+
+class uploadDishImage(models.Model):
+    dish = models.ImageField(upload_to='location/')
 
 
 class Collections(models.Model):
@@ -206,8 +214,33 @@ class User_Location(models.Model):
     user = models.ForeignKey(Accounts, on_delete=models.CASCADE)
     rating = models.FloatField(null=True)
 
+    # created_at = models.DateTimeField(auto_now_add=True,default="2019-05-08 09:47:48.128551")
+    # updated_at = models.DateTimeField(auto_now=True,default="2019-05-08 09:47:48.128551")
+
 
 class RequireFromUser(models.Model):
     name = models.CharField(max_length=255, default='Thêm địa điểm')
     user = models.ForeignKey(Accounts, on_delete=models.CASCADE)
     location = models.ForeignKey(Locations, on_delete=models.CASCADE, null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class Notification(models.Model):
+    location = models.ForeignKey(Locations, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(Accounts, on_delete=models.CASCADE)
+    content = models.CharField(max_length=255, null=True)
+    viewed = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class Dish(models.Model):
+    name = models.CharField(max_length=255)
+    price = models.IntegerField()
+    menu = models.ForeignKey(Menus, on_delete=models.CASCADE)
+    image = models.CharField(max_length=500, default="https://www.foody.vn/style/images/deli-dish-no-image.png")
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

@@ -5,10 +5,11 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.contrib.auth import authenticate, login
 
-from admin.forms import ImageForm
+from admin.forms import ImageForm, MapForm, DishForm
 from app.models import Accounts, Roles
 from admin.models import *
-from app.views import tran_word_search, get_categories, get_cuisines, get_districts
+from app.views import tran_word_search, get_categories, get_cuisines, get_districts, get_location_menu, \
+    get_location_menu_v2, execute_word_search
 from django import forms
 import json
 from decouple import config
@@ -42,15 +43,16 @@ def location(request):
 
     locationName = request.GET.get('location-name', None)
     if locationName:
-        query = tran_word_search(locationName, str1, str2)
-        # query = query.replace(" ", ":*&")
-        query_list = []
-        for q in query.split(' '):
-            q = q + ':*'
-            query_list.append(q)
-        query = "&".join(query_list)
+        query = execute_word_search(locationName)
+        if query:
+            query = '&'.join(query)
+            # query_list = []
+            # for q in query.split(' '):
+            #     q = q + ':*'
+            #     query_list.append(q)
+            # query = "&".join(query_list)
 
-        sql2 += " and news_tsv @@ to_tsquery('simple','" + query + "')"
+            sql2 += " and news_tsv @@ to_tsquery('" + query + "')"
         sql = sql1 + sql2
         locations = Locations.objects.raw(sql)
         paginator = Paginator(locations, 10)
@@ -62,13 +64,25 @@ def location(request):
             locations = paginator.page(paginator.num_pages)
         return render(request, 'admin/location.html', {'locations': locations})
     avatar = None
+    map = None
     if request.method == 'POST':
+        image = request.FILES.get('image', None)
+        map = request.FILES.get('map', None)
+
         form = ImageForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            avatar = uploadImage.objects.get(id=form.instance.id).image.url
+        if form.is_valid() and image:
+            if len(form.files) > 0:
+                form.save()
+                avatar = uploadImage.objects.get(id=form.instance.id).image.url
+
+        form1 = MapForm(request.POST, request.FILES)
+        if form1.is_valid() and map:
+            if len(form1.files) > 0:
+                form1.save()
+                map = uploadMapImage.objects.get(id=form1.instance.id).map.url
 
     form = ImageForm()
+    form1 = MapForm()
     location_id = request.GET.get('id', None)
     delete = request.GET.get('delete', None)
     if delete:
@@ -78,26 +92,45 @@ def location(request):
     if location_id:
         location = Locations.objects.filter(id=location_id).first()
         is_active = request.GET.get('is_active', None)
+
         if is_active:
             location.is_active = True
             require = RequireFromUser.objects.filter(location=location)
             if len(require) > 0:
+                notification = Notification()
+                notification.user = require[0].user
+                notification.location = location
+                notification.content = "Bạn đã thêm địa điểm " + str(location.name) + " thành công"
+                notification.save()
                 require[0].delete()
-        nameLoc = request.GET.get('nameLoc', None)
+
+        nameLoc = request.POST.get('nameLoc', None)
         if nameLoc:
             location.name = nameLoc
-        address = request.GET.get('address', None)
+            str1 = config('str1')
+            str2 = config('str2')
+            location.url = tran_word_search(' '.join(location.name.lower().split(' ')), str1, str2).replace(' ', '-')
+            exits_location = Locations.objects.filter(url=location.url)
+            if len(exits_location) > 0:
+                return HttpResponse('Tên địa điểm đã được sử dụng cho địa điểm khác')
+
+        address = request.POST.get('address', None)
         if address:
             location.address = address
-        time = request.GET.get('time', None)
+        time = request.POST.get('time', None)
         if time:
             location.workTime24h = time
         if avatar:
             location.avatar = avatar
+        if map:
+            location.map = map
         location.save()
         location.created_by = Accounts.objects.get(id=location.created_by)
         return render(request, 'admin/location.html',
-                      {'location': location, 'form': form, 'avatar': avatar, })
+                      {
+                          'location': location, 'form': form,
+                          'avatar': avatar, 'form1': form1
+                      })
 
     locations = Locations.objects.all().order_by('id')
 
@@ -225,14 +258,19 @@ def parking(request, id):
     if not request.user.is_authenticated or not request.user.role_id == 1:
         return redirect('/admin/login/')
 
+    parking_id = request.GET.get('parking', None)
+    if parking_id:
+        parking = Parkings.objects.get(id=parking_id)
+        return render(request, 'admin/parking.html', {'parking': parking})
     location = Locations.objects.filter(id=id).first()
     page = request.GET.get('page', 1)
     # username = request.GET.get('username', None)
     deleteId = request.GET.get('delete', None)
     # return HttpResponse({type(userId)})
     if deleteId:
-        parking = Parkings.objects.get(id=deleteId)
-        parking.delete()
+        parking_location = ParkingLocation.objects.get(parking_id=deleteId, location_id=location.id)
+        parking_location.delete()
+        return redirect('/admin/location/' + str(location.id) + '/bai-do-xe/')
 
     parkings = location.parking.all()
     paginator = Paginator(parkings, 10)
@@ -243,6 +281,87 @@ def parking(request, id):
     except EmptyPage:
         parkings = paginator.page(paginator.num_pages)
     return render(request, 'admin/parking.html', {'parkings': parkings})
+
+
+def get_menu_from_id(id):
+    menu = Menus.objects.get(id=id)
+    dishes = menu.dishes
+    dishes = dishes.replace("'", '"')
+    dishes = dishes.replace("False", "false")
+    dishes = dishes.replace("None", "null")
+    try:
+        menu.dishes = json.loads(dishes)
+        for dish in menu.dishes:
+            if 'default' in str(dish['ImageUrl']):
+                dish['ImageUrl'] = 'https://www.foody.vn/style/images/deli-dish-no-image.png'
+            price = str(dish['Price']).replace('000.0', '.000')
+            dish['Price'] = price
+    except:
+        return None
+    return menu
+
+
+def menu(request, id):
+    if not request.user.is_authenticated or not request.user.role_id == 1:
+        return redirect('/admin/login/')
+
+    form = DishForm()
+    menu_id = request.GET.get('menu_id', None)
+
+    location = Locations.objects.filter(id=id).first()
+
+    menu_name = request.POST.get('menu_name', None)
+    if menu_name:
+        menu_max_id = Menus.objects.all().order_by('-id')[0].id
+
+        menu = Menus()
+        menu.id = menu_max_id + 1
+        menu.name = menu_name
+        menu.save()
+        menu_location = MenuLocation()
+        menu_location.menu = menu
+        menu_location.location = location
+        menu_location.save()
+
+        menus = get_location_menu_v2(location)
+        if len(menus) <= 0:
+            menus = None
+        return render(request, 'admin/menus.html', {'menus': menus, 'form': form})
+
+    create_dish_menu = request.POST.get('create_dish_menu', None)
+    if create_dish_menu:
+        menu = Menus.objects.get(id=create_dish_menu)
+        name_dish = request.POST.get('name_dish', None)
+        price_dish = request.POST.get('price_dish', None)
+        form = DishForm(request.POST, request.FILES)
+        if form.is_valid():
+            if len(form.files) > 0:
+                form.save()
+                image = uploadDishImage.objects.get(id=form.instance.id).dish.url
+                dish = Dish()
+                dish.name = name_dish
+                dish.price = price_dish
+                dish.image = image
+                dish.menu = menu
+                dish.save()
+                # menu = Menus.objects.get(id=create_dish_menu)
+                return render(request, 'admin/menus.html', {'menu': menu, 'form': form})
+
+    deleteId = request.GET.get('delete', None)
+    # return HttpResponse({type(userId)})
+    if deleteId and menu_id:
+        menu = Menus.objects.get(id=menu_id)
+        Dish.objects.get(id=deleteId).delete()
+        return render(request, 'admin/menus.html', {'menu': menu, 'form': form})
+
+    if menu_id:
+        menu = Menus.objects.get(id=menu_id)
+        return render(request, 'admin/menus.html', {'menu': menu, 'form': form})
+
+    menus = get_location_menu_v2(location)
+    if len(menus) <= 0:
+        menus = None
+    return render(request, 'admin/menus.html', {'menus': menus, 'form': form})
 
 
 def add_location(request):
@@ -348,3 +467,23 @@ def get_required_message(request):
             messages.append(m)
     messages = json.dumps(messages)
     return HttpResponse(messages, content_type='application/json', )
+
+
+#
+def sync(request):
+    #     menus = Menus.objects.all()
+    #
+    #     for m in menus:
+    #         menu = get_menu_from_id(m.id)
+    #         if menu:
+    #             for dish in menu.dishes:
+    #                 price = int(float(dish['Price']))
+    #                 name = dish['Name']
+    #                 new_dish = Dish()
+    #                 new_dish.price = price
+    #                 new_dish.name = name
+    #                 new_dish.menu = menu
+    #                 new_dish.image = dish['ImageUrl']
+    #                 new_dish.save()
+    #
+    return HttpResponse("EndSYNC")

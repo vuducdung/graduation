@@ -12,6 +12,7 @@ from django.contrib.auth import get_user_model
 import json
 import re
 from decouple import config
+from django.db import connection
 
 from django.core.mail import EmailMessage
 
@@ -111,7 +112,7 @@ def reset(request, id, token):
 
 def get_locations():
     locations = Locations.objects.filter(is_active=True).order_by('-totalView') \
-        .only("id", "name", "address", "avatar", "description")
+                    .only("id", "name", "address", "avatar", "description")[:40]
     return locations
 
 
@@ -186,7 +187,7 @@ def index(request):
     categories = get_categories()
     # for loc in locations:
     page = request.GET.get('page', 1)
-    paginator = Paginator(locations, 12)
+    paginator = Paginator(locations, 8)
     try:
         locations = paginator.page(page)
     except PageNotAnInteger:
@@ -196,6 +197,11 @@ def index(request):
 
     return render(request, 'index.html', {'locations': locations, 'districts': districts,
                                           'cuisines': cuisines, 'categories': categories})
+
+
+def get_location_menu_v2(loc):
+    menus = loc.menu.all().order_by('-created_at')
+    return menus
 
 
 def get_location_menu(loc):
@@ -254,7 +260,7 @@ def location(request, locationUrl):
         menuId = request.GET.get('menu', None)
         if menuId:
             # menus = loc.menu.all()
-            menus = get_location_menu(loc)
+            menus = get_location_menu_v2(loc)
             if len(menus) <= 0:
                 menus = None
             return render(request, 'location.html',
@@ -340,6 +346,89 @@ def get_suggest_location(sql1, sql2, page):
     return locations, count
 
 
+def get_suggestion_location(request):
+    location_id = request.GET.get('location_id', None)
+    location = Locations.objects.filter(id=location_id)
+    lat = None
+    long = None
+    if len(location) > 0:
+        lat = location[0].latitude
+        long = location[0].longitude
+    if request.user.is_authenticated:
+        userId = request.user.id
+        user = Accounts.objects.get(id=userId)
+        suggestion_location = user.recommend_locs
+        if suggestion_location and (not suggestion_location == ''):
+            if not (lat and long):
+                suggestion_locations = ast.literal_eval(suggestion_location)
+                suggestion_locations = sorted(suggestion_locations, key=lambda x: -x[1])
+                locationId_list = [x[0] for x in suggestion_locations]
+                locations_list = get_location_from_list(locationId_list)[:8]
+                locations = [dict(id=m.id, name=m.name, avatar=m.avatar, url=m.url) for m in locations_list]
+                locations = json.dumps(locations)
+                return HttpResponse(locations, content_type='application/json', )
+
+            else:
+                suggestion_locations = ast.literal_eval(suggestion_location)
+                suggestion_locations = sorted(suggestion_locations, key=lambda x: -x[1])
+                locationId_list = [x[0] for x in suggestion_locations]
+                id_tuple = tuple(locationId_list)
+                point = f"point({long},{lat})"
+                sql1 = f"select admin_locations.*,round((point(longitude,latitude) <@> {point})*1609)" \
+                    f" as distance from admin_locations"
+                sql2 = f" where admin_locations.is_active=TRUE and admin_locations.id in {id_tuple}" + \
+                       '''order by 
+                       "avgRating" desc,
+                       distance asc,
+                       "totalView" desc,
+                       "priceMax" asc; '''
+
+                sql = sql1 + sql2
+                locations_list = Locations.objects.raw(sql)[:8]
+                locations = [dict(id=m.id, name=m.name, avatar=m.avatar, url=m.url) for m in locations_list]
+                locations = json.dumps(locations)
+                return HttpResponse(locations, content_type='application/json', )
+
+        if lat and long:
+            point = f"point({long},{lat})"
+            sql1 = f"select admin_locations.*,round((point(longitude,latitude) <@> {point})*1609)" \
+                f" as distance from admin_locations"
+            sql2 = ''' where admin_locations.is_active=TRUE 
+                order by 
+
+                "avgRating" desc,
+                distance asc,
+                "totalView" desc,
+
+                "priceMax" asc; 
+                '''
+
+            sql = sql1 + sql2
+            locations_list = Locations.objects.raw(sql)[:8]
+            locations = [dict(id=m.id, name=m.name, avatar=m.avatar, url=m.url) for m in locations_list]
+            locations = json.dumps(locations)
+            return HttpResponse(locations, content_type='application/json', )
+
+        else:
+
+            sql1 = '''select admin_locations.* from admin_locations'''
+            sql2 = ''' where admin_locations.is_active=TRUE 
+                order by 
+                "avgRating" desc,
+                "totalView" desc,
+                "priceMax" asc;
+                '''
+
+            sql = sql1 + sql2
+            locations_list = Locations.objects.raw(sql)[:8]
+            locations = [dict(id=m.id, name=m.name, avatar=m.avatar, url=m.url) for m in locations_list]
+            locations = json.dumps(locations)
+            return HttpResponse(locations, content_type='application/json', )
+
+    else:
+        return HttpResponse('Hãy đăng nhập để thực hiện chức năng này')
+
+
 def get_location_from_list(list):
     # locations_list = []
     # for locationId in list:
@@ -347,6 +436,27 @@ def get_location_from_list(list):
     #     locations_list.append(location)
     locations_list = Locations.objects.filter(pk__in=list).order_by('-avgRating', '-totalView', 'priceMax')
     return locations_list
+
+
+def execute_word_search(word):
+    word = word.replace("'"," ")
+    str1 = config('str1')
+    str2 = config('str2')
+    word = tran_word_search(word, str1, str2)
+    cursor = connection.cursor()
+    word = str(word)
+    sql = f"SELECT to_tsvector('{word}');"
+    cursor.execute(sql)
+    word = cursor.fetchall()[0][0]
+    if len(word) > 0:
+        word = word.split(' ')
+        query = []
+        for text in word:
+            q = text.split(':')[0].replace("'", '')
+            q += ':*'
+            query.append(q)
+        return query
+    return None
 
 
 def search(request):
@@ -364,125 +474,10 @@ def search(request):
     long = request.GET.get('long', None)
     suggest = request.GET.get('suggest', None)
 
-    str1 = config('str1')
-    str2 = config('str2')
     province = Provinces.objects.all()[0]
     point = f"point({province.longitude},{province.latitude})"
 
     page = request.GET.get('page', 1)
-
-    # Suggest location
-    if suggest:
-        if request.user.is_authenticated:
-            userId = request.user.id
-            user = Accounts.objects.get(id=userId)
-            suggestion_location = user.recommend_locs
-            if suggestion_location and (not suggestion_location == ''):
-                if not (lat and long):
-                    suggestion_locations = ast.literal_eval(suggestion_location)
-                    suggestion_locations = sorted(suggestion_locations, key=lambda x: -x[1])
-                    locationId_list = [x[0] for x in suggestion_locations]
-                    locations_list = get_location_from_list(locationId_list)
-                    count = len(locations_list)
-                    paginator = Paginator(locations_list, 10)
-                    try:
-                        locations = paginator.page(page)
-                    except PageNotAnInteger:
-                        locations = paginator.page(1)
-                    except EmptyPage:
-                        locations = paginator.page(paginator.num_pages)
-                    return render(request, 'search.html',
-                                  {'suggest': True, 'locations': locations, 'districts': districts,
-                                   'cuisines': cuisines, 'categories': categories, 'count': count,
-                                   'not_distance': True
-                                   })
-                else:
-                    suggestion_locations = ast.literal_eval(suggestion_location)
-                    suggestion_locations = sorted(suggestion_locations, key=lambda x: -x[1])
-                    locationId_list = [x[0] for x in suggestion_locations]
-                    id_tuple = tuple(locationId_list)
-                    point = f"point({long},{lat})"
-                    sql1 = f"select admin_locations.*,round((point(longitude,latitude) <@> {point})*1609)" \
-                        f" as distance from admin_locations"
-                    sql2 = f" where admin_locations.is_active=TRUE and admin_locations.id in {id_tuple}" + \
-                           '''order by 
-                           "avgRating" desc,
-                           distance asc,
-                           "totalView" desc,
-                           "priceMax" asc; '''
-
-                    sql = sql1 + sql2
-                    locations_list = Locations.objects.raw(sql)[:20]
-                    count = len(locations_list)
-                    paginator = Paginator(locations_list, 10)
-                    try:
-                        locations = paginator.page(page)
-                    except PageNotAnInteger:
-                        locations = paginator.page(1)
-                    except EmptyPage:
-                        locations = paginator.page(paginator.num_pages)
-                    return render(request, 'search.html',
-                                  {'suggest': True, 'locations': locations, 'districts': districts,
-                                   'cuisines': cuisines, 'categories': categories, 'count': count,
-                                   'from': "từ vị trị của bạn"
-                                   })
-
-            if lat and long:
-                point = f"point({long},{lat})"
-                sql1 = f"select admin_locations.*,round((point(longitude,latitude) <@> {point})*1609)" \
-                    f" as distance from admin_locations"
-                sql2 = ''' where admin_locations.is_active=TRUE 
-                order by 
-                
-                "avgRating" desc,
-                distance asc,
-                "totalView" desc,
-                
-                "priceMax" asc; 
-                '''
-
-                sql = sql1 + sql2
-                locations_list = Locations.objects.raw(sql)[:20]
-                count = len(locations_list)
-                paginator = Paginator(locations_list, 10)
-                try:
-                    locations = paginator.page(page)
-                except PageNotAnInteger:
-                    locations = paginator.page(1)
-                except EmptyPage:
-                    locations = paginator.page(paginator.num_pages)
-                return render(request, 'search.html',
-                              {'suggest': True, 'locations': locations, 'districts': districts,
-                               'cuisines': cuisines, 'categories': categories, 'count': count,
-                               'from': "từ vị trị của bạn"
-                               })
-            else:
-                # point = f"point({lat},{long})"
-                sql1 = '''select admin_locations.* from admin_locations'''
-                sql2 = ''' where admin_locations.is_active=TRUE 
-                order by 
-                "avgRating" desc,
-                "totalView" desc,
-                "priceMax" asc;
-                '''
-
-                sql = sql1 + sql2
-                locations_list = Locations.objects.raw(sql)[:20]
-                count = len(locations_list)
-                paginator = Paginator(locations_list, 10)
-                try:
-                    locations = paginator.page(page)
-                except PageNotAnInteger:
-                    locations = paginator.page(1)
-                except EmptyPage:
-                    locations = paginator.page(paginator.num_pages)
-                return render(request, 'search.html',
-                              {'suggest': True, 'locations': locations, 'districts': districts,
-                               'cuisines': cuisines, 'categories': categories, 'count': count,
-                               'not_distance': True})
-
-        else:
-            return HttpResponse('Hãy đăng nhập để thực hiện chức năng này')
 
     # Search location
     sql1 = f"select admin_locations.*,round((point(longitude,latitude) <@> {point})*1609)" \
@@ -490,15 +485,17 @@ def search(request):
     sql2 = ' where admin_locations.is_active=TRUE'
 
     if word:
-        query = tran_word_search(word, str1, str2)
-        # query = query.replace(" ", ":*&")
-        query_list = []
-        for q in query.split(' '):
-            q = q + ':*'
-            query_list.append(q)
-        query = "&".join(query_list)
 
-        sql2 += " and news_tsv @@ to_tsquery('simple','" + query + "')"
+        query = execute_word_search(word)
+        if query:
+            query = '&'.join(query)
+            # query_list = []
+            # for q in query.split(' '):
+            #     q = q + ':*'
+            #     query_list.append(q)
+            # query = "&".join(query_list)
+
+            sql2 += " and news_tsv @@ to_tsquery('" + query + "')"
 
     if cat:
         sql1 += ', admin_categorylocation'
@@ -532,6 +529,8 @@ def get_search_location(sql1, sql2, page):
     sql = sql1 + sql2
 
     locations_list = Locations.objects.raw(sql)
+    for location in locations_list:
+        location.star = range(round(location.avgRating * 5 / 10.0))
 
     count = len(locations_list)
 
@@ -545,21 +544,20 @@ def get_search_location(sql1, sql2, page):
     return locations, count
 
 
-def get_distance_location(locations, position):
-    pass
-
-
 def tran_word_search(word, str1, str2):
-    word = word.strip(' ')
-    word = word.replace(' - ', ' ')
-    word_list = []
-    for i in word.split(' '):
-        i.strip(' ')
-        i = "".join(list(filter(str.isalnum, i)))
-        word_list.append(i)
-    word = " ".join(word_list)
+    # word = word.strip(' ')
+    # word.replace("'", " ")
+    # word.replace("", " ")
+    # word = word.replace('  ', ' ')
+    # word = word.replace(' - ', ' ')
+    # word_list = []
+    # for i in word.split(' '):
+    #     i.strip(' ')
+    #     i = "".join(list(filter(str.isalnum, i)))
+    #     word_list.append(i)
+    # word = " ".join(word_list)
     s = word
-    word = s
+    # word = s
     for i in word:
         r = re.search(i, str1)
         if r:
@@ -692,7 +690,13 @@ def member(request, userId):
                 comments = paginator.page(1)
             except EmptyPage:
                 comments = paginator.page(paginator.num_pages)
-        return render(request, 'member.html', {'acc': acc, 'comments': comments, 'collections': collections})
+
+        notifications = Notification.objects.filter(user=request.user)
+        return render(request, 'member.html',
+                      {
+                          'acc': acc, 'comments': comments,
+                          'collections': collections, 'notifications': notifications,
+                      })
     else:
         context = {
             'status': '400', 'reason': 'you can access this view '
@@ -836,15 +840,16 @@ def location_suggest(request):
     sql2 = ' where admin_locations.is_active=TRUE'
 
     if location_name and location_name != '':
-        query = tran_word_search(location_name, str1, str2)
-        # query = query.replace(" ", ":*&")
-        query_list = []
-        for q in query.split(' '):
-            q = q + ':*'
-            query_list.append(q)
-        query = "&".join(query_list)
+        query = execute_word_search(location_name)
+        if query:
+            query = '&'.join(query)
+            # query_list = []
+            # for q in query.split(' '):
+            #     q = q + ':*'
+            #     query_list.append(q)
+            # query = "&".join(query_list)
 
-        sql2 += " and news_tsv @@ to_tsquery('simple','" + query + "')"
+            sql2 += " and news_tsv @@ to_tsquery('" + query + "')"
 
         sql = sql1 + sql2
         locations_list = Locations.objects.raw(sql)[:10]
@@ -951,7 +956,7 @@ def create_location(request):
 
             exits_location = Locations.objects.filter(url=location.url)
             if len(exits_location) > 0:
-                return HttpResponse('Địa điểm đã tồn tại')
+                return HttpResponse('Tên địa điểm đã được sử dụng cho địa điểm khác')
 
             category = request.GET.get('category', None)
             category = Categories.objects.get(id=category)
@@ -969,6 +974,9 @@ def create_location(request):
             district = Districts.objects.get(id=district)
             location.district = district
 
+            location.is_active = False
+            location.save()
+
             service = request.GET.get('service', None)
             service_location = ServiceLocation()
             ser = Services
@@ -977,9 +985,6 @@ def create_location(request):
                 service_location.service = ser
                 service_location.location = location
                 service_location.save()
-
-            location.is_active = False
-            location.save()
 
             cuisine_location.save()
             category_location.save()
@@ -1006,3 +1011,59 @@ def create_location(request):
 
 def success(request):
     return render(request, 'success.html')
+
+
+def get_notifications(request):
+    if request.user.is_authenticated:
+        notifications = Notification.objects.filter(user=request.user)
+        if len(notifications) > 0:
+            notifications = [dict(id=m.id, count=len(notifications), location_id=m.location.id, content=m.content,
+                                  url=m.location.url) for m in notifications]
+            notifications = json.dumps(notifications)
+            return HttpResponse(notifications, content_type='application/json', )
+        else:
+            context = {
+                'status': '400', 'reason': 'you can access this view '
+            }
+            response = HttpResponse(json.dumps(context), content_type='application/json')
+            response.status_code = 400
+            return response
+    else:
+        context = {
+            'status': '400', 'reason': 'you can access this view '
+        }
+        response = HttpResponse(json.dumps(context), content_type='application/json')
+        response.status_code = 400
+        return response
+
+
+def get_notifications_not_view(request):
+    if request.user.is_authenticated:
+        notifications = Notification.objects.filter(user=request.user).filter(view=False)
+        if len(notifications) > 0:
+            notifications = [dict(id=m.id, count=len(notifications), location_id=m.location.id, content=m.content,
+                                  url=m.location.url) for m in notifications]
+            notifications = json.dumps(notifications)
+            return HttpResponse(notifications, content_type='application/json', )
+        else:
+            context = {
+                'status': '400', 'reason': 'you can access this view '
+            }
+            response = HttpResponse(json.dumps(context), content_type='application/json')
+            response.status_code = 400
+            return response
+    else:
+        context = {
+            'status': '400', 'reason': 'you can access this view '
+        }
+        response = HttpResponse(json.dumps(context), content_type='application/json')
+        response.status_code = 400
+        return response
+
+
+def view_notification(request):
+    note_id = request.GET.get('note_id', None)
+    if note_id:
+        note = Notification.objects.get(id=note_id)
+        note.viewed = True
+        note.save()

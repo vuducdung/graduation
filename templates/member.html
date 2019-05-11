@@ -31,6 +31,10 @@
                            href="#list-info" role="tab" aria-controls="info">Thông tin cơ bản</a>
                         <a class="list-group-item list-group-item-action" id="list-avatar-list" data-toggle="list"
                            href="#list-avatar" role="tab" aria-controls="avatar">Cập nhật ảnh đại diện</a>
+
+                        <a class="list-group-item list-group-item-action" id="list-notification-list" data-toggle="list"
+                           href="#list-notification" role="tab" aria-controls="notification">Thông báo</a>
+
                         <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list"
                            href="#list-settings" role="tab" aria-controls="settings">Đăng xuất</a>
                     </div>
@@ -197,8 +201,9 @@
                                             <a href="#">
                                                 {% if collection.avatar %}
                                                     <img src={{ collection.avatar }}
-                                                {% else %}
-                                                    <img src="https://images.foody.vn/default/s480x300/no-image.png"
+                                                                 {% else %}
+                                                                 <img
+                                                         src="https://images.foody.vn/default/s480x300/no-image.png"
                                                 {% endif %}
 
                                                          alt=""
@@ -234,6 +239,13 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                        <td>Ảnh đại diện</td>
+                                        <td>
+                                            <div><img style="width:80px;height:80px;" src="{{ acc.avatar }}" alt="">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td>
                                             <input id="show-button-update" type="submit"
                                                    value="Lưu thay đổi"
@@ -244,9 +256,27 @@
                                 </tbody>
                             </table>
                         </div>
+
                         <div class="tab-pane fade" id="list-avatar" role="tabpanel" aria-labelledby="list-avatar-list">
                             <div>Chưa cập nhật...</div>
                         </div>
+
+                        <div class="tab-pane fade" id="list-notification" role="tabpanel"
+                             aria-labelledby="list-notification-list">
+                            <div class="container">
+                                {% if notifications %}
+                                    {% for note in notifications %}
+                                        <div class="row">
+                                            <div style="margin-top: 15px;" class="col-lg-12 col-md-12">
+                                                <h5>{{ note.created_at }} Thêm địa điểm</h5>
+                                                <div>{{ note.content }}</div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>

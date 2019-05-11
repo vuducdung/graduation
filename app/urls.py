@@ -34,6 +34,9 @@ urlpatterns = [
     url(r'^choice_collection/$', views.choice_collection, name='choice_collection'),
     url(r'^delete_location_in_collection/$', views.delete_location_in_collection, name='delete_location_in_collection'),
     url(r'^create_location/$', views.create_location, name='create_location'),
+    url(r'^get_suggestion_location/$', views.get_suggestion_location, name='get_suggestion_location'),
+    url(r'^get_notifications/$', views.get_notifications, name='get_notifications'),
+    url(r'^get_notifications_not_view/$', views.get_notifications_not_view, name='get_notifications_not_view'),
     url(r'^success/$', views.success, name='success'),
 
 

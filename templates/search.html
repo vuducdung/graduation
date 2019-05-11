@@ -70,11 +70,11 @@
                                             <h4><a class="view-location" value="{{ loc.id }}|{{ user.id }}"
                                                    href="/ha-noi/{{ loc.url }}/?comment=True"
                                             >{{ loc.name }}</a></h4>
-                                            <i style="color:#ffa800;" class="fa fa-star"></i>
-                                            <i style="color:#ffa800;" class="fa fa-star"></i>
-                                            <i style="color:#ffa800;" class="fa fa-star"></i>
-                                            <i style="color:#ffa800;" class="fa fa-star"></i>
-                                            <i style="color:#ffa800;" class="fa fa-star"></i> {{ loc.avgRating }}
+                                            {% for i in loc.star %}
+                                                <i style="color:#ffa800;" class="fa fa-star"></i>
+                                            {% endfor %}
+
+                                            {{ loc.avgRating }}
                                             <div>{{ loc.description }}</div>
                                             <div><i style="color:green;" class="fa fa-money"></i> {{ loc.priceMin }}đ
                                                 - {{ loc.priceMax }}đ
@@ -156,7 +156,7 @@
 {% endblock %}
 
 {% block dynamic %}
-    {% include 'stick_suggest.html' %}
+    {#    {% include 'stick_suggest.html' %}#}
     {% include 'footer.html' %}
     <script src="{% static "js/search.js" %}"></script>
     <script>window.jQuery || document.write('<script src="{% static "js/jquery-slim.min.js" %}"><\/script>')</script>

@@ -1,0 +1,239 @@
+<!DOCTYPE HTML>
+<html>
+{% load static %}
+{% include "admin/head.html" %}
+<body class="cbp-spmenu-push">
+<div class="main-content">
+    <div class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-left" id="cbp-spmenu-s1">
+        <!--left-fixed -navigation-->
+        {% include "admin/navigation.html" %}
+    </div>
+    <!-- header-starts -->
+    {% include "admin/header.html" %}
+    <!-- //header-ends -->
+    <!-- main content start-->
+    <div id="page-wrapper">
+        <div class="main-page">
+            <div class="col-md-12">
+                {#                <div class="panel-default">#}
+                <div>
+                    <div class="panel-heading float-left" style="width:70%">
+                        Danh sách thực đơn
+                    </div>
+                </div>
+
+                <div style="width:70%" class="inbox-page">
+
+                    <div class="inbox-row widget-shadow" id="accordion" role="tablist" aria-multiselectable="true">
+
+                        {% if menus %}
+                            <div style="height: 41px;" class="inbox-row widget-shadow" id="accordion" role="tablist"
+                                 aria-multiselectable="true">
+
+                                <div style="" class="mail mail-name">ID</div>
+                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
+                                   aria-expanded="true" aria-controls="collapseOne">
+                                    <div class="mail"><p>Name</p>
+                                    </div>
+                                </a>
+                                <div class="mail-right">
+                                    <button type="button"
+                                            data-toggle="modal" data-target="#modalMenu"
+                                            class="btn btn-link"><i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="modal fade" id="modalMenu" tabindex="-1" role="dialog"
+                             aria-labelledby="myModalLabel"
+                             aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content" style="width: 55%;top:30px; left:200px;">
+
+                                    <form method="post" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="modal-body mx-3">
+                                            <div class="md-form mb-5">
+                                                Tên thực đơn
+                                                <input type="text" id="defaultForm-email" name="menu_name"
+                                                       class="form-control validate">
+                                            </div>
+
+                                            <div style="margin-top:10px;">
+                                                <input id="show-button-update" type="submit" value="Thêm"
+
+                                                       class="btn "/>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+
+                        {% for menu in menus %}
+
+                            <div class="inbox-row widget-shadow" id="accordion" role="tablist"
+                                 aria-multiselectable="true">
+
+                                <div style="" class="mail mail-name">{{ menu.id }}</div>
+                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
+                                   aria-expanded="true" aria-controls="collapseOne">
+                                    <div class="mail"><p>{{ menu.name }}</p>
+                                    </div>
+                                </a>
+                                <div class="mail-right dots_drop">
+                                    <div class="dropdown">
+                                        <a href="#" data-toggle="dropdown" aria-expanded="false">
+                                            <p><i class="fa fa-ellipsis-v mail-icon"></i></p>
+                                        </a>
+                                        <ul class="dropdown-menu float-right">
+                                            <li>
+                                                <a role="button"
+                                                   href="?menu_id={{ menu.id }}" aria-expanded="true"
+                                                   aria-controls="collapseOne">
+                                                    <i class="fa fa-reply mail-icon"></i>
+                                                    View
+                                                </a>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="clearfix"></div>
+
+                            </div>
+                        {% endfor %}
+
+                        <div class="modal fade" id="modalDish" tabindex="-1" role="dialog"
+                             aria-labelledby="myModalLabel"
+                             aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content" style="width: 55%;top:30px; left:200px;">
+
+                                    <form method="post" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="modal-body mx-3">
+                                            <div class="md-form mb-5">
+                                                Tên món ăn
+                                                <input type="text" id="defaultForm-email" name="name_dish"
+                                                       class="form-control validate">
+                                            </div>
+
+                                            <div style="margin-top:5px;" class="md-form mb-4">
+                                                <div>Giá</div>
+                                                <input type="number" min="1" name="price_dish">
+                                                Nghìn đồng
+                                            </div>
+                                            <div style="margin-top:7px;" class="md-form mb-4">
+                                                <div></div>
+                                                {{ form.as_p }}
+                                            </div>
+                                            <div style="margin-top:10px;">
+                                                <input id="show-button-update" type="submit" value="Thêm"
+
+                                                       class="btn "/>
+                                            </div>
+                                            <input type="hidden" name="create_dish_menu" value="{{ menu.id }}"/>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                        {% if menu %}
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-lg-8 col-md-8 float-left">
+                                        <div class="row">
+                                            <div class="col-lg-2 col-md-2">
+                                                <h3 style="margin-bottom: 20px;">{{ menu.name }}</h3>
+                                            </div>
+                                            <div class="col-lg-1 col-md-1">
+                                                <button type="button"
+                                                        data-toggle="modal" data-target="#modalDish"
+                                                        class="btn btn-link"><i class="fa fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {% for dish in menu.dish_set.all %}
+                                            <div class="row">
+                                                <div class="col-lg-2 col-md-2">
+                                                    <img style="height: 40px;width: 40px;" src="{{ dish.image }}"
+                                                         alt="">
+                                                </div>
+                                                <div class="col-lg-4 col-md-4">{{ dish.name }}</div>
+                                                <div class="col-lg-3 col-md-3">{{ dish.price }} nghìn đồng</div>
+                                                <div class="col-lg-1 col-md-1">
+                                                    <button onclick="delete_dish({{ dish.id }});" style="color:darkred"
+                                                            type="button" class="close"
+                                                            aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                    <script>
+                                                        function delete_dish(id) {
+                                                            url = window.location.href
+                                                            window.location.replace(url + `&delete=${id}`)
+                                                        }
+                                                    </script>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{#{% include "admin/footer.html" %}#}
+<!-- side nav js -->
+<script src='{% static "admin/js/SidebarNav.min.js" %}' type='text/javascript'></script>
+<script>
+    $('.sidebar-menu').SidebarNav()
+</script>
+
+<script>
+    var menuLeft = document.getElementById('cbp-spmenu-s1'),
+        showLeftPush = document.getElementById('showLeftPush'),
+        body = document.body;
+
+    showLeftPush.onclick = function () {
+        classie.toggle(this, 'active');
+        classie.toggle(body, 'cbp-spmenu-push-toright');
+        classie.toggle(menuLeft, 'cbp-spmenu-open');
+        disableOther('showLeftPush');
+    };
+
+    function disableOther(button) {
+        if (button !== 'showLeftPush') {
+            classie.toggle(showLeftPush, 'disabled');
+        }
+    }
+</script>
+
+<!-- Classie -->
+<!-- for toggle left push menu script -->
+<script src="{% static "admin/js/classie.js" %}"></script>
+<script src="{% static "admin/js/jquery.nicescroll.js" %}"></script>
+<script src="{% static "admin/js/scripts.js" %}"></script>
+<!--//scrolling js-->
+
+
+<!-- Bootstrap Core JavaScript -->
+<script src="{% static "admin/js/bootstrap.js" %}"></script>
+
+<!-- //Bootstrap Core JavaScript -->
+
+</body>
+</html>

@@ -2,17 +2,18 @@ function get_required_message() {
     $.get('/admin/get_required_message/', function (data) {
         let messages = `<li>
                             <div class="notification_header">
-                                <h3 class="count-message">You have ${data[0].count} new messages</h3>
+                                <h3 class="count-message">Bạn có ${data[0].count} thông báo</h3>
                             </div>
                         </li>`
         $.each(data, function () {
+            $(".badge").attr('style','')
             $(".badge").html(this.count)
             $(".notification_desc").html(` ${this.require_name} `)
             messages += `<li>
                             <a href="/admin/location/?id=${this.loc_id}">
                                 <div class="user_img"><img id="user-avatar" src="${this.user_avatar}" alt=""></div>
                                 <div class="notification_desc">
-                                    <p>${this.require_name}</p>
+                                    <p style="color: blue">${this.require_name}</p>
                                     <!--<p><span>1 hour ago</span></p>-->
                                 </div>
                                 <div class="clearfix"></div>

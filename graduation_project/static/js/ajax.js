@@ -1,5 +1,8 @@
 var ready = $(document).ready(function () {
 
+    function view_notification(id) {
+
+    }
 
     $(".form-control").keydown(function (e) {
         if (e.keyCode == 13) {
@@ -74,6 +77,8 @@ var ready = $(document).ready(function () {
     });
 
     function submitSearch() {
+        collection_name = $(".choice-location").text()
+
         let pageURL = window.location.href;
         pageURL = pageURL.split('/')[0]
 
@@ -82,6 +87,10 @@ var ready = $(document).ready(function () {
         }
         pageURL += '/search/?';
         let word = $("#word").val();
+        if (collection_name != '') {
+            word = collection_name.trim()
+            alert(word)
+        }
         let loc = $("#select-loc").val();
         let cat = $("#select-cat").val();
         let cui = $("#select-cui").val();
