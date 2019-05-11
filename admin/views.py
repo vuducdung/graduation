@@ -486,4 +486,12 @@ def sync(request):
     #                 new_dish.image = dish['ImageUrl']
     #                 new_dish.save()
     #
+
+    # Update location for search
+    # locations = Locations.objects.all()
+    # for loc in locations:
+    #     loc.name = loc.name
+    #     loc.address = loc.address
+    #     loc.keyWords = loc.keyWords
+    #     loc.save()
     return HttpResponse("EndSYNC")

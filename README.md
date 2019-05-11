@@ -20,12 +20,16 @@ $func$ LANGUAGE sql IMMUTABLE;
 CREATE OR REPLACE FUNCTION news_tsv_trigger_func()
 RETURNS TRIGGER LANGUAGE plpgsql AS $$
 BEGIN NEW.news_tsv =
-	setweight(to_tsvector(coalesce(vn_unaccent(NEW.name))),'A');
+	setweight(to_tsvector(coalesce(vn_unaccent(NEW.name))),'A') ||
+	setweight(to_tsvector(coalesce(vn_unaccent(NEW.keyWords))), 'B') ||
+	setweight(to_tsvector(coalesce(vn_unaccent(NEW.address))), 'D') ||;
 RETURN NEW;
 END $$;
 
+
+
 CREATE TRIGGER news_tsv_trigger BEFORE INSERT OR UPDATE
-OF name  ON admin_locations FOR EACH ROW
+OF name, keyWords, address ON admin_locations FOR EACH ROW
 EXECUTE PROCEDURE news_tsv_trigger_func();
 CREATE INDEX admin_locations_idx ON admin_locations USING GIN(news_tsv);
 create extension "cube";
