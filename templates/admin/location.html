@@ -72,13 +72,23 @@
                                             </a>
                                         </li>
                                     {% endif %}
-                                    <li>
-                                        <a href="/admin/location/?id={{ location.id }}&delete=True" class="font-red"
-                                           title="">
-                                            <i class="fa fa-trash-o mail-icon"></i>
-                                            Delete
-                                        </a>
-                                    </li>
+                                    {% if not location.is_active %}
+                                        <li>
+                                            <a href="/admin/location/?id={{ location.id }}&ignore_require=True" class="font-red"
+                                               title="">
+                                                <i class="fa fa-trash-o mail-icon"></i>
+                                                Bỏ yêu cầu
+                                            </a>
+                                        </li>
+                                        {% else %}
+                                        <li>
+                                            <a href="/admin/location/?id={{ location.id }}&delete=True" class="font-red"
+                                               title="">
+                                                <i class="fa fa-trash-o mail-icon"></i>
+                                                Xóa
+                                            </a>
+                                        </li>
+                                    {% endif %}
                                 </ul>
                             </div>
                         </div>
@@ -173,17 +183,7 @@
                                         </td>
 
                                     </tr>
-                                    <tr>
-                                        <td>
-                                            <h7 id="h7.-bootstrap-heading"><a
-                                                    href="/admin/location/{{ location.id }}/bai-do-xe/">Bãi đỗ xe</a><a
-                                                    class="anchorjs-link" href="#h7.-bootstrap-heading"><span
-                                                    class="anchorjs-icon"></span></a>
-                                            </h7>
-                                        </td>
-                                        <td class="type-info"><a href=""></a>
-                                        </td>
-                                    </tr>
+
                                     <tr>
                                         <td>
                                             <h7 id="h7.-bootstrap-heading"><a
@@ -198,7 +198,8 @@
                                     <tr>
                                         <td>
                                             <h7 id="h7.-bootstrap-heading"><a
-                                                    href="/admin/location/{{ location.id }}/menu/">Danh sách thực đơn</a><a
+                                                    href="/admin/location/{{ location.id }}/menu/">Danh sách thực
+                                                đơn</a><a
                                                     class="anchorjs-link" href="#h7.-bootstrap-heading"><span
                                                     class="anchorjs-icon"></span></a></h7>
                                         </td>

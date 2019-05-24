@@ -1,8 +1,6 @@
 var ready = $(document).ready(function () {
 
-    function view_notification(id) {
 
-    }
 
     $(".form-control").keydown(function (e) {
         if (e.keyCode == 13) {

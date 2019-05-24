@@ -17,185 +17,227 @@
         {% if success %}
             <div>Bạn đã tạo địa điểm thành công xin chờ Admin duyệt</div>
         {% else %}
-            <div class="bs-example">
-                <table class="table">
-                    <tbody>
-                    <form id="login-form" method="get" action="">
-                        <tr>
-                            <td><h7 id="h7.-bootstrap-heading">Tên địa điểm</h7>
-                            </td>
-                            <td style="width: 60%;float: left;" class="type-info">
-                                <input pattern=".{1,255}" title="Tối đa 255 ký tự" name="nameLoc" type="text"
-                                       style="height:20px;margin:0;padding:2px;width:100%;"
-                                       maxlength="255" class="box-search-page" placeholder="Tối đa 255 kí tự"
-                                       required>
-                            </td>
+            <div class="row">
+                <div class="col-lg-9 col-md-9">
+                    <div class="bs-example">
+                        <table class="table">
+                            <tbody>
+                            <form id="login-form" method="get" action="">
+                                <tr>
+                                    <td>
+                                        <h7 id="h7.-bootstrap-heading">Tên địa điểm
+                                            <span class="required">*</span></h7>
+                                    </td>
+                                    <td style="width: 60%;float: left;" class="type-info">
+                                        <input pattern=".{1,255}" title="Tối đa 255 ký tự" name="nameLoc" type="text"
+                                               style="height:20px;margin:0;padding:2px;width:100%;"
+                                               maxlength="255" class="box-search-page" placeholder="Tối đa 255 kí tự"
+                                               required>
+                                    </td>
 
-                        </tr>
-                        <tr>
-                            <td><h7 id="h7.-bootstrap-heading">Địa chỉ</h7></td>
-                            <td style="width: 60%;float: left;" class="type-info">
-                                <input pattern=".{1,255}" title="Tối đa 255 ký tự" name="address" type="text"
-                                       style="margin:0;height:20px;padding:2px;width:100%;"
-                                       class="box-search-page" placeholder="Tối đa 255 kí tự"
-                                       required>
-                            </td>
-                        </tr>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h7 id="h7.-bootstrap-heading">Địa chỉ<span class="required">*</span></h7>
+                                    </td>
+                                    <td style="width: 60%;float: left;" class="type-info">
+                                        <input pattern=".{1,255}" title="Tối đa 255 ký tự" name="address" type="text"
+                                               style="margin:0;height:20px;padding:2px;width:100%;"
+                                               class="box-search-page" placeholder="Tối đa 255 kí tự"
+                                               required>
+                                    </td>
+                                </tr>
 
-                        <tr>
-                            <td><h7 id="h7.-bootstrap-heading">Giờ mở cửa
-                                   </h7></td>
-                            <td style="width: 60%;float: left;" class="type-info">
-                                <select name="timeOpen1" class="form-control"
-                                        style="padding:2px;width: 50%;float:left;border:0;">
-                                    <option value="" selected="selected">Chọn giờ</option>
-                                    {% for i in hourL %}
-                                        <option value="{{ i }}">{{ i }}</option>
-                                    {% endfor %}
-                                </select>
-                                <select name="timeOpen2" class="form-control"
-                                        style="padding:2px;width: 50%;float:left;border:0;">
-                                    <option value="" selected="selected">Chọn phút</option>
-                                    {% for i in minuteL %}
-                                        <option value="{{ i }}">{{ i }}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><h7 id="h7.-bootstrap-heading">Giờ đóng cửa</h7></td>
-                            <td style="width: 60%;float: left;" class="type-info">
-                                <select name="timeClose1" class="form-control"
-                                        style="padding:2px;width: 50%;float:left;border:0;">
-                                    <option value="" selected="selected">Chọn giờ</option>
-                                    {% for i in hourL %}
-                                        <option value="{{ i }}">{{ i }}</option>
-                                    {% endfor %}
-                                </select>
-                                <select name="timeClose2" class="form-control"
-                                        style="padding:2px;width: 50%;float:left;border:0;">
-                                    <option value="" selected="selected">Chọn phút</option>
-                                    {% for i in minuteL %}
-                                        <option value="{{ i }}">{{ i }}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                        </tr>
+                                <tr>
+                                    <td>
+                                        <h7 id="h7.-bootstrap-heading">Giờ mở cửa
+                                        </h7>
+                                    </td>
+                                    <td style="width: 60%;float: left;padding:0;" class="type-info">
+                                        <select name="timeOpen1" class="form-control"
+                                                style="padding:2px;width: 50%;float:left;border:0;">
+                                            <option value="" selected="selected">Chọn giờ</option>
+                                            {% for i in hourL %}
+                                                <option value="{{ i }}">{{ i }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <select name="timeOpen2" class="form-control"
+                                                style="padding:2px;width: 50%;float:left;border:0;">
+                                            <option value="" selected="selected">Chọn phút</option>
+                                            {% for i in minuteL %}
+                                                <option value="{{ i }}">{{ i }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h7 id="h7.-bootstrap-heading">Giờ đóng cửa</h7>
+                                    </td>
+                                    <td style="padding:0;width: 60%;float: left;" class="type-info">
+                                        <select name="timeClose1" class="form-control"
+                                                style="padding:2px;width: 50%;float:left;border:0;">
+                                            <option value="" selected="selected">Chọn giờ</option>
+                                            {% for i in hourL %}
+                                                <option value="{{ i }}">{{ i }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <select name="timeClose2" class="form-control"
+                                                style="padding:2px;width: 50%;float:left;border:0;">
+                                            <option value="" selected="selected">Chọn phút</option>
+                                            {% for i in minuteL %}
+                                                <option value="{{ i }}">{{ i }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                                </tr>
 
-                        <tr>
-                            <td><h7 id="h7.-bootstrap-heading">Mô tả</h7></td>
-                            <td style="width: 60%;float: left;" class="type-info">
-                                <input pattern=".{1,255}" title="Tối đa 255 ký tự" type="text"
-                                       style="margin:0;height:20px;
+                                <tr>
+                                    <td>
+                                        <h7 id="h7.-bootstrap-heading">Mô tả</h7>
+                                    </td>
+                                    <td style="width: 60%;float: left;" class="type-info">
+                                        <input pattern=".{1,255}" title="Tối đa 255 ký tự" type="text"
+                                               style="margin:0;height:20px;
                                        padding:2px;width: 100%;"
-                                       class="box-search-page"
-                                       placeholder="Tối đa 255 kí tự"
-                                       name="description"
-                                >
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h7 id="h7.-bootstrap-heading">Danh mục
-                                </h7>
-                            </td>
-                            <td style="width: 60%;float: left;" class="type-info">
-                                <select required name="category" class="form-control"
-                                        style="padding:5px;width: 50%;float:left;border:0;">
-                                    <option value="" selected="selected">Loại danh mục</option>
-                                    {% for cat in categories %}
-                                        <option value="{{ cat.id }}">{{ cat.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h7 id="h7.-bootstrap-heading">Loại ẩm thực
-                                </h7>
-                            </td>
-                            <td style="width: 60%;float: left;" class="type-info">
-                                <select required name="cuisine" class="form-control"
-                                        style="padding:5px;width: 50%;float:left;border:0;">
-                                    <option value="" selected="selected">Loại ẩm thực</option>
-                                    {% for cui in cuisines %}
-                                        <option value="{{ cui.id }}">{{ cui.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h7 id="h7.-bootstrap-heading">Dịch vụ
-                                </h7>
-                            </td>
-                            <td style="width: 60%;float: left;" class="type-info">
-                                <select name="service" class="form-control"
-                                        style="padding:5px;width: 50%;float:left;border:0;">
-                                    <option value="" selected="selected">Loại dịch vụ</option>
-                                    {% for ser in services %}
-                                        <option value="{{ ser.id }}">{{ ser.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h7 id="h7.-bootstrap-heading">Quận/Huyện
-                                </h7>
-                            </td>
-                            <td style="width: 60%;float: left;" class="type-info">
-                                <select required name="district" class="form-control"
-                                        style="padding:5px;width: 50%;float:left;border:0;">
-                                    <option value="" selected="selected">Quận/Huyện</option>
-                                    {% for dis in districts %}
-                                        <option value="{{ dis.id }}">{{ dis.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><h7 id="h7.-bootstrap-heading">Vị trí</h7></td>
-                            <td>
-                                <p>
-                                    Hãy tìm vị trí bạn muốn sau đó điền thông tin giá trị Latitude và Longitude
+                                               class="box-search-page"
+                                               placeholder="Tối đa 255 kí tự"
+                                               name="description"
+                                        >
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h7 id="h7.-bootstrap-heading">Danh mục
+                                            <span class="required">*</span>
+                                        </h7>
+                                    </td>
+                                    <td style="padding:0;width: 60%;float: left;" class="type-info">
+                                        <select required name="category" class="form-control"
+                                                style="padding:5px;width: 50%;float:left;border:0;">
+                                            <option value="" selected="selected">Loại danh mục</option>
+                                            {% for cat in categories %}
+                                                <option value="{{ cat.id }}">{{ cat.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h7 id="h7.-bootstrap-heading">Loại ẩm thực
+                                            <span class="required">*</span>
+                                        </h7>
+                                    </td>
+                                    <td style="padding:0;width: 60%;float: left;" class="type-info">
+                                        <select required name="cuisine" class="form-control"
+                                                style="padding:5px;width: 50%;float:left;border:0;">
+                                            <option value="" selected="selected">Loại ẩm thực</option>
+                                            {% for cui in cuisines %}
+                                                <option value="{{ cui.id }}">{{ cui.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h7 id="h7.-bootstrap-heading">Dịch vụ
+                                        </h7>
+                                    </td>
+                                    <td style="padding:0;width: 60%;float: left;" class="type-info">
+                                        <select name="service" class="form-control"
+                                                style="padding:5px;width: 50%;float:left;border:0;">
+                                            <option value="" selected="selected">Loại dịch vụ</option>
+                                            {% for ser in services %}
+                                                <option value="{{ ser.id }}">{{ ser.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h7 id="h7.-bootstrap-heading">Quận/Huyện
+                                            <span class="required">*</span>
+                                        </h7>
+                                    </td>
+                                    <td style="padding:0;width: 60%;float: left;" class="type-info">
+                                        <select required name="district" class="form-control"
+                                                style="padding:5px;width: 50%;float:left;border:0;">
+                                            <option value="" selected="selected">Quận/Huyện</option>
+                                            {% for dis in districts %}
+                                                <option value="{{ dis.id }}">{{ dis.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h7 id="h7.-bootstrap-heading">Vị trí
+                                            <span class="required">*</span></h7>
+                                    </td>
+                                    <td>
+                                        <p>
+                                            Hãy tìm vị trí bạn muốn sau đó điền thông tin <br>
+                                            giá trị Latitude và Longitude <br>
+                                        </p>
+                                        <a target="_blank"
+                                           class="anchorjs-link" href="https://www.latlong.net/"><span
+                                                class="anchorjs-icon">https://www.latlong.net/</span>
+                                        </a>
 
-                                </p>
-                                <a target="_blank"
-                                   class="anchorjs-link" href="https://www.latlong.net/"><span
-                                        class="anchorjs-icon">https://www.latlong.net/</span>
-                                </a>
+                                        <div style="width: 50%;" class="form-inline">
+                                            <span class="required">*</span>
+                                            <input style="padding:5px;width: 50%;float: left;"
+                                                   class="box-search-page"
+                                                   name="latitude"
+                                                   placeholder="latitude"
+                                                   type=number step=any
+                                                   required>
+                                        </div>
 
-                            </td>
-                            <td style="width: 60%;float: left;" class="type-info">
-                                <input style="padding:5px;width: 50%;float: left;"
-                                       class="box-search-page"
-                                       name="latitude"
-                                       placeholder="latitude"
-                                       type=number step=any
-
-                                       required
-                                >
-                                <input style="padding:5px;width: 50%;float: left;"
-                                       class="box-search-page"
-                                       name="longitude"
-                                       placeholder="longitude"
-                                       type=number step=any
-
-                                       required
-                                >
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="float: left;">
-                                <input type="submit" value="Thêm địa điểm"
-                                       class="btn btn-primary pull-right"/>
-                                <input type="hidden" name="next" value="{{ next }}"/>
-                            </td>
-                        </tr>
-                    </form>
-                    </tbody>
-                </table>
+                                        <div style="width:50%;" class="form-inline">
+                                            <span class="required">*</span>
+                                            <input style="padding:5px;width: 50%;float: left;"
+                                                   class="box-search-page"
+                                                   name="longitude"
+                                                   placeholder="longitude"
+                                                   type=number step=any
+                                                   required>
+                                        </div>
+                                    </td>
+                                    {#                                    <br>#}
+                                    {#                                    <td style="width: 60%;float: left;" class="type-info">#}
+                                    {#                                        <div class="form-inline">#}
+                                    {#                                            <span class="required">*</span>#}
+                                    {#                                            <input style="padding:5px;width: 50%;float: left;"#}
+                                    {#                                                   class="box-search-page"#}
+                                    {#                                                   name="latitude"#}
+                                    {#                                                   placeholder="latitude"#}
+                                    {#                                                   type=number step=any#}
+                                    {#                                                   required>#}
+                                    {#                                        </div>#}
+                                    {#                                        <div class="form-inline">#}
+                                    {#                                            <span class="required">*</span>#}
+                                    {#                                            <input style="padding:5px;width: 50%;float: left;"#}
+                                    {#                                                   class="box-search-page"#}
+                                    {#                                                   name="longitude"#}
+                                    {#                                                   placeholder="longitude"#}
+                                    {#                                                   type=number step=any#}
+                                    {#                                                   required>#}
+                                    {#                                        </div>#}
+                                    {#                                    </td>#}
+                                </tr>
+                                <tr>
+                                    <td style="float: left;">
+                                        <input type="submit" value="Thêm địa điểm"
+                                               class="btn btn-primary pull-right"/>
+                                        <input type="hidden" name="next" value="{{ next }}"/>
+                                    </td>
+                                </tr>
+                            </form>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         {% endif %}
     </div>

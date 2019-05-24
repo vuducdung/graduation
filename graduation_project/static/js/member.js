@@ -122,7 +122,7 @@ function create_collection() {
 
         if (data == 'None') {
             alert('Bộ sưu tập đã tồn tại');
-            $("#validate-name").replaceWith('Bộ sưu tập đã tồn tại');
+            // $("#validate-name").replaceWith('Bộ sưu tập đã tồn tại');
             return false;
         }
         // alert(data )
@@ -130,6 +130,29 @@ function create_collection() {
 
         $('form#collection-form')[0].reset();
         $("#close").click();
+    });
+
+}
+
+function create_collection1() {
+    if ($("#col_name").val() == '') {
+        alert('Hãy nhập tên bộ sưu tập');
+        return false;
+    }
+    alert($('form#collection-form1').serialize());
+    $.get('/collection_create/', $('form#collection-form1').serialize(), function (data) {
+
+        if (data == 'None') {
+            alert('Bộ sưu tập đã tồn tại');
+            // $("#validate-name").replaceWith('Bộ sưu tập đã tồn tại');
+            return false;
+        }
+        // alert(data )
+        get_collection();
+
+        $('form#collection-form1')[0].reset();
+        $("#back").click();
+        // $("#close").click();
     });
 
 }

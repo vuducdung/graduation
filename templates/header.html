@@ -37,7 +37,7 @@
 
                             <div class="col-lg-2 col-md-2">
                                 <button type="button" class="btn btn-primary btn-sm ">
-                                    <a style="color:#fff;text-decoration:none;"#}
+                                    <a style="color:#fff;text-decoration:none;"
                                        href="{% url 'logout' %}?next={{ request.path }}">
                                         ĐăngXuất
                                     </a>
@@ -49,7 +49,7 @@
 
                         {% if user.is_authenticated %}
                             <div class="row" style="color:#007bff;line-height: 20px;height: 40px;margin-top: -15px;">
-                                {#                        Notifications#}
+
                                 <div id="notification" style="display:none;" class="col-lg-3 col-md-3">
                                     <div class="profile_details_left">
                                         <!--notifications of menu start -->
@@ -61,7 +61,8 @@
                                                     <span style="display:none;" id="badge-notification"
                                                           class="badge">0</span>
                                                 </a>
-                                                <ul class="dropdown-menu" style="border-radius:10px;" id="messages">
+                                                <ul class="dropdown-menu" style="min-width:190px;border-radius:10px;"
+                                                    id="messages">
                                                     <li>
                                                         <div class="notification_header"
                                                              style="padding-left: 15px; margin-bottom: 5px;">
@@ -81,6 +82,7 @@
                                 function get_notifications() {
                                     $("#notification").attr('style', '')
                                     $.get('/get_notifications_not_view/', function (data) {
+                                        {#alert(Object.keys(data).length)#}
                                         let messages = `<li>
                             <div style="padding-left: 15px; margin-bottom: 5px;" class="notification_header">
                                 <span class="count-message">Bạn có ${data[0].count} thông báo</span>
@@ -90,8 +92,8 @@
                                             $("#badge-notification").attr('style', 'background: #af3131')
                                             $("#badge-notification").html(this.count)
                                             $(".notification_desc").html(` ${this.require_name} `)
-                                            messages += `<li onclick="view_notification(${this.id})">
-                            <a href="/ha-noi/${this.url}">
+                                            messages += `<li style="margin-left:5px;" onclick="view_notification(${this.userId},${this.id})">
+                            <a href="#">
 
                                 <div class="notification_desc">
                                     <p>Thêm địa điểm thành công</p>
@@ -105,42 +107,66 @@
                                         $("#messages").html(messages)
                                     });
                                 }
+
+                                function view_notification(id, note_id) {
+                                    let pageURL = window.location.href;
+                                    $.get('/view_notification/', {notification: note_id}, function (data) {
+                                        window.location.replace(`/thanh-vien/${id}?notification=${note_id}`);
+                                    })
+
+                                }
                             </script>
                         {% endif %}
 
                         <!-- The Modal -->
                         <div class="modal fade" id="createCol">
                             <div class="modal-dialog modal-sm">
-                                <div class="modal-content" style="width: 500px;">
+                                <div class="modal-content" style="width: 350px;">
 
-                                    <!-- Modal Header -->
                                     <div class="modal-header">
                                         <h4 class="modal-title">Tạo bộ sưu tập mới</h4>
                                         <button type="button" class="close" data-dismiss="modal">&times;
                                         </button>
                                     </div>
 
-                                    <!-- Modal body -->
-                                    <form id="collection-form" method="get">
-                                        <div class="modal-body">
-                                            <input pattern=".{1,255}" title="Tối đa 255 ký tự" id="name-col" type="text"
-                                                   class="form-control"
-                                                   placeholder="Tên bộ sưu tập"
-                                                   name="name" maxlength="255" required>
+
+                                    <div class="modal-body">
+                                        <form id="collection-form" method="get">
+                                            <div class="form-inline">
+
+                                                <input style="width:95%;" pattern=".{1,255}" title="Tối đa 255 ký tự"
+                                                       id="name-col"
+                                                       type="text"
+                                                       class="form-control "
+                                                       placeholder="Tên bộ sưu tập"
+                                                       name="name" maxlength="255" required>
+                                                <label for="">
+                                                    <span class="required ">*</span>
+                                                </label>
+
+                                            </div>
                                             <div id="validate-name"></div>
-                                            <textarea class="form-control" rows="5" id="description"
-                                                      name="description"
-                                                      placeholder="Mô tả bộ sưu tập"></textarea>
+                                            <div class="form-inline">
+                                                <label style="display:none;" for="">
+                                                    <span class="required ">*</span>
+                                                </label>
+                                                <textarea style="margin-top:3px; width:95% ;" class="form-control"
+                                                          rows="5"
+                                                          id="description"
+                                                          name="description"
+                                                          placeholder="Mô tả bộ sưu tập"></textarea>
+
+                                            </div>
                                             <div id="validate-des"></div>
                                             <input type="hidden" name="userId" value="{{ user.id }}"/>
                                             <button type="button" class="btn btn-primary"
                                                     onclick="create_collection();">
                                                 Hoàn tất
                                             </button>
-                                        </div>
-                                    </form>
+                                        </form>
+                                    </div>
 
-                                    <!-- Modal footer -->
+
                                     <div class="modal-footer">
                                         <button id="close" type="button" class="btn btn-secondary"
                                                 data-dismiss="modal">

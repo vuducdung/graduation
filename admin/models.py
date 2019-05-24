@@ -228,7 +228,7 @@ class RequireFromUser(models.Model):
 
 
 class Notification(models.Model):
-    location = models.ForeignKey(Locations, on_delete=models.CASCADE, null=True)
+    location = models.ForeignKey(Locations, on_delete=models.SET_NULL, null=True)
     user = models.ForeignKey(Accounts, on_delete=models.CASCADE)
     content = models.CharField(max_length=255, null=True)
     viewed = models.BooleanField(default=False)

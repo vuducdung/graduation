@@ -37,6 +37,7 @@ urlpatterns = [
     url(r'^get_suggestion_location/$', views.get_suggestion_location, name='get_suggestion_location'),
     url(r'^get_notifications/$', views.get_notifications, name='get_notifications'),
     url(r'^get_notifications_not_view/$', views.get_notifications_not_view, name='get_notifications_not_view'),
+    url(r'^view_notification/$', views.view_notification, name='view_notification'),
     url(r'^success/$', views.success, name='success'),
 
 

@@ -15,19 +15,21 @@
                 <div class="row">
                     <div class="form" method="get"></div>
                     <div class="floating-main">
-                        <h1>Tìm địa điểm ăn uống của bạn</h1>
+                        <h1 style="width:740px;">Tìm địa điểm ăn uống của bạn</h1>
                         <div id="word-search" class="search-box float-left" style="width:740px">
-                            <div style="color:#9ba2a9;margin-top:10px;margin-left:5px;font-size:21px"
+                            <div style="color:#9ba2a9;margin-top:10px;margin-left:10px;font-size:21px"
                                  class="fa fa-map-marker float-left"></div>
-                            <input onkeyup="suggest_location_for_search();" id="word" class="box" type="text"
-                                   placeholder="Tên địa điểm ... "
+                            <input style="margin-left:-100px;" onkeyup="suggest_location_for_search();" id="word" class="box" type="text"
+                                   placeholder="Tên địa điểm, Khu vực, Loại ẩm thực ... "
                                    aria-label="Search">
                         </div>
+                        {% if user.is_authenticated %}
+                            <input type="button" value="Gợi ý"
+                                   id="button-suggest"
+                                   style="height: 50px;margin-right:12px;"
+                                   class="btn btn-primary pull-right"/>
+                        {% endif %}
 
-                        <input type="button" value="Gợi ý"
-                               id="button-suggest"
-                               style="height: 50px;"
-                               class="btn btn-primary pull-right"/>
                         <script>
                             $("#button-suggest").click(function () {
                                 $("#result-suggest").attr('style', '');
@@ -174,7 +176,7 @@
                             </select>
                         </div>
                         <input id="but-sub" type="submit" value="Tìm kiếm"
-                               style="height: 50px;margin-top: 10px;"
+                               style="height: 50px;margin-top: 10px;margin-right:12px;"
                                class="btn btn-primary pull-right"/>
                         <input type="hidden" name="next" value="{{ next }}"/>
                     </div>
@@ -229,8 +231,9 @@
                 {% endif %}
             </div>
             <div class="paging-result">
-                <div class="row justify-content-end">
-                    <div class="col-lg-10 col-md-10">
+                <div class="row ">
+                    <div class="col-lg-4 col-md-4"></div>
+                    <div class="col-lg-7 col-md-7">
                         {% if locations.has_other_pages %}
                             <ul class="pagination">
                                 {% if locations.has_previous %}

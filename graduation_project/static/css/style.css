@@ -125,6 +125,7 @@ nav li {
 .floating-main {
     width: 850px;
     margin: auto;
+    margin-left:180px;
 }
 
 .box-search-page {
@@ -506,4 +507,8 @@ ul.dropdown-menu {
 
 ul.dropdown-menu {
     min-width: 210px;
+}
+
+.required {
+  color: red;
 }

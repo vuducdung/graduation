@@ -439,7 +439,7 @@ def get_location_from_list(list):
 
 
 def execute_word_search(word):
-    word = word.replace("'"," ")
+    word = word.replace("'", " ")
     str1 = config('str1')
     str2 = config('str2')
     word = tran_word_search(word, str1, str2)
@@ -483,6 +483,29 @@ def search(request):
     sql1 = f"select admin_locations.*,round((point(longitude,latitude) <@> {point})*1609)" \
         f" as distance from admin_locations"
     sql2 = ' where admin_locations.is_active=TRUE'
+    if not word:
+        if cat:
+            sql1 += ', admin_categorylocation'
+            sql2 += '  and admin_locations.id=admin_categorylocation.location_id ' \
+                    'and admin_categorylocation.category_id=' + cat
+            'and admin_categorylocation.category_id=' + cat
+
+        if cui:
+            sql1 += ', admin_cuisinelocation'
+            sql2 += ' and admin_locations.id=admin_cuisinelocation.location_id ' \
+                    'and admin_cuisinelocation.cuisine_id=' + cui
+        if loc:
+            sql2 += ' and district_id=' + loc
+
+        if sort == 'view':
+            sql2 += ' order by "totalView" desc'
+        elif sort == 'evaluate':
+            sql2 += ' order by "avgRating" desc'
+        elif sort == 'price':
+            sql2 += ' order by "priceMax" asc'
+
+        elif sort == 'distance':
+            sql2 += ' order by "distance"  '
 
     if word:
 
@@ -495,28 +518,38 @@ def search(request):
             #     query_list.append(q)
             # query = "&".join(query_list)
 
-            sql2 += " and news_tsv @@ to_tsquery('" + query + "')"
+            sql1 = f"select * from (select *, ts_rank_cd(news_tsv,tsq) AS rank, " \
+                f"round((point(longitude,latitude) <@> {point})*1609)" \
+                f" as distance from admin_locations, to_tsquery('{query}') tsq " \
+                f"where admin_locations.is_active = TRUE) S"
 
-    if cat:
-        sql1 += ', admin_categorylocation'
-        sql2 += ' and admin_locations.id=admin_categorylocation.location_id and admin_categorylocation.category_id=' + cat
-    if cui:
-        sql1 += ', admin_cuisinelocation'
-        sql2 += ' and admin_locations.id=admin_cuisinelocation.location_id and admin_cuisinelocation.cuisine_id=' + cui
-    if loc:
-        sql2 += ' and district_id=' + loc
+            # sql2 += " and news_tsv @@ to_tsquery('" + query + "')"
+            sql2 = " where True"
+            # where rank > 0 order by rank desc
+            if cat:
+                sql1 += ', admin_categorylocation'
+                sql2 += ' and S.id=admin_categorylocation.location_id ' \
+                        'and admin_categorylocation.category_id=' + cat
+            if cui:
+                sql1 += ', admin_cuisinelocation'
+                sql2 += ' and S.id=admin_cuisinelocation.location_id ' \
+                        'and admin_cuisinelocation.cuisine_id=' + cui
+            if loc:
+                sql2 += ' and district_id=' + loc
 
-    if sort == 'view':
-        sql2 += ' order by "totalView" desc'
-    elif sort == 'evaluate':
-        sql2 += ' order by "avgRating" desc'
-    elif sort == 'price':
-        sql2 += ' order by "priceMax" asc'
+            # Sort
+            sql2 += ' and rank > 0 order by rank desc'
+            if sort == 'view':
+                sql2 += ' ,"totalView" desc'
+            elif sort == 'evaluate':
+                sql2 += ' ,"avgRating" desc'
+            elif sort == 'price':
+                sql2 += ' ,"priceMax" asc'
 
-    elif sort == 'distance':
-        sql2 += ' order by "distance"  '
-    else:
-        sql2 += ' order by "totalView" desc'
+            elif sort == 'distance':
+                sql2 += ' ,"distance" asc '
+    # else:
+    #     sql2 += ' order by "totalView" desc'
     locations, count = get_search_location(sql1, sql2, page)
     return render(request, 'search.html',
                   {'locations': locations, 'districts': districts,
@@ -691,11 +724,13 @@ def member(request, userId):
             except EmptyPage:
                 comments = paginator.page(paginator.num_pages)
 
-        notifications = Notification.objects.filter(user=request.user)
+        notifications = Notification.objects.filter(user=request.user).order_by('-created_at')
+        note = request.GET.get('notification', None)
         return render(request, 'member.html',
                       {
                           'acc': acc, 'comments': comments,
                           'collections': collections, 'notifications': notifications,
+                          'note': note,
                       })
     else:
         context = {
@@ -1017,8 +1052,8 @@ def get_notifications(request):
     if request.user.is_authenticated:
         notifications = Notification.objects.filter(user=request.user)
         if len(notifications) > 0:
-            notifications = [dict(id=m.id, count=len(notifications), location_id=m.location.id, content=m.content,
-                                  url=m.location.url) for m in notifications]
+            notifications = [dict(id=m.id, count=len(notifications), content=m.content,
+                                  ) for m in notifications]
             notifications = json.dumps(notifications)
             return HttpResponse(notifications, content_type='application/json', )
         else:
@@ -1039,19 +1074,14 @@ def get_notifications(request):
 
 def get_notifications_not_view(request):
     if request.user.is_authenticated:
-        notifications = Notification.objects.filter(user=request.user).filter(view=False)
+        notifications = Notification.objects.filter(user=request.user).filter(viewed=False)
         if len(notifications) > 0:
-            notifications = [dict(id=m.id, count=len(notifications), location_id=m.location.id, content=m.content,
-                                  url=m.location.url) for m in notifications]
+            notifications = [dict(id=m.id, count=len(notifications), content=m.content,
+                                  userId=request.user.id) for m in notifications]
             notifications = json.dumps(notifications)
             return HttpResponse(notifications, content_type='application/json', )
         else:
-            context = {
-                'status': '400', 'reason': 'you can access this view '
-            }
-            response = HttpResponse(json.dumps(context), content_type='application/json')
-            response.status_code = 400
-            return response
+            return HttpResponse(json.dumps([]), content_type='application/json', )
     else:
         context = {
             'status': '400', 'reason': 'you can access this view '
@@ -1062,8 +1092,9 @@ def get_notifications_not_view(request):
 
 
 def view_notification(request):
-    note_id = request.GET.get('note_id', None)
+    note_id = request.GET.get('notification', None)
     if note_id:
         note = Notification.objects.get(id=note_id)
         note.viewed = True
         note.save()
+    return HttpResponse([])

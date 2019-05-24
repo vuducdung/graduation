@@ -85,6 +85,7 @@ def location(request):
     form1 = MapForm()
     location_id = request.GET.get('id', None)
     delete = request.GET.get('delete', None)
+
     if delete:
         Locations.objects.filter(id=location_id).first().delete()
         return redirect('/admin/location/')
@@ -92,6 +93,19 @@ def location(request):
     if location_id:
         location = Locations.objects.filter(id=location_id).first()
         is_active = request.GET.get('is_active', None)
+        ignore_require = request.GET.get('ignore_require', None)
+
+        if ignore_require:
+            require = RequireFromUser.objects.filter(location=location)
+            if len(require) > 0:
+                notification = Notification()
+                notification.user = require[0].user
+                notification.location = location
+                notification.content = "Tạo địa điểm " + str(location.name) + " của bạn không được admin chấp nhận"
+                notification.save()
+                require[0].delete()
+            Locations.objects.filter(id=location_id).first().delete()
+            return redirect('/admin/location')
 
         if is_active:
             location.is_active = True
@@ -489,9 +503,10 @@ def sync(request):
 
     # Update location for search
     # locations = Locations.objects.all()
-    # for loc in locations:
+    # for idx, loc in enumerate(locations):
     #     loc.name = loc.name
     #     loc.address = loc.address
     #     loc.keyWords = loc.keyWords
+    #     print(idx)
     #     loc.save()
     return HttpResponse("EndSYNC")

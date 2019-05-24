@@ -49,10 +49,10 @@
                         </div>
                     </a>
                     <ul class="dropdown-menu drp-mnu">
-                        <li><a href="#"><i class="fa fa-cog"></i> Settings</a></li>
-                        <li><a href="#"><i class="fa fa-user"></i> My Account</a></li>
-                        <li><a href="#"><i class="fa fa-suitcase"></i> Profile</a></li>
-                        <li><a href="{% url 'logout' %}"><i class="fa fa-sign-out"></i> Logout</a></li>
+{#                        <li><a href="#"><i class="fa fa-cog"></i> Settings</a></li>#}
+{#                        <li><a href="#"><i class="fa fa-user"></i> My Account</a></li>#}
+                        <li><a href="/admin/user/?id={{ user.id }}"><i class="fa fa-suitcase"></i> Profile</a></li>
+                        <li><a href="{% url 'logout' %}?next={{ request.path }}"><i class="fa fa-sign-out"></i> Logout</a></li>
                     </ul>
                 </li>
             </ul>
