@@ -71,3 +71,7 @@ class Accounts(AbstractBaseUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
     objects = MyUserManager()
+
+
+class uploadAvatarImage(models.Model):
+    avatar = models.ImageField(upload_to='avatar/', blank=True)

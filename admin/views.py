@@ -362,10 +362,17 @@ def menu(request, id):
                 return render(request, 'admin/menus.html', {'menu': menu, 'form': form})
 
     deleteId = request.GET.get('delete', None)
+    delete_menu_id = request.GET.get('delete_menu_id', None)
+
+    if delete_menu_id:
+        Menus.objects.get(id=delete_menu_id).delete()
+        # menu = Menus.objects.get(id=menu_id)
+        # return render(request, 'admin/menus.html', {'menu': menu, 'form': form})
+
     # return HttpResponse({type(userId)})
     if deleteId and menu_id:
-        menu = Menus.objects.get(id=menu_id)
         Dish.objects.get(id=deleteId).delete()
+        menu = Menus.objects.get(id=menu_id)
         return render(request, 'admin/menus.html', {'menu': menu, 'form': form})
 
     if menu_id:

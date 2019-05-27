@@ -48,9 +48,10 @@
                         </div>
 
                         {% if user.is_authenticated %}
-                            <div class="row" style="color:#007bff;line-height: 20px;height: 40px;margin-top: -15px;">
+                            <div id="show-noti" class="row"
+                                 style="color:#007bff;line-height: 20px;height: 40px;margin-top: -15px;">
 
-                                <div id="notification" style="display:none;" class="col-lg-3 col-md-3">
+                                <div id="notification" class="col-lg-3 col-md-3">
                                     <div class="profile_details_left">
                                         <!--notifications of menu start -->
                                         <ul class="nofitications-dropdown">
@@ -82,17 +83,20 @@
                                 function get_notifications() {
                                     $("#notification").attr('style', '')
                                     $.get('/get_notifications_not_view/', function (data) {
-                                        {#alert(Object.keys(data).length)#}
-                                        let messages = `<li>
+                                        {#alert(parseInt(Object.keys(data).length))#}
+                                        if (parseInt(Object.keys(data).length) < 1) {
+                                            $("#notification").attr('style', 'display: none')
+                                        } else {
+                                            let messages = `<li>
                             <div style="padding-left: 15px; margin-bottom: 5px;" class="notification_header">
                                 <span class="count-message">Bạn có ${data[0].count} thông báo</span>
                             </div>
                         </li>`
-                                        $.each(data, function () {
-                                            $("#badge-notification").attr('style', 'background: #af3131')
-                                            $("#badge-notification").html(this.count)
-                                            $(".notification_desc").html(` ${this.require_name} `)
-                                            messages += `<li style="margin-left:5px;" onclick="view_notification(${this.userId},${this.id})">
+                                            $.each(data, function () {
+                                                $("#badge-notification").attr('style', 'background: #af3131')
+                                                $("#badge-notification").html(this.count)
+                                                $(".notification_desc").html(` ${this.require_name} `)
+                                                messages += `<li style="margin-left:5px;" onclick="view_notification(${this.userId},${this.id})">
                             <a href="#">
 
                                 <div class="notification_desc">
@@ -103,8 +107,9 @@
                             </a>
                         </li>`
 
-                                        });
-                                        $("#messages").html(messages)
+                                            });
+                                            $("#messages").html(messages)
+                                        }
                                     });
                                 }
 

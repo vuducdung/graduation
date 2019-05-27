@@ -22,29 +22,27 @@
                             <img class="rounded-circle" style="width: 50px;height:50px;" src="{{ acc.avatar }}" alt="">
                             {{ acc.name }}
                         </a>
-                        <a class="list-group-item list-group-item-action {% if not note %}active{% endif %}"
+                        <a class="list-group-item list-group-item-action {% if not note and not info%}active{% endif %}"
                            id="list-activities-list"
                            data-toggle="list"
                            href="#list-activities" role="tab" aria-controls="activities">Hoạt động</a>
                         <a class="list-group-item list-group-item-action" id="list-collections-list" data-toggle="list"
                            href="#list-collections" role="tab" aria-controls="collections">Bộ sưu tập địa điểm</a>
-                        <a class="list-group-item list-group-item-action" id="list-info-list" data-toggle="list"
+                        <a class="list-group-item list-group-item-action {% if info %}active{% endif %}"
+                           id="list-info-list" data-toggle="list"
                            href="#list-info" role="tab" aria-controls="info">Thông tin cơ bản</a>
-                        <a class="list-group-item list-group-item-action" id="list-avatar-list" data-toggle="list"
-                           href="#list-avatar" role="tab" aria-controls="avatar">Cập nhật ảnh đại diện</a>
-
-                        <a class="list-group-item list-group-item-action {% if note %}active{% endif %}"
+                        <a class="list-group-item  list-group-item-action {% if note %}active{% endif %}"
                            id="list-notification-list" data-toggle="list"
                            href="#list-notification" role="tab" aria-controls="notification">Thông báo</a>
 
-                        <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list"
-                           href="#list-settings" role="tab" aria-controls="settings">Đăng xuất</a>
+                        <a class="list-group-item list-group-item-action" id="list-settings-list"
+                           href="{% url 'logout' %}">Đăng xuất</a>
                     </div>
                 </div>
 
                 <div class="col-8">
                     <div class="tab-content" id="nav-tabContent">
-                        <div class="tab-pane fade  {% if not note %}show active{% endif %}" id="list-activities"
+                        <div class="tab-pane fade  {% if not note and not info %}show active{% endif %}" id="list-activities"
                              role="tabpanel"
                              aria-labelledby="list-activities-list">
                             <h4>Bình luận</h4>
@@ -64,6 +62,14 @@
                                                     <div class="row justify-content-end">
                                                         <div class="circle">{{ comment.score }}
                                                         </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" style="margin-top:2px; background:#fff">
+                                                <div class="col-lg-12 col-md-12">
+                                                    <div class="crop"
+                                                         style="font-weight:bold;margin:10px 0px 10px 0px"><a
+                                                            href="/ha-noi/{{ comment.location.url }}">{{ comment.location.name }}</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -221,18 +227,18 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="list-info" role="tabpanel" aria-labelledby="list-settings-info">
+                        <div class="tab-pane fade {% if info %}show active{% endif %}" id="list-info" role="tabpanel" aria-labelledby="list-settings-info">
                             <h4 style="margin-bottom:15px;">Thông tin tài khoản</h4>
                             <table class="table">
                                 <tbody>
-                                <form id="user-info" method="post" action="">
+                                <form id="user-info" method="post" enctype="multipart/form-data">
                                     {% csrf_token %}
                                     <tr>
                                         <td>Tên tài khoản</td>
                                         <td>
                                             <input name="name" type="text" class="form-control"
                                                    pattern=".{1,255}" title="Tối đa 255 ký tự"
-                                                   placeholder="{{ acc.name }}" required maxlength="255">
+                                                   placeholder="{{ acc.name }}" maxlength="255">
                                         </td>
                                     </tr>
                                     <tr>
@@ -247,6 +253,9 @@
                                             <div><img style="width:80px;height:80px;" src="{{ acc.avatar }}" alt="">
                                             </div>
                                         </td>
+                                        <td>
+                                            {{ form.as_p }}
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>
@@ -259,10 +268,10 @@
                                 </tbody>
                             </table>
                         </div>
-
-                        <div class="tab-pane fade" id="list-avatar" role="tabpanel" aria-labelledby="list-avatar-list">
-                            <div>Chưa cập nhật...</div>
-                        </div>
+                        {##}
+                        {#                        <div class="tab-pane fade" id="list-avatar" role="tabpanel" aria-labelledby="list-avatar-list">#}
+                        {#                            <div>Chưa cập nhật...</div>#}
+                        {#                        </div>#}
 
                         <div class="tab-pane fade {% if note %}show active{% endif %}" id="list-notification"
                              role="tabpanel"

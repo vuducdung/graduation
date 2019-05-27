@@ -26,7 +26,7 @@
 
                     <div class="inbox-row widget-shadow" id="accordion" role="tablist" aria-multiselectable="true">
 
-                        {% if menus %}
+                        {% if not menu %}
                             <div style="height: 41px;" class="inbox-row widget-shadow" id="accordion" role="tablist"
                                  aria-multiselectable="true">
 
@@ -55,6 +55,7 @@
                                         <div class="modal-body mx-3">
                                             <div class="md-form mb-5">
                                                 Tên thực đơn
+                                                <span class="required" style="float:left;">*</span>
                                                 <input type="text" id="defaultForm-email" name="menu_name"
                                                        class="form-control validate">
                                             </div>
@@ -94,8 +95,17 @@
                                                    href="?menu_id={{ menu.id }}" aria-expanded="true"
                                                    aria-controls="collapseOne">
                                                     <i class="fa fa-reply mail-icon"></i>
-                                                    View
+                                                    Xem
                                                 </a>
+                                            </li>
+                                             <li>
+                                                <a role="button"
+                                                   href="?delete_menu_id={{ menu.id }}" aria-expanded="true"
+                                                   aria-controls="collapseOne">
+                                                    <i class="fa fa-reply mail-icon"></i>
+                                                    Xóa
+                                                </a>
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>
@@ -116,17 +126,20 @@
                                         <div class="modal-body mx-3">
                                             <div class="md-form mb-5">
                                                 Tên món ăn
+                                                <span class="required" style="float:left;">*</span>
                                                 <input type="text" id="defaultForm-email" name="name_dish"
                                                        class="form-control validate">
                                             </div>
 
                                             <div style="margin-top:5px;" class="md-form mb-4">
-                                                <div>Giá</div>
+                                                <div>Giá
+                                                <span class="required" style="float:left;">*</span></div>
+
                                                 <input type="number" min="1" name="price_dish">
                                                 Nghìn đồng
                                             </div>
                                             <div style="margin-top:7px;" class="md-form mb-4">
-                                                <div></div>
+                                                <span class="required" style="float:left;">*</span>
                                                 {{ form.as_p }}
                                             </div>
                                             <div style="margin-top:10px;">

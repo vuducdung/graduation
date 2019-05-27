@@ -4,7 +4,7 @@ from django.contrib.auth import login
 import ast
 from app.models import *
 from admin.models import *
-from .forms import SignupForm
+from .forms import SignupForm, AvatarForm
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from .tokens import account_activation_token, account_reset_token
@@ -696,8 +696,7 @@ def share_create(request):
 
 
 def member(request, userId):
-    if (request.user.is_authenticated and request.user.id == int(userId)) or (
-            request.user.is_authenticated and request.user.id == 1):
+    if request.user.is_authenticated and request.user.id == int(userId):
         acc = Accounts.objects.get(id=userId)
         comment_type = InteractiveTypes.objects.get(id=1)
         comments = CommentLikeShare.objects.filter(type=comment_type).filter(user=acc).order_by('created_at')
@@ -710,10 +709,24 @@ def member(request, userId):
                     coll.avatar = "https://images.foody.vn/default/s480x300/no-image.png"
         if len(comments) <= 0:
             comments = None
-        username = request.POST.get('name', None)
-        if username:
-            acc.name = username
-            acc.save()
+
+        avatar = None
+        avatar_form = AvatarForm()
+        info_change=None
+        if request.method == 'POST':
+            form = AvatarForm(request.POST, request.FILES)
+            if form.is_valid() and len(form.files) > 0:
+                form.save()
+                avatar = uploadAvatarImage.objects.get(id=form.instance.id).avatar.url
+                acc.avatar = avatar
+                acc.save()
+
+            username = request.POST.get('name', None)
+            if username:
+                acc.name = username
+                acc.save()
+            info_change = True
+
         if comments:
             page = request.GET.get('page', 1)
             paginator = Paginator(comments, 10)
@@ -726,11 +739,14 @@ def member(request, userId):
 
         notifications = Notification.objects.filter(user=request.user).order_by('-created_at')
         note = request.GET.get('notification', None)
+
         return render(request, 'member.html',
                       {
                           'acc': acc, 'comments': comments,
                           'collections': collections, 'notifications': notifications,
                           'note': note,
+                          'form': avatar_form,
+                          'info': info_change,
                       })
     else:
         context = {

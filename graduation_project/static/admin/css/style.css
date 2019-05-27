@@ -10070,3 +10070,15 @@ h4.asd label {
     font-size: 23px;
 }
 
+
+.required {
+    color: red;
+}
+
+.input-box {
+    height:30px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    padding-left:12px;
+}

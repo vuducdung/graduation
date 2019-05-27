@@ -16,73 +16,45 @@
         <div class="main-page">
             <div class="typography">
                 <div class="grid_3 grid_4 widget-shadow">
-{#                    <h5 style="width: 30%;float: left;" class="hdg">Địa điểm</h5>#}
-{#                    <div style="width: 30%;float: left; color:blue;" class="mail-right dots_drop">#}
-{#                        <div class="dropdown">#}
-{#                            <a href="#" data-toggle="dropdown" aria-expanded="false">#}
-{#                                <p><i class="fa fa-ellipsis-v mail-icon"></i></p>#}
-{#                            </a>#}
-{#                            <ul class="dropdown-menu">#}
-{#                                <li>#}
-{#                                    <a href="?id={{ location.id }}&active=True" {% if account.is_active %}#}
-{#                                       style="pointer-events: none;" {% endif %}>#}
-{#                                        <i class="fa fa-reply mail-icon "></i>#}
-{#                                        Cập nhật#}
-{#                                    </a>#}
-{#                                </li>#}
-{#                                <li>#}
-{#                                    <a  {% if not account.is_active %} style="pointer-events: none;" {% endif %}#}
-{#                                                                       href="?id={{ location.id }}&deactive=True"#}
-{#                                                                       title="">#}
-{#                                        <i class="fa fa-download mail-icon"></i>#}
-{#                                        Khóa#}
-{#                                    </a>#}
-{#                                </li>#}
-{#                                <li>#}
-{#                                    <a href="?id={{ location.id }}&delete=True" class="font-red" title="">#}
-{#                                        <i class="fa fa-trash-o mail-icon"></i>#}
-{#                                        Delete#}
-{#                                    </a>#}
-{#                                </li>#}
-{#                            </ul>#}
-{#                        </div>#}
-{#                    </div>#}
-                    {#                    form#}
+
                     <div class="bs-example">
                         <table class="table">
                             <tbody>
                             <form id="login-form" method="get" action="">
                                 <tr>
-                                    <td><h7 id="h7.-bootstrap-heading">Tên địa điểm<a
-                                            class="anchorjs-link" href="#h7.-bootstrap-heading"><span
-                                            class="anchorjs-icon"></span></a></h7>
+                                    <td>
+                                        <h7 id="h7.-bootstrap-heading">Tên địa điểm
+                                            <span class="required">*</span></h7>
                                     </td>
                                     <td style="width: 60%;float: left;" class="type-info">
                                         <input pattern=".{1,255}" title="Tối đa 255 ký tự"
                                                name="nameLoc" type="text"
                                                style="width:100%;"
-                                               maxlength="255" class="box-search-page" placeholder="Tối đa 255 kí tự"
+                                               maxlength="255" class="input-box" placeholder="Tối đa 255 kí tự"
                                                required>
                                     </td>
 
                                 </tr>
                                 <tr>
-                                    <td><h7 id="h7.-bootstrap-heading">Địa chỉ<a
-                                            class="anchorjs-link" href="#h7.-bootstrap-heading"><span
-                                            class="anchorjs-icon"></span></a></h7></td>
+                                    <td>
+                                        <h7 id="h7.-bootstrap-heading">Địa chỉ<span class="required">*</span>
+                                        </h7>
+                                    </td>
                                     <td style="width: 60%;float: left;" class="type-info">
                                         <input pattern=".{1,255}" title="Tối đa 255 ký tự"
                                                name="address" type="text"
                                                style="width: 100%;"
-                                               class="box-search-page" placeholder="Tối đa 255 kí tự"
+                                               class="input-box" placeholder="Tối đa 255 kí tự"
                                                required>
                                     </td>
                                 </tr>
 
                                 <tr>
-                                    <td><h7 id="h7.-bootstrap-heading">Giờ mở cửa<a
-                                            class="anchorjs-link" href="#h7.-bootstrap-heading"><span
-                                            class="anchorjs-icon"></span></a></h7></td>
+                                    <td>
+                                        <h7 id="h7.-bootstrap-heading">Giờ mở cửa<a
+                                                class="anchorjs-link" href="#h7.-bootstrap-heading"><span
+                                                class="anchorjs-icon"></span></a></h7>
+                                    </td>
                                     <td style="width: 60%;float: left;" class="type-info">
                                         <select name="timeOpen1" class="form-control"
                                                 style="width: 50%;float:left;border:0;">
@@ -101,9 +73,11 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><h7 id="h7.-bootstrap-heading">Giờ đóng cửa<a
-                                            class="anchorjs-link" href="#h7.-bootstrap-heading"><span
-                                            class="anchorjs-icon"></span></a></h7></td>
+                                    <td>
+                                        <h7 id="h7.-bootstrap-heading">Giờ đóng cửa<a
+                                                class="anchorjs-link" href="#h7.-bootstrap-heading"><span
+                                                class="anchorjs-icon"></span></a></h7>
+                                    </td>
                                     <td style="width: 60%;float: left;" class="type-info">
                                         <select name="timeClose1" class="form-control"
                                                 style="width: 50%;float:left;border:0;">
@@ -123,13 +97,15 @@
                                 </tr>
 
                                 <tr>
-                                    <td><h7 id="h7.-bootstrap-heading">Mô tả<a
-                                            class="anchorjs-link" href="#h7.-bootstrap-heading"><span
-                                            class="anchorjs-icon"></span></a></h7></td>
+                                    <td>
+                                        <h7 id="h7.-bootstrap-heading">Mô tả<a
+                                                class="anchorjs-link" href="#h7.-bootstrap-heading"><span
+                                                class="anchorjs-icon"></span></a></h7>
+                                    </td>
                                     <td style="width: 60%;float: left;" class="type-info">
                                         <input type="text" style="width: 100%;"
                                                pattern=".{1,255}" title="Tối đa 255 ký tự"
-                                               class="box-search-page"
+                                               class="input-box"
                                                placeholder="Tối đa 255 kí tự"
                                                name="description"
                                         >
@@ -137,12 +113,11 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <h7 id="h7.-bootstrap-heading">Danh mục<a
-                                                class="anchorjs-link" href="#h7.-bootstrap-heading"><span
-                                                class="anchorjs-icon"></span></a>
+                                        <h7 id="h7.-bootstrap-heading">Danh mục
+                                            <span class="required">*</span>
                                         </h7>
                                     </td>
-                                    <td style="width: 60%;float: left;" class="type-info">
+                                    <td style="width: 65%;float: left;" class="type-info">
                                         <select required name="category" class="form-control"
                                                 style="width: 50%;float:left;border:0;">
                                             <option value="" selected="selected">Loại danh mục</option>
@@ -154,12 +129,11 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <h7 id="h7.-bootstrap-heading">Loại ẩm thực<a
-                                                class="anchorjs-link" href="#h7.-bootstrap-heading"><span
-                                                class="anchorjs-icon"></span></a>
+                                        <h7 id="h7.-bootstrap-heading">Loại ẩm thực
+                                            <span class="required">*</span>
                                         </h7>
                                     </td>
-                                    <td style="width: 60%;float: left;" class="type-info">
+                                    <td style="width: 65%;float: left;" class="type-info">
                                         <select required name="cuisine" class="form-control"
                                                 style="width: 50%;float:left;border:0;">
                                             <option value="" selected="selected">Loại ẩm thực</option>
@@ -171,12 +145,10 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <h7 id="h7.-bootstrap-heading">Dịch vụ<a
-                                                class="anchorjs-link" href="#h7.-bootstrap-heading"><span
-                                                class="anchorjs-icon"></span></a>
+                                        <h7 id="h7.-bootstrap-heading">Dịch vụ
                                         </h7>
                                     </td>
-                                    <td style="width: 60%;float: left;" class="type-info">
+                                    <td style="width: 65%;float: left;" class="type-info">
                                         <select name="service" class="form-control"
                                                 style="width: 50%;float:left;border:0;">
                                             <option value="" selected="selected">Loại dịch vụ</option>
@@ -188,12 +160,11 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <h7 id="h7.-bootstrap-heading">Quận/Huyện<a
-                                                class="anchorjs-link" href="#h7.-bootstrap-heading"><span
-                                                class="anchorjs-icon"></span></a>
+                                        <h7 id="h7.-bootstrap-heading">Quận/Huyện
+                                            <span class="required">*</span>
                                         </h7>
                                     </td>
-                                    <td style="width: 60%;float: left;" class="type-info">
+                                    <td style="width: 65%;float: left;" class="type-info">
                                         <select required name="district" class="form-control"
                                                 style="width: 50%;float:left;border:0;">
                                             <option value="" selected="selected">Quận/Huyện</option>
@@ -204,35 +175,44 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><h7 id="h7.-bootstrap-heading">Vị trí<a
-                                            class="anchorjs-link" href="#h7.-bootstrap-heading"><span
-                                            class="anchorjs-icon"></span></a></h7></td>
+                                    <td>
+                                        <h7 id="h7.-bootstrap-heading">Vị trí</h7>
+                                    </td>
                                     <td>
                                         <p>
                                             Hãy tìm vị trí bạn muốn sau đó điền thông tin giá trị Latitude và Longitude
 
                                         </p>
-                                        <a  target="_blank"
-                                            class="anchorjs-link" href="https://www.latlong.net/"><span
-                                            class="anchorjs-icon">https://www.latlong.net/</span>
+                                        <a target="_blank"
+                                           class="anchorjs-link" href="https://www.latlong.net/"><span
+                                                class="anchorjs-icon">https://www.latlong.net/</span>
                                         </a>
 
-                                    </td>
-                                    <td style="width: 60%;float: left;" class="type-info">
-                                        <input style="width: 50%;float: left;"
-                                               class="box-search-page"
-                                               name="latitude"
-                                               placeholder="latitude"
-                                               required
-                                        >
-                                        <input style="width: 50%;float: left;"
-                                               class="box-search-page"
-                                               name="longitude"
-                                               placeholder="longitude"
-                                               required
-                                        >
+                                        <div style="width: 100%; margin-right:5px;" class="form-inline">
+
+                                            <input style="padding:5px;width: 25%;float: left;"
+                                                   class="input-box"
+                                                   name="latitude"
+                                                   placeholder="latitude"
+                                                   type=number step=any
+                                                   required>
+                                            <div class="required" style="float:left;">*</div>
+                                        </div>
+
+                                        <div style="width:100%;" class="form-inline" >
+
+                                            <input style="padding:5px;width: 25%;float: left;"
+                                                   class="input-box"
+                                                   name="longitude"
+                                                   placeholder="longitude"
+                                                   type=number step=any
+                                                   required>
+                                            <div class="required" style="float:left;">*</div>
+                                        </div>
+
                                     </td>
                                 </tr>
+
                                 <tr>
                                     <td style="float: left;">
                                         <input type="submit" value="Thêm địa điểm"
