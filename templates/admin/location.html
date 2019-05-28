@@ -74,13 +74,14 @@
                                     {% endif %}
                                     {% if not location.is_active %}
                                         <li>
-                                            <a href="/admin/location/?id={{ location.id }}&ignore_require=True" class="font-red"
+                                            <a href="/admin/location/?id={{ location.id }}&ignore_require=True"
+                                               class="font-red"
                                                title="">
                                                 <i class="fa fa-trash-o mail-icon"></i>
                                                 Bỏ yêu cầu
                                             </a>
                                         </li>
-                                        {% else %}
+                                    {% else %}
                                         <li>
                                             <a href="/admin/location/?id={{ location.id }}&delete=True" class="font-red"
                                                title="">
@@ -141,7 +142,37 @@
 
                                     <tr>
                                         <td>
-                                            <h7 id="h7.-bootstrap-heading">Thời gian mở cửa</h7>
+                                            <h7 id="h7.-bootstrap-heading">Loại ẩm thực</h7>
+                                        </td>
+                                        <td class="type-info">
+                                            {% for cui in location.cuisine.all|slice:"0:1" %}
+                                                <div>{{ cui.name }}</div>
+                                            {% endfor %}
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h7 id="h7.-bootstrap-heading">Loại nhà hàng</h7>
+                                        </td>
+                                        <td class="type-info">
+                                            {% for cat in location.category.all|slice:"0:1" %}
+                                                <div>{{ cat.name }}</div>
+                                            {% endfor %}
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h7 id="h7.-bootstrap-heading">Quận/huyện</h7>
+                                        </td>
+                                        <td class="type-info">
+                                            <div>{{ location.district.name }}</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h7 id="h7.-bootstrap-heading">Loại ẩm thực</h7>
                                         </td>
                                         <td class="type-info">
                                             <input class="input-box" type="text" style="width:100%;"
@@ -154,11 +185,40 @@
                                     </tr>
                                     <tr>
                                         <td>
+                                            <h7 id="h7.-bootstrap-heading">Vị trí</h7>
+                                        </td>
+                                        <td>
+                                            <div style="width: 100%; margin-right:5px;" class="form-inline">
+
+                                                <input style="padding:5px;width: 25%;float: left;"
+                                                       class="input-box"
+                                                       name="latitude"
+                                                       placeholder="{{ location.latitude }}"
+                                                       type=number step=any
+                                                       >
+{#                                                <div class="required" style="float:left;">*</div>#}
+                                            </div>
+
+                                            <div style="width:100%;" class="form-inline">
+
+                                                <input style="padding:5px;width: 25%;float: left;"
+                                                       class="input-box"
+                                                       name="longitude"
+                                                       placeholder="{{ location.longitude }}"
+                                                       type=number step=any
+                                                       >
+{#                                                <div class="required" style="float:left;">*</div>#}
+                                            </div>
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
                                             <h7 id="h7.-bootstrap-heading">Xem tại link</h7>
                                         </td>
 
                                         <td class="type-info">
-                                            <a href="/ha-noi/{{ location.url }}">Link</a>
+                                            <a href="/ha-noi/{{ location.url }}">{{ location.name }}</a>
                                         </td>
                                     </tr>
                                     <tr>

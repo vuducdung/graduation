@@ -53,7 +53,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                 <div class="typography">
                     {#                    <h2 class="title1">Typography</h2>#}
                     <div class="grid_3 grid_4 widget-shadow">
-                        <h3 style="width: 30%;float: left;" class="hdg">Tài khoản</h3>
+                        <h4 style="width: 30%;float: left;" class="hdg">Tài khoản</h4>
 
                         <div style="width: 30%;float: left; color:blue;" class="mail-right dots_drop">
                             <div class="dropdown">
@@ -91,21 +91,27 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                             <table class="table">
                                 <tbody>
                                 <tr>
-                                    <td><h4 id="h4.-bootstrap-heading">Username<a
-                                            class="anchorjs-link" href="#h4.-bootstrap-heading"><span
-                                            class="anchorjs-icon"></span></a></h4></td>
+                                    <td>
+                                        <h7 id="h7.-bootstrap-heading">Username<a
+                                                class="anchorjs-link" href="#h7.-bootstrap-heading"><span
+                                                class="anchorjs-icon"></span></a></h7>
+                                    </td>
                                     <td class="type-info">{{ account.name }}</td>
                                 </tr>
                                 <tr>
-                                    <td><h4 id="h4.-bootstrap-heading">Email<a
-                                            class="anchorjs-link" href="#h4.-bootstrap-heading"><span
-                                            class="anchorjs-icon"></span></a></h4></td>
+                                    <td>
+                                        <h7 id="h7.-bootstrap-heading">Email<a
+                                                class="anchorjs-link" href="#h7.-bootstrap-heading"><span
+                                                class="anchorjs-icon"></span></a></h7>
+                                    </td>
                                     <td class="type-info">{{ account.email }}</td>
                                 </tr>
                                 <tr>
-                                    <td><h4 id="h4.-bootstrap-heading">Trạng thái<a
-                                            class="anchorjs-link" href="#h4.-bootstrap-heading"><span
-                                            class="anchorjs-icon"></span></a></h4></td>
+                                    <td>
+                                        <h7 id="h7.-bootstrap-heading">Trạng thái<a
+                                                class="anchorjs-link" href="#h7.-bootstrap-heading"><span
+                                                class="anchorjs-icon"></span></a></h7>
+                                    </td>
                                     {% if account.is_active %}
                                         <td class="type-info">Hoạt động</td>
                                     {% else %}
@@ -114,18 +120,20 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
                                 </tr>
                                 <tr>
-                                    <td><h4 id="h4.-bootstrap-heading">Vai trò<a
-                                            class="anchorjs-link" href="#h4.-bootstrap-heading"><span
-                                            class="anchorjs-icon"></span></a></h4></td>
+                                    <td>
+                                        <h7 id="h7.-bootstrap-heading">Vai trò<a
+                                                class="anchorjs-link" href="#h7.-bootstrap-heading"><span
+                                                class="anchorjs-icon"></span></a></h7>
+                                    </td>
                                     <td class="type-info">{{ account.role.name }}</td>
                                 </tr>
-{#                                <tr>#}
-{#                                    <td><h4 id="h4.-bootstrap-heading">Trang cá nhân<a#}
-{#                                            class="anchorjs-link" href="#h4.-bootstrap-heading"><span#}
-{#                                            class="anchorjs-icon"></span></a></h4></td>#}
-{#                                    <td class="type-info"><a href="/thanh-vien/{{ account.id }}">{{ nickName }}</a>#}
-{#                                    </td>#}
-{#                                </tr>#}
+                                <tr>
+                                    <td>
+                                        <h8 id="h8.-bootstrap-heading">Avatar</h8>
+                                    </td>
+                                    <td class="type-info" style="height:30px;"><img style="width:80px;" src="{{ account.avatar  }}" alt="">
+                                    </td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -136,7 +144,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                 <div class="tables">
                 {#                <h2 class="title1">Tables</h2>#}
                 <div class="bs-example widget-shadow" data-example-id="hoverable-table">
-                <h4>Danh sách tài khoản người dùng:</h4>
+                <h7>Danh sách tài khoản người dùng:</h7>
                 <table class="table table-hover">
                     <thead>
                     <tr>

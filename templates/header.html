@@ -14,6 +14,84 @@
                 <div class="container">
                     {% if user.is_authenticated %}
                         <div class="row" style="color:#007bff;line-height:30px;margin-top:30px">
+                            <div class="col-lg-5 col-md-5">
+                                {% if user.is_authenticated %}
+                                    <div id="show-noti" class="row"
+                                         style="color:#007bff;line-height: 20px;height: 40px;margin-top: -15px;">
+
+                                        <div id="notification" class="col-lg-3 col-md-3">
+                                            <div class="profile_details_left">
+                                                <!--notifications of menu start -->
+                                                <ul class="nofitications-dropdown">
+                                                    <li class="dropdown head-dpdn">
+                                                        <a style="text-decoration: none;" href="#" id="special" class="dropdown-toggle" data-toggle="dropdown"
+                                                           aria-expanded="false">
+                                                            <i class="fa fa-envelope"></i>
+                                                            <span style="display:none;" id="badge-notification"
+                                                                  class="badge">0</span>
+                                                        </a>
+                                                        <ul class="dropdown-menu"
+                                                            style="min-width:190px;border-radius:10px;"
+                                                            id="messages">
+                                                            <li>
+                                                                <div class="notification_header"
+                                                                     style="padding-left: 15px; margin-bottom: 5px;">
+                                                                    <span class="count-message">Bạn không có thông báo nào</span>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                                <div class="clearfix"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <script>
+                                        get_notifications();
+
+                                        function get_notifications() {
+                                            $("#notification").attr('style', '')
+                                            $.get('/get_notifications_not_view/', function (data) {
+                                                {#alert(parseInt(Object.keys(data).length))#}
+                                                if (parseInt(Object.keys(data).length) < 1) {
+                                                    $("#notification").attr('style', 'display: none')
+                                                } else {
+                                                    let messages = `<li>
+                            <div style="padding-left: 15px; margin-bottom: 5px;" class="notification_header">
+                                <span class="count-message">Bạn có ${data[0].count} thông báo</span>
+                            </div>
+                        </li>`
+                                                    $.each(data, function () {
+                                                        $("#badge-notification").attr('style', 'background: #af3131')
+                                                        $("#badge-notification").html(this.count)
+                                                        $(".notification_desc").html(` ${this.require_name} `)
+                                                        messages += `<li style="margin-left:5px;" onclick="view_notification(${this.userId},${this.id})">
+                            <a href="#">
+
+                                <div class="notification_desc">
+                                    <p>Thêm địa điểm</p>
+                                    <!--<p><span>1 hour ago</span></p>-->
+                                </div>
+                                <div class="clearfix"></div>
+                            </a>
+                        </li>`
+
+                                                    });
+                                                    $("#messages").html(messages)
+                                                }
+                                            });
+                                        }
+
+                                        function view_notification(id, note_id) {
+                                            let pageURL = window.location.href;
+                                            $.get('/view_notification/', {notification: note_id}, function (data) {
+                                                window.location.replace(`/thanh-vien/${id}?notification=${note_id}`);
+                                            })
+
+                                        }
+                                    </script>
+                                {% endif %}
+                            </div>
 
                             <div class="col-lg-7 col-md-7">
                                 <div class="container">
@@ -28,6 +106,9 @@
                                             <a class="dropdown-item" data-toggle="modal"
                                                data-target="#createCol">Tạo bộ sưu tập
                                             </a>
+                                            <a class="dropdown-item" href="{% url 'logout' %}?next={{ request.path }}">
+                                                Đăng xuất
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -35,93 +116,9 @@
                             </div>
 
 
-                            <div class="col-lg-2 col-md-2">
-                                <button type="button" class="btn btn-primary btn-sm ">
-                                    <a style="color:#fff;text-decoration:none;"
-                                       href="{% url 'logout' %}?next={{ request.path }}">
-                                        ĐăngXuất
-                                    </a>
-                                </button>
-                            </div>
-
-
                         </div>
 
-                        {% if user.is_authenticated %}
-                            <div id="show-noti" class="row"
-                                 style="color:#007bff;line-height: 20px;height: 40px;margin-top: -15px;">
 
-                                <div id="notification" class="col-lg-3 col-md-3">
-                                    <div class="profile_details_left">
-                                        <!--notifications of menu start -->
-                                        <ul class="nofitications-dropdown">
-                                            <li class="dropdown head-dpdn">
-                                                <a href="#" class="dropdown-toggle" data-toggle="dropdown"
-                                                   aria-expanded="false">
-                                                    <i class="fa fa-envelope"></i>
-                                                    <span style="display:none;" id="badge-notification"
-                                                          class="badge">0</span>
-                                                </a>
-                                                <ul class="dropdown-menu" style="min-width:190px;border-radius:10px;"
-                                                    id="messages">
-                                                    <li>
-                                                        <div class="notification_header"
-                                                             style="padding-left: 15px; margin-bottom: 5px;">
-                                                            <span class="count-message">Bạn không có thông báo nào</span>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <script>
-                                get_notifications();
-
-                                function get_notifications() {
-                                    $("#notification").attr('style', '')
-                                    $.get('/get_notifications_not_view/', function (data) {
-                                        {#alert(parseInt(Object.keys(data).length))#}
-                                        if (parseInt(Object.keys(data).length) < 1) {
-                                            $("#notification").attr('style', 'display: none')
-                                        } else {
-                                            let messages = `<li>
-                            <div style="padding-left: 15px; margin-bottom: 5px;" class="notification_header">
-                                <span class="count-message">Bạn có ${data[0].count} thông báo</span>
-                            </div>
-                        </li>`
-                                            $.each(data, function () {
-                                                $("#badge-notification").attr('style', 'background: #af3131')
-                                                $("#badge-notification").html(this.count)
-                                                $(".notification_desc").html(` ${this.require_name} `)
-                                                messages += `<li style="margin-left:5px;" onclick="view_notification(${this.userId},${this.id})">
-                            <a href="#">
-
-                                <div class="notification_desc">
-                                    <p>Thêm địa điểm thành công</p>
-                                    <!--<p><span>1 hour ago</span></p>-->
-                                </div>
-                                <div class="clearfix"></div>
-                            </a>
-                        </li>`
-
-                                            });
-                                            $("#messages").html(messages)
-                                        }
-                                    });
-                                }
-
-                                function view_notification(id, note_id) {
-                                    let pageURL = window.location.href;
-                                    $.get('/view_notification/', {notification: note_id}, function (data) {
-                                        window.location.replace(`/thanh-vien/${id}?notification=${note_id}`);
-                                    })
-
-                                }
-                            </script>
-                        {% endif %}
 
                         <!-- The Modal -->
                         <div class="modal fade" id="createCol">

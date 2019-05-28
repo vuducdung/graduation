@@ -3044,6 +3044,10 @@ input[type="button"].btn-block {
   border-left: 0.3em solid transparent;
 }
 
+#special:after {
+    display: none;
+}
+
 .dropdown-toggle:empty::after {
   margin-left: 0;
 }
