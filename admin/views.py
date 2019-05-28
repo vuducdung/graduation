@@ -129,6 +129,12 @@ def location(request):
                 return HttpResponse('Tên địa điểm đã được sử dụng cho địa điểm khác')
 
         address = request.POST.get('address', None)
+        latitude = request.POST.get('latitude', None)
+        if latitude:
+            location.latitude = latitude
+        longitude = request.POST.get('longitude', None)
+        if longitude:
+            location.longitude = longitude
         if address:
             location.address = address
         time = request.POST.get('time', None)
@@ -139,7 +145,10 @@ def location(request):
         if map:
             location.map = map
         location.save()
-        location.created_by = Accounts.objects.get(id=location.created_by)
+        if len(Accounts.objects.filter(id=location.created_by)) > 0:
+            location.created_by = Accounts.objects.get(id=location.created_by)
+        else:
+            location.created_by = Accounts.objects.filter(role_id=1)[0]
         return render(request, 'admin/location.html',
                       {
                           'location': location, 'form': form,
@@ -254,7 +263,7 @@ def comment(request, id):
                     comments = paginator.page(1)
                 except EmptyPage:
                     comments = paginator.page(paginator.num_pages)
-                return render(request, 'admin/comment.html', {'comments': comments})
+                return render(request, 'admin/comment.html', {'location':location,'comments': comments})
         except:
             pass
     comments = CommentLikeShare.objects.filter(location=location).order_by('id')
@@ -265,7 +274,7 @@ def comment(request, id):
         comments = paginator.page(1)
     except EmptyPage:
         comments = paginator.page(paginator.num_pages)
-    return render(request, 'admin/comment.html', {'comments': comments})
+    return render(request, 'admin/comment.html', {'location':location,'comments': comments})
 
 
 def parking(request, id):

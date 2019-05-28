@@ -137,6 +137,21 @@ def get_location_by_url(locationUrl):
         point_3 = float(loc.evaluation[2]) * float(totalReview)
         point_4 = float(loc.evaluation[3]) * float(totalReview)
         point_5 = float(loc.evaluation[4]) * float(totalReview)
+        # loc.priceMin =
+        sql_1 = f"select * from admin_dish,admin_menus,admin_locations,admin_menulocation where admin_dish.menu_id=admin_menus.id " \
+            f"and admin_locations.id=admin_menulocation.location_id " \
+            f"and admin_menulocation.menu_id=admin_menus.id and " \
+            f"admin_locations.id= {loc.id} order by price asc limit 1 ;"
+        sql_2 = f"select * from admin_dish,admin_menus,admin_locations,admin_menulocation where admin_dish.menu_id=admin_menus.id " \
+            f"and admin_locations.id=admin_menulocation.location_id " \
+            f"and admin_menulocation.menu_id=admin_menus.id and " \
+            f"admin_locations.id= {loc.id} order by price desc limit 1 ;"
+        priceMin = Dish.objects.raw(sql_1)
+        priceMax = Dish.objects.raw(sql_2)
+        if len(priceMin) > 0:
+            loc.priceMin = str(priceMin[0].price)+'.000'
+        if len(priceMax) > 0:
+            loc.priceMax = str(priceMax[0].price)+'.000'
         new_reviews = CommentLikeShare.objects.filter(location=loc).filter(type_id=1).filter(
             created_at__range=(parse_datetime('2019-04-20 20:48:17.099000'), datetime.now()))
         if len(new_reviews) > 0:
@@ -712,7 +727,7 @@ def member(request, userId):
 
         avatar = None
         avatar_form = AvatarForm()
-        info_change=None
+        info_change = None
         if request.method == 'POST':
             form = AvatarForm(request.POST, request.FILES)
             if form.is_valid() and len(form.files) > 0:
