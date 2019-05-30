@@ -17,7 +17,7 @@ urlpatterns = [
     url(r'^reset/(?P<id>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
         views.reset, name='reset'),
     url(r'^resetRequire/$', views.resetRequire, name='resetRequire'),
-    url(r'^ha-noi/(?P<locationUrl>[0-9A-Za-z_\-]+)/$', views.location, name='location'),
+    url(r'^ha-noi/(?P<locationUrl>)/$', views.location, name='location'),
     url(r'^thanh-vien/(?P<userId>[0-9A-Za-z_\-]+)/$', views.member, name='member'),
     url(r'^search/$', views.search, name='search'),
     url(r'^like_create/$', views.like_create, name='like_create'),
