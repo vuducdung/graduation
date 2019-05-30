@@ -149,9 +149,9 @@ def get_location_by_url(locationUrl):
         priceMin = Dish.objects.raw(sql_1)
         priceMax = Dish.objects.raw(sql_2)
         if len(priceMin) > 0:
-            loc.priceMin = str(priceMin[0].price)+'.000'
+            loc.priceMin = str(priceMin[0].price) + '.000'
         if len(priceMax) > 0:
-            loc.priceMax = str(priceMax[0].price)+'.000'
+            loc.priceMax = str(priceMax[0].price) + '.000'
         new_reviews = CommentLikeShare.objects.filter(location=loc).filter(type_id=1).filter(
             created_at__range=(parse_datetime('2019-04-20 20:48:17.099000'), datetime.now()))
         if len(new_reviews) > 0:
@@ -520,7 +520,7 @@ def search(request):
             sql2 += ' order by "priceMax" asc'
 
         elif sort == 'distance':
-            sql2 += ' order by "distance"  '
+            sql2 += ' order by "distance" asc'
 
     if word:
 
@@ -553,16 +553,18 @@ def search(request):
                 sql2 += ' and district_id=' + loc
 
             # Sort
-            sql2 += ' and rank > 0 order by rank desc'
+            sql2 += ' and rank > 0'
             if sort == 'view':
-                sql2 += ' ,"totalView" desc'
+                sql2 += ' order by "totalView" desc'
             elif sort == 'evaluate':
-                sql2 += ' ,"avgRating" desc'
+                sql2 += ' order by "avgRating" desc'
             elif sort == 'price':
-                sql2 += ' ,"priceMax" asc'
+                sql2 += ' order by "priceMax" asc'
 
             elif sort == 'distance':
-                sql2 += ' ,"distance" asc '
+                sql2 += ' order by "distance" asc'
+            else:
+                sql2 += ' order by rank desc'
     # else:
     #     sql2 += ' order by "totalView" desc'
     locations, count = get_search_location(sql1, sql2, page)
