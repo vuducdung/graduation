@@ -19,7 +19,7 @@
                                     <div id="show-noti" class="row"
                                          style="color:#007bff;line-height: 20px;height: 40px;margin-top: -15px;">
 
-                                        <div id="notification" class="col-lg-3 col-md-3">
+                                        <div id="notification" class="col-lg-3 col-md-3" style="display:none;">
                                             <div class="profile_details_left">
                                                 <!--notifications of menu start -->
                                                 <ul class="nofitications-dropdown">
@@ -50,12 +50,13 @@
                                         get_notifications();
 
                                         function get_notifications() {
-                                            $("#notification").attr('style', '')
+
                                             $.get('/get_notifications_not_view/', function (data) {
                                                 {#alert(parseInt(Object.keys(data).length))#}
                                                 if (parseInt(Object.keys(data).length) < 1) {
                                                     $("#notification").attr('style', 'display: none')
                                                 } else {
+                                                    $("#notification").attr('style', '')
                                                     let messages = `<li>
                             <div style="padding-left: 15px; margin-bottom: 5px;" class="notification_header">
                                 <span class="count-message">Bạn có ${data[0].count} thông báo</span>
